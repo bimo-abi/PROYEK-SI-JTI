@@ -1,27 +1,15 @@
 <?php
-require_once __DIR__ . '/../Core/UserAbstract.php';
+require_once '../../app/Core/Auth.php';
+Auth::check(); // Tendang jika belum login
+Auth::role('admin'); // Tendang jika bukan admin
 
-class Admin extends UserAbstract {
+echo "Halo Admin, " . $_SESSION['nama'];
 
-    public function getDashboardData() {
-        // Admin melihat semua antrean surat dari semua mahasiswa
-        $query = "SELECT s.*, p.nama FROM surat s JOIN pengguna p ON s.id_pemohon = p.id WHERE s.status = 'tertunda'";
+class Admin extends Pengguna implements VerifikasiInterface {
+    
+    public function verifikasi($id_surat, $status, $catatan) {
+        $query = "UPDATE surat SET status = ?, catatan_penolakan = ? WHERE id = ?";
         $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function verifikasiSurat($id_surat, $status, $catatan = null) {
-        // Enkapsulasi: Hanya admin yang bisa memanggil fungsi ini
-        $query = "UPDATE surat SET status = :status, catatan_penolakan = :catatan, 
-                  diverifikasi_oleh = :admin_id, diverifikasi_pada = NOW() 
-                  WHERE id = :id_surat";
-        $stmt = $this->db->prepare($query);
-        return $stmt->execute([
-            'status' => $status,
-            'catatan' => $catatan,
-            'admin_id' => $this->id,
-            'id_surat' => $id_surat
-        ]);
+        return $stmt->execute([$status, $catatan, $id_surat]);
     }
 }

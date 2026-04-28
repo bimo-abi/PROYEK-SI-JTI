@@ -4,15 +4,21 @@ class Database {
     private $db_name = "db_jti-surat";
     private $username = "root";
     private $password = "";
-    protected $conn;
+    public $conn;
 
     public function getConnection() {
         $this->conn = null;
         try {
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+            // Menggunakan PDO untuk koneksi
+            $this->conn = new PDO(
+                "mysql:host=" . $this->host . ";dbname=" . $this->db_name, 
+                $this->username, 
+                $this->password
+            );
+            // Error handling mode
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $exception) {
-            echo "Connection error: " . $exception->getMessage();
+        } catch(PDOException $e) {
+            echo "Koneksi Gagal: " . $e->getMessage();
         }
         return $this->conn;
     }

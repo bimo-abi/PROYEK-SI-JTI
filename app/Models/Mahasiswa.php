@@ -1,30 +1,28 @@
 <?php
-require_once __DIR__ . '/../Core/UserAbstract.php';
+require_once '../../app/Core/Auth.php';
+Auth::check();
+Auth::role('mahasiswa');
 
-class Mahasiswa extends UserAbstract {
-    
-    public function getDashboardData() {
-        // Logika mengambil riwayat surat milik mahasiswa tersebut
-        $query = "SELECT * FROM surat WHERE id_pemohon = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['id' => $this->id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+echo "Halo Mahasiswa, " . $_SESSION['nama'];
+
+class Mahasiswa extends Pengguna {
+    private $nim;
+
+    // Constructor khusus Mahasiswa
+    public function __construct($db, $nim) {
+        parent::__construct($db);
+        $this->setNim($nim);
     }
 
-    public function kirimSurat($id_jenis, $keperluan, $file) {
-        // Logika upload dan simpan ke database
-        try {
-            $query = "INSERT INTO surat (id_pemohon, id_jenis_surat, keperluan, berkas_pdf) 
-                      VALUES (:id, :jenis, :keperluan, :file)";
-            $stmt = $this->db->prepare($query);
-            return $stmt->execute([
-                'id' => $this->id,
-                'jenis' => $id_jenis,
-                'keperluan' => $keperluan,
-                'file' => $file
-            ]);
-        } catch (PDOException $e) {
-            throw new Exception("Gagal mengirim surat: " . $e->getMessage());
+    public function setNim($nim) {
+        // Validasi NIM: Harus ada huruf di depan (E41...)
+        if (!preg_match("/^[A-Z]/", $nim)) {
+            throw new Exception("Format NIM Salah! Harus diawali huruf.");
         }
+        $this->nim = $nim;
+    }
+
+    public function getNim() {
+        return $this->nim;
     }
 }
