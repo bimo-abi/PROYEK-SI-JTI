@@ -3,11 +3,11 @@ require_once '../config/Database.php';
 require_once '../app/Models/Pengguna.php';
 require_once '../app/Core/Auth.php';
 
+session_start();
+
 $db = (new Database())->getConnection();
 $auth = new Auth();
 $userModel = new Pengguna($db);
-
-$error = ""; // Variabel untuk menampung pesan error
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
@@ -34,40 +34,127 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
-    <title>Cek Login - SI-JTI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk ke Akun</title>
+
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background: #eee; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
-        .error-msg { color: red; font-size: 0.8em; margin-bottom: 10px; }
-        input { width: 100%; padding: 8px; margin: 10px 0; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('/surat-digital/resources/assets/gedung.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .login-card {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            z-index: 2;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #1a9cff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1084df;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .btn-secondary {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="card">
-    <h2>Login SI-JTI</h2>
-    
-    <?php if($error): ?>
-        <div class="error-msg"><?= $error; ?></div>
-    <?php endif; ?>
+    <div class="overlay"></div>
 
-    <form action="" method="POST">
-        <label>Email:</label>
-        <input type="email" name="email" placeholder="bimo@student.com" required>
-        
-        <label>Password:</label>
-        <input type="password" name="password" placeholder="bimo123" required>
-        
-        <button type="submit">Cek Login</button>
-    </form>
-    
-    <p style="font-size: 0.7em; margin-top: 15px; color: #666;">
-        *Pastikan sudah jalankan init_db.php sebelumnya.
-    </p>
-</div>
+    <div class="login-card">
+        <h2>Masuk ke Akun</h2>
+
+        <?php if (isset($error)): ?>
+            <p class="error"><?= $error ?></p>
+        <?php endif; ?>
+
+        <form method="POST" action="">
+            <div class="input-group">
+                <label>Email</label>
+                <input type="text" name="email" required>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" required>
+            </div>
+
+            <button type="submit">Masuk</button>
+        </form>
+
+        <a href="/surat-digital/resources/views/register.blade.php" class="btn-secondary">
+            Daftar Akun
+        </a>
+    </div>
 
 </body>
+
 </html>
