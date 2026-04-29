@@ -1,46 +1,41 @@
 <?php
 class Auth {
-    /**
-     * Memulai session jika belum dimulai
-     */
     public function __construct() {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
     }
 
-    /**
-     * Menyimpan data user ke session setelah login berhasil
-     */
+    // Menyimpan data user ke session setelah login berhasil
     public function setSession($user) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['nama']    = $user['nama'];
-        $_SESSION['peran']   = $user['peran'];
         $_SESSION['is_login'] = true;
+        $_SESSION['user_id']  = $user['id'];
+        $_SESSION['nama']     = $user['nama'];
+        $_SESSION['peran']    = $user['peran'];
+        $_SESSION['nim_nip']  = $user['nomor_induk'];
     }
 
-    /**
-     * Mengecek apakah user sudah login
-     */
+    // Proteksi halaman: Tendang ke login jika belum masuk
     public static function check() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        
         if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
-            header("Location: login.php");
+            header("Location: ../login.php");
             exit;
         }
     }
 
-    /**
-     * Proteksi halaman berdasarkan peran (Admin/Dosen/Mahasiswa)
-     */
+    // Proteksi Role: Batasi akses per halaman (Admin/Dosen/Mahasiswa)
     public static function role($role) {
         if ($_SESSION['peran'] !== $role) {
-            die("Akses Ditolak: Anda bukan " . $role);
+            die("<div style='color:red; font-family:sans-serif; text-align:center; margin-top:50px;'>
+                    <h2>Akses Ditolak!</h2>
+                    <p>Anda tidak memiliki izin untuk mengakses halaman ini.</p>
+                    <a href='../logout.php'>Kembali</a>
+                 </div>");
         }
     }
 
-    /**
-     * Logout dan hapus semua data session
-     */
     public function logout() {
         session_unset();
         session_destroy();

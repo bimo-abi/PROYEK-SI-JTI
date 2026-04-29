@@ -1,23 +1,20 @@
 <?php
-require_once '../../app/Core/Auth.php';
-Auth::check();
-Auth::role('mahasiswa');
-
-echo "Halo Mahasiswa, " . $_SESSION['nama'];
+require_once 'Pengguna.php';
 
 class Mahasiswa extends Pengguna {
     private $nim;
 
-    // Constructor khusus Mahasiswa
-    public function __construct($db, $nim) {
+    public function __construct($db, $nim = null) {
         parent::__construct($db);
-        $this->setNim($nim);
+        if ($nim !== null) {
+            $this->setNim($nim);
+        }
     }
 
+    // Encapsulation: NIM harus diawali huruf (Aturan JTI)
     public function setNim($nim) {
-        // Validasi NIM: Harus ada huruf di depan (E41...)
-        if (!preg_match("/^[A-Z]/", $nim)) {
-            throw new Exception("Format NIM Salah! Harus diawali huruf.");
+        if (!preg_match("/^[a-zA-Z]/", $nim)) {
+            throw new Exception("Format NIM tidak valid! Harus diawali dengan huruf (Contoh: E4122).");
         }
         $this->nim = $nim;
     }

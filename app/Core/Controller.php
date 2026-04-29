@@ -1,11 +1,8 @@
 <?php
 class Controller {
-    // Membantu untuk memanggil view (nanti di frontend)
+    // Fungsi untuk mempermudah pemanggilan view (tampilan)
     public function view($view, $data = []) {
-        if (file_exists("../app/Views/" . $view . ".php")) {
-            require_once "../app/Views/" . $view . ".php";
-        } else {
-            die("View tidak ditemukan");
-        }
+        extract($data);
+        require_once '../app/Views/' . $view . '.php';
     }
 }
