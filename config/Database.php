@@ -3,7 +3,7 @@
 class Database {
     // Properti koneksi
     private $host = "localhost";
-    private $db_name = "db_jti-surat"; // Pastikan ini sama dengan di phpMyAdmin
+    private $db_name = "si_jti"; // Pastikan ini sama dengan di phpMyAdmin
     private $username = "root";
     private $password = ""; // Kosongkan jika pakai Laragon/XAMPP default
     public $conn;
