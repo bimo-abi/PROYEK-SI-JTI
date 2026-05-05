@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("../img/jti\ gedung.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container utama */
+.auth-container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+}
+
+.register-wide {
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+h2,
+h3 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.alert-danger {
+  background-color: #ffebee;
+  color: #c62828; 
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ef9a9a;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 20px;
+  width: 100%; 
+  display: block; 
+}
+
+p.subtitle {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  font-size: 0.9rem;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #00a2ed;
+  background: #fff;
+}
+
+/* Tombol */
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: #00a2ed;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background: #0081bc;
+}
+
+.btn-secondary {
+  display: block;
+  text-align: center;
+  width: 100%;
+  padding: 12px;
+  background: #6c757d;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.text-center {
+  text-align: center;
+  margin: 15px 0;
+  color: #888;
+}
+
+.flex-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-link {
+  font-size: 0.8rem;
+  color: #00a2ed;
+  text-decoration: none;
+}
