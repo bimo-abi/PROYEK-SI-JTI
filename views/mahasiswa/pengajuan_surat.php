@@ -15,6 +15,7 @@ $current_page = 'pengajuan';
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <title>Pengajuan Surat - SI-JTI</title>
     <!-- Pastikan file CSS dashboard tetap dipanggil di sini -->

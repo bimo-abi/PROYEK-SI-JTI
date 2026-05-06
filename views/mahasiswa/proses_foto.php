@@ -29,12 +29,13 @@ if (isset($_POST['upload']) && isset($_SESSION['user_id'])) {
                 $stmt = $db->prepare($sql);
 
                 if ($stmt->execute([$new_name, $user_id])) {
-                    header("Location: profil.php?status=photo_success");
                     $_SESSION['foto_profil'] = $new_name;
-
-                    header("Location: profil.php?status=photo_success");
+                    // Mengirim parameter status=success
+                    header("Location: profil.php?status=success");
+                    exit();
                 } else {
-                    echo "Gagal update database.";
+                    header("Location: profil.php?status=error");
+                    exit();
                 }
             } else {
                 echo "Gagal mengunggah file ke folder.";
