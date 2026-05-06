@@ -1,56 +1,68 @@
 <?php
 require_once '../../autoload.php';
-include '../layouts/sidebar.php';
 session_start();
 
-// Keamanan: Cek login & peran
+// 1. Keamanan: Cek login & peran
 if (!isset($_SESSION['user_id']) || $_SESSION['peran'] !== 'mahasiswa') {
     header("Location: ../auth/login.php");
     exit();
 }
 
 use Config\Database;
+
 $db = (new Database())->getConnection();
 $user_id = $_SESSION['user_id'];
 
-// Ambil data profil (untuk box info mahasiswa di kanan)
+// 2. Query Profil
 $queryProfil = "SELECT p.nama, p.email, d.nomor_induk, pr.nama_prodi, g.nama_golongan 
                 FROM pengguna p
-                JOIN detail_pengguna d ON p.id = d.id_pengguna
-                JOIN prodi pr ON d.id_prodi = pr.id
-                JOIN golongan g ON d.id_golongan = g.id
+                LEFT JOIN detail_pengguna d ON p.id = d.id_pengguna
+                LEFT JOIN prodi pr ON d.id_prodi = pr.id
+                LEFT JOIN golongan g ON d.id_golongan = g.id
                 WHERE p.id = ?";
+
 $stmt = $db->prepare($queryProfil);
 $stmt->execute([$user_id]);
 $mhs = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Penanda halaman aktif di sidebar
+// 3. Fallback jika data kosong
+if (!$mhs) {
+    $mhs = [
+        'nama' => $_SESSION['nama'] ?? 'Mahasiswa',
+        'email' => $_SESSION['email'] ?? '-',
+        'nomor_induk' => $_SESSION['nim'] ?? '-',
+        'nama_prodi' => 'Belum Diatur',
+        'nama_golongan' => '-'
+    ];
+}
+
 $current_page = 'dashboard';
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Mahasiswa - SI-JTI</title>
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
 </head>
+
 <body>
     <div class="wrapper">
-        <!-- Panggil Sidebar -->
-        <?php include __DIR__ . '/../layouts/sidebar.php'; ?>
+        <!-- 1. PEMANGGILAN SIDEBAR CUKUP DI SINI -->
+        <?php include '../layouts/sidebar.php'; ?>
 
         <div class="main-container">
-            <!-- Panggil Topbar -->
-            <?php include '../layout/topbar.php'; ?>
+            <!-- 2. PEMANGGILAN TOPBAR CUKUP DI SINI -->
+            <?php include '../layouts/topbar.php'; ?>
 
             <div class="content">
                 <div class="main-grid">
-                    
                     <!-- Kolom Kiri: Statistik & Notif -->
                     <div class="left-column">
                         <div class="section-title"><i class="icon-home"></i> Dashboard</div>
-                        
                         <div class="stats-grid">
                             <div class="stat-card blue"> Semua Pengajuan <span>0</span> </div>
                             <div class="stat-card green"> Pengajuan Diterima <span>0</span> </div>
@@ -65,31 +77,44 @@ $current_page = 'dashboard';
                                 <li>Surat Keterangan aktif kuliah disetujui</li>
                                 <li>Profil berhasil diperbarui</li>
                             </ul>
-                            <button class="btn-ajukan">+ Ajukan Surat Baru</button>
+                            <a href="pengajuan_surat.php" class="btn-ajukan" style="text-decoration: none; display: inline-block;">
+                                + Ajukan Surat Baru
+                            </a>
                         </div>
                     </div>
 
                     <!-- Kolom Kanan: Info Mahasiswa -->
                     <div class="right-column">
+                        <!-- Card Foto & Tahun -->
                         <div class="profile-card">
-                            <img src="../../assets/img/avatar.png" alt="Mhs">
-                            <p>---------</p>
-                            <p>Tahun Akademik 2025/2026</p>
+                            <div class="avatar-wrapper">
+                                <img src="../../assets/img/avatar.png" alt="Mhs">
+                            </div>
+                            <p class="profile-name">----------</p>
+                            <p class="academic-year">Tahun Akademik<br>2025/2026</p>
                         </div>
 
-                        <div class="info-box">
-                            <h5>Info Mahasiswa</h5>
-                            <p>Prodi : <?= $mhs['nama_prodi'] ?></p>
-                            <p>Golongan : <?= $mhs['nama_golongan'] ?></p>
-                            <p>NIM : <?= $mhs['nomor_induk'] ?></p>
-                            <p>Email : <?= $mhs['email'] ?></p>
-                            <button class="btn-edit">Ubah Profil</button>
+                        <!-- Card Detail Info -->
+                        <div class="info-card">
+                            <div class="info-header">
+                                <h5>Info Mahasiswa</h5>
+                            </div>
+                            <div class="info-body">
+                                <p><strong>Prodi :</strong> <?= htmlspecialchars($mhs['nama_prodi'] ?? 'Teknik Informatika') ?></p>
+                                <p><strong>Golongan :</strong> <?= htmlspecialchars($mhs['nama_golongan'] ?? 'C') ?></p>
+                                <p><strong>NIM :</strong> <?= htmlspecialchars($mhs['nomor_induk'] ?? 'E41250904') ?></p>
+                                <p><strong>Email :</strong> <?= htmlspecialchars($mhs['email'] ?? '-') ?></p>
+
+                                <button class="btn-edit-profile">
+                                    <i class="icon-pencil"></i> Ubah Profil
+                                </button>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 </body>
+
 </html>
