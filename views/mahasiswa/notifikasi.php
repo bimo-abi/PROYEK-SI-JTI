@@ -4,31 +4,36 @@ session_start();
 
 use Config\Database;
 
-// Proteksi halaman
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/login.php");
     exit();
 }
 
 $db = (new Database())->getConnection();
-$nim = $_SESSION['nim'];
 
-// 1. Logika: Tandai semua notifikasi sebagai "sudah dibaca" saat halaman dibuka
-$updateQuery = "UPDATE notifikasi SET is_read = 1 WHERE nim = ? AND is_read = 0";
-$updateStmt = $db->prepare($updateQuery);
-$updateStmt->execute([$nim]);
+// Pastikan kita menggunakan variabel $notifs (sesuai yang dipanggil di HTML kamu)
+$notifs = [];
 
-// 2. Ambil data notifikasi
-$query = "SELECT * FROM notifikasi WHERE nim = ? ORDER BY created_at DESC";
-$stmt = $db->prepare($query);
-$stmt->execute([$nim]);
-$notifs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    // Gunakan NIM dari session yang sudah kita set di proses login tadi
+    $nim = $_SESSION['nim'] ?? null;
+
+    if ($nim) {
+        $query = "SELECT * FROM notifikasi WHERE nim = ? ORDER BY tanggal_notifikasi DESC";
+        $stmt = $db->prepare($query);
+        $stmt->execute([$nim]);
+        $notifs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (Exception $e) {
+    // Opsional: log error jika gagal
+}
 
 $current_page = 'notifikasi';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,22 +45,25 @@ $current_page = 'notifikasi';
             transition: transform 0.2s;
             cursor: pointer;
         }
+
         .notif-item:hover {
             transform: translateX(5px);
             background-color: #f8f9fa !important;
         }
+
         .unread {
             border-left: 4px solid #00a2ed !important;
             background-color: #f0faff !important;
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <?php include '../layouts/sidebar.php'; ?>
         <div class="main-container">
             <?php include '../layouts/topbar.php'; ?>
-            
+
             <div class="content">
                 <div class="notif-header" style="margin-bottom: 25px;">
                     <h4 style="display: flex; align-items: center; gap: 10px;">
@@ -67,9 +75,9 @@ $current_page = 'notifikasi';
                 <div class="notif-main-container" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                     <?php if (count($notifs) > 0): ?>
                         <?php foreach ($notifs as $n): ?>
-                            <div class="notif-item <?= $n['is_read'] == 0 ? 'unread' : '' ?>" 
-                                 style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px;">
-                                
+                            <div class="notif-item <?= $n['is_read'] == 0 ? 'unread' : '' ?>"
+                                style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px;">
+
                                 <div class="notif-icon" style="background: <?= $n['is_read'] == 0 ? '#e3f2fd' : '#f5f5f5' ?>; color: <?= $n['is_read'] == 0 ? '#00a2ed' : '#9e9e9e' ?>; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem;">
                                     <i class="fas <?= $n['is_read'] == 0 ? 'fa-envelope' : 'fa-envelope-open' ?>"></i>
                                 </div>
@@ -103,4 +111,5 @@ $current_page = 'notifikasi';
         </div>
     </div>
 </body>
+
 </html>

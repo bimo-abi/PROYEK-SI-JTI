@@ -105,9 +105,11 @@ $current_page = 'dashboard';
                                 <p><strong>NIM :</strong> <?= htmlspecialchars($mhs['nomor_induk'] ?? 'E41250904') ?></p>
                                 <p><strong>Email :</strong> <?= htmlspecialchars($mhs['email'] ?? '-') ?></p>
 
-                                <button class="btn-edit-profile">
-                                    <i class="icon-pencil"></i> Ubah Profil
-                                </button>
+                                <a href="edit_profil.php" style="text-decoration: none;">
+                                    <button class="btn-edit-profile">
+                                        <i class="icon-pencil"></i> Ubah Profil
+                                    </button>
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -13,8 +13,6 @@ $db = (new Database())->getConnection();
 $user_id = $_SESSION['user_id']; // Gunakan user_id dari session agar lebih akurat
 
 try {
-    // Query disesuaikan dengan struktur tabel yang kita buat sebelumnya
-    // Kita JOIN ke tabel prodi dan golongan untuk mendapatkan nama aslinya
     $query = "SELECT 
                 u.nama, 
                 u.email, 
@@ -63,51 +61,79 @@ $current_page = 'profil';
                 <div class="profile-main-card" style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
 
                     <!-- Header Profil -->
+                    <!-- Header Profil -->
                     <div class="profile-header" style="display: flex; align-items: center; gap: 25px; margin-bottom: 40px; border-bottom: 1px solid #f0f0f0; padding-bottom: 30px;">
-                        <!-- Path foto profil dinamis -->
-                        <img src="../../assets/img/<?= htmlspecialchars($user['foto_profil'] ?? 'avatar.png') ?>" alt="User Photo" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #00a2ed;">
 
+                        <!-- Bagian Foto & Form Upload -->
+                        <div class="photo-section" style="text-align: center;">
+                            <?php
+                            // Cek apakah ada foto di database, jika tidak gunakan default
+                            $foto = !empty($user['foto_profil']) ? "../../assets/img/profiles/" . $user['foto_profil'] : "../../assets/img/avatar.png";
+                            ?>
+
+                            <!-- Menampilkan Foto -->
+                            <div style="position: relative; display: inline-block;">
+                                <img src="<?= $foto ?>?t=<?= time() ?>" alt="User Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #00a2ed; display: block;">
+                            </div>
+
+                            <!-- Form Upload (Diletakkan di bawah foto) -->
+                            <form action="proses_foto.php" method="POST" enctype="multipart/form-data" style="margin-top: 15px;">
+                                <label for="file-upload" style="cursor: pointer; background: #f8f9fa; border: 1px solid #ddd; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; display: inline-block;">
+                                    <i class="fas fa-camera"></i> Pilih Foto
+                                </label>
+                                <input id="file-upload" type="file" name="foto_profil" accept="image/*" style="display: none;" onchange="this.form.submit()">
+
+                                <!-- Input hidden untuk memicu proses di proses_foto.php -->
+                                <input type="hidden" name="upload" value="1">
+                            </form>
+                        </div>
+
+                        <!-- Informasi User -->
                         <div class="user-id" style="flex: 1;">
                             <h3 style="margin: 0; font-size: 1.5rem; color: #333;"><?= htmlspecialchars($user['nama']) ?></h3>
                             <p style="margin: 5px 0; color: #666;">NIM : <?= htmlspecialchars($user['nomor_induk']) ?></p>
                             <p style="margin: 0; color: #888; font-size: 0.9rem;">Jurusan Teknologi Informasi - <?= htmlspecialchars($user['nama_prodi']) ?></p>
                         </div>
+
+                        <!-- Tombol Aksi -->
                         <div class="btn-actions" style="display: flex; flex-direction: column; gap: 10px;">
-                            <a href="edit_profil.php" class="btn-mini" style="background: #00a2ed; color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 0.8rem;">
+                            <a href="edit_profil.php" class="btn-mini" style="background: #00a2ed; color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 0.8rem; text-align: center;">
                                 <i class="fas fa-edit"></i> Edit Profil
                             </a>
-                            <button class="btn-mini" style="background: #f8f9fa; color: #333; border: 1px solid #ddd; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
-                                <i class="fas fa-camera"></i> Ganti foto
-                            </button>
                         </div>
                     </div>
+                    <!-- <button class="btn-mini" style="background: #f8f9fa; color: #333; border: 1px solid #ddd; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                        <i class="fas fa-camera"></i> Ganti foto
+                    </button> -->
+                </div>
+            </div>
 
-                    <!-- Detail Data -->
-                    <div class="detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                        <!-- Box Data Diri -->
-                        <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                            <h5 style="margin-top: 0; color: #00a2ed; border-bottom: 2px solid #00a2ed; display: inline-block; padding-bottom: 5px; margin-bottom: 15px;">
-                                <i class="fas fa-user"></i> Data Diri
-                            </h5>
-                            <p><strong>Nama Lengkap :</strong> <?= htmlspecialchars($user['nama']) ?></p>
-                            <p><strong>NIM :</strong> <?= htmlspecialchars($user['nomor_induk']) ?></p>
-                            <p><strong>Email :</strong> <?= htmlspecialchars($user['email']) ?></p>
-                        </div>
+            <!-- Detail Data -->
+            <div class="detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <!-- Box Data Diri -->
+                <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                    <h5 style="margin-top: 0; color: #00a2ed; border-bottom: 2px solid #00a2ed; display: inline-block; padding-bottom: 5px; margin-bottom: 15px;">
+                        <i class="fas fa-user"></i> Data Diri
+                    </h5>
+                    <p><strong>Nama Lengkap :</strong> <?= htmlspecialchars($user['nama']) ?></p>
+                    <p><strong>NIM :</strong> <?= htmlspecialchars($user['nomor_induk']) ?></p>
+                    <p><strong>Email :</strong> <?= htmlspecialchars($user['email']) ?></p>
+                </div>
 
-                        <!-- Box Data Akademik -->
-                        <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                            <h5 style="margin-top: 0; color: #00a2ed; border-bottom: 2px solid #00a2ed; display: inline-block; padding-bottom: 5px; margin-bottom: 15px;">
-                                <i class="fas fa-graduation-cap"></i> Data Akademik
-                            </h5>
-                            <p><strong>Jurusan :</strong> Teknologi Informasi</p>
-                            <p><strong>Program Studi :</strong> <?= htmlspecialchars($user['nama_prodi']) ?></p>
-                            <!-- Ubah kode baris 103 menjadi seperti ini -->
-                            <p><strong>Golongan :</strong> <?= htmlspecialchars($user['nama_golongan'] ?? '-') ?></p>
-                        </div>
-                    </div>
+                <!-- Box Data Akademik -->
+                <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                    <h5 style="margin-top: 0; color: #00a2ed; border-bottom: 2px solid #00a2ed; display: inline-block; padding-bottom: 5px; margin-bottom: 15px;">
+                        <i class="fas fa-graduation-cap"></i> Data Akademik
+                    </h5>
+                    <p><strong>Jurusan :</strong> Teknologi Informasi</p>
+                    <p><strong>Program Studi :</strong> <?= htmlspecialchars($user['nama_prodi']) ?></p>
+                    <!-- Ubah kode baris 103 menjadi seperti ini -->
+                    <p><strong>Golongan :</strong> <?= htmlspecialchars($user['nama_golongan'] ?? '-') ?></p>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 </body>
 
