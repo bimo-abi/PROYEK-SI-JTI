@@ -7,6 +7,9 @@ $db = (new Database())->getConnection();
 
 // Ambil data prodi untuk dropdown
 $dataProdi = $db->query("SELECT * FROM prodi")->fetchAll();
+
+// Tambahkan pengambilan data GOLONGAN
+$dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -20,12 +23,10 @@ $dataProdi = $db->query("SELECT * FROM prodi")->fetchAll();
 
 <body>
     <div class="auth-container register-wide">
-        <!-- FORM DIMULAI DI SINI -->
         <form action="../../process/auth_process.php?action=register" method="POST">
             <h3>Buat Akun Anda!</h3>
             <p class="subtitle">Silahkan isi data untuk membuat akun baru</p>
 
-            <!-- Bagian pesan error diletakkan DI DALAM container agar rapi -->
             <?php if (isset($_GET['error']) && $_GET['error'] == 'duplicate_nim'): ?>
                 <div class="alert-danger">
                     Nim sudah terdaftar, silahkan melakukan login.
@@ -63,6 +64,17 @@ $dataProdi = $db->query("SELECT * FROM prodi")->fetchAll();
                 <input type="text" name="nama" required>
             </div>
 
+            <!-- INPUT GOLONGAN YANG BARU DITAMBAHKAN -->
+            <div class="form-group">
+                <label>Golongan:</label>
+                <select name="id_golongan" required>
+                    <option value="">-- Pilih Golongan</option>
+                    <?php foreach ($dataGolongan as $gol): ?>
+                        <option value="<?= $gol['id'] ?>"><?= $gol['nama_golongan'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label>Login Sebagai:</label>
                 <select name="peran" required>
@@ -87,7 +99,6 @@ $dataProdi = $db->query("SELECT * FROM prodi")->fetchAll();
         </form>
     </div>
 
-    <!-- Script Opsional: Menghilangkan alert otomatis setelah 5 detik -->
     <script>
         setTimeout(function() {
             let alerts = document.querySelectorAll('.alert-danger');
