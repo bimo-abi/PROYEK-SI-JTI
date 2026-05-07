@@ -96,7 +96,8 @@ body {
 
 /* --- MAIN CONTENT STYLE --- */
 .main-container {
-  margin-left: 260px; /* Lebar Sidebar */
+  margin-left: 260px;
+  /* Lebar Sidebar */
   width: calc(100% - 260px);
   display: flex;
   flex-direction: column;
@@ -134,7 +135,8 @@ body {
 
 .main-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Kiri lebih lebar dari kanan */
+  grid-template-columns: 2fr 1fr;
+  /* Kiri lebih lebar dari kanan */
   gap: 25px;
 }
 
@@ -165,14 +167,17 @@ body {
   border-left: 5px solid #00a2ed;
   color: #00a2ed;
 }
+
 .green {
   border-left: 5px solid #28a745;
   color: #28a745;
 }
+
 .orange {
   border-left: 5px solid #fd7e14;
   color: #fd7e14;
 }
+
 .red {
   border-left: 5px solid #dc3545;
   color: #dc3545;
@@ -283,13 +288,13 @@ body {
 }
 
 /* Efek saat Kartu terpilih (Checked) */
-.card-radio input[type="radio"]:checked + .card-body {
+.card-radio input[type="radio"]:checked+.card-body {
   border-color: var(--primary-blue);
   background-color: #f0f9ff;
 }
 
 /* Tambahkan sedikit teks bold saat terpilih */
-.card-radio input[type="radio"]:checked + .card-body p {
+.card-radio input[type="radio"]:checked+.card-body p {
   color: var(--primary-blue);
   font-weight: bold;
 }
@@ -318,7 +323,8 @@ body {
 }
 
 .file-info i {
-  color: #e74c3c; /* Warna PDF Merah */
+  color: #e74c3c;
+  /* Warna PDF Merah */
   font-size: 1.5rem;
 }
 
@@ -337,6 +343,7 @@ body {
 .btn-unduh:hover {
   text-decoration: underline;
 }
+
 /* Container Kolom Kanan */
 .right-column {
   display: flex;
@@ -347,8 +354,10 @@ body {
 /* Styling Card Umum */
 .profile-card,
 .info-card {
-  background-color: #d9d9d9; /* Warna abu-abu sesuai desain */
-  border-radius: 30px; /* Sudut melengkung tajam */
+  background-color: #d9d9d9;
+  /* Warna abu-abu sesuai desain */
+  border-radius: 30px;
+  /* Sudut melengkung tajam */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
@@ -375,8 +384,10 @@ body {
 
 /* Info Card Section */
 .info-card {
-  text-align: left; /* Teks detail rata kiri */
-  padding: 0; /* Header akan pakai padding sendiri */
+  text-align: left;
+  /* Teks detail rata kiri */
+  padding: 0;
+  /* Header akan pakai padding sendiri */
 }
 
 .info-header {
@@ -401,7 +412,8 @@ body {
 /* Tombol Ubah Profil */
 .btn-edit-profile {
   width: 100%;
-  background-color: #666666; /* Warna gelap */
+  background-color: #666666;
+  /* Warna gelap */
   color: white;
   border: none;
   padding: 10px;
@@ -418,70 +430,95 @@ body {
 
 /* Layout Utama agar Sidebar & Main Container sejajar */
 .wrapper {
-    display: flex;
-    min-height: 100vh;
+  display: flex;
+  min-height: 100vh;
 }
 
 .main-container {
-    flex: 1;
-    background-color: #f4f7f6; /* Warna background dashboard */
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  background-color: #f4f7f6;
+  /* Warna background dashboard */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Grid Kartu Surat */
 .surat-selection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
-    padding: 0 50px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+  padding: 0 50px;
 }
 
 /* Menghilangkan bulatan radio button asli */
 .surat-option input[type="radio"] {
-    display: none;
+  display: none;
 }
 
 /* Container kartu agar berjejer ke samping */
 .options-container {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 30px;
 }
 
 /* Desain Kartu (Mirip dengan card info mahasiswa) */
 .option-card {
-    background-color: #d9d9d9;
-    padding: 30px;
-    border-radius: 25px;
-    width: 180px;
-    cursor: pointer;
-    transition: 0.3s;
-    border: 3px solid transparent;
+  background-color: #f1f1f1;
+
+  width: 300px;
+  min-height: 240px;
+
+  padding: 35px 25px;
+
+  border-radius: 28px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  cursor: pointer;
+
+  border: 3px solid transparent;
+
+  transition: all 0.3s ease;
 }
 
-.option-card img {
-    width: 60px;
-    margin-bottom: 15px;
+.option-card i {
+  font-size: 60px;
+  color: var(--primary-blue);
+  margin-bottom: 22px;
 }
 
 /* Efek saat dipilih */
-.surat-option input[type="radio"]:checked + .option-card {
-    border-color: #00a0f0;
-    background-color: #f0f0f0;
-    transform: scale(1.05);
+.surat-option input[type="radio"]:checked+.option-card {
+  border-color: var(--primary-blue);
+  background-color: #eef8ff;
+  transform: translateY(-8px);
 }
 
 /* Tombol Lanjutkan */
 .btn-lanjutkan {
-    margin-top: 40px;
-    background-color: #666666;
-    color: white;
-    border: none;
-    padding: 12px 60px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
+  margin-top: 40px;
+  background-color: #666666;
+  color: white;
+  border: none;
+  padding: 12px 60px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-group {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 45px;
 }

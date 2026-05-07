@@ -68,7 +68,6 @@ $current_page = 'dashboard';
                             <div class="stat-card green"> Pengajuan Diterima <span>0</span> </div>
                             <div class="stat-card orange"> Pengajuan dalam proses <span>0</span> </div>
                             <div class="stat-card red"> Pengajuan Ditolak <span>0</span> </div>
-                            <div class="stat-card sky"> Surat Masuk <span>0</span> </div>
                         </div>
 
                         <div class="notif-box">
