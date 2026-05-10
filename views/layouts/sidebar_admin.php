@@ -1,31 +1,37 @@
-<div class="sidebar d-flex flex-column p-3 text-white" style="width: 250px; height: 100vh; background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%); position: fixed;">
-    <div class="text-center mb-4">
-        <h4 class="fw-bold italic">SI - JTI</h4>
-        <div class="rounded-circle bg-white mx-auto my-3" style="width: 80px; height: 80px;"></div>
-        <p class="small mb-0">ADMIN</p>
+<div class="sidebar" style="background: linear-gradient(180deg, #1a1a1a 0%, #2c3e50 100%); color: white; min-height: 100vh; width: 250px;">
+    <div class="sidebar-brand" style="padding: 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <h2 style="font-weight: 800; letter-spacing: 2px;">SI - JTI</h2>
     </div>
-    
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item mb-2">
-            <a href="dashboard.php" class="nav-link text-white rounded-pill px-4">
-                <i class="bi bi-house-door me-2"></i> Dashboard
+
+    <div class="sidebar-user" style="text-align: center; padding: 20px;">
+        <img src="../../assets/img/avatar.png" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid #00a2ed; padding: 3px;">
+        <p style="margin-top: 10px; font-weight: 600;"><?= htmlspecialchars($_SESSION['nama']) ?></p>
+        <small style="color: #00a2ed; font-size: 0.75rem;">Administrator</small>
+    </div>
+
+    <ul class="sidebar-menu" style="list-style: none; padding: 10px;">
+        <li style="margin-bottom: 10px;">
+            <a href="dashboard.php" class="<?= ($current_page == 'dashboard') ? 'active' : '' ?>" 
+               style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
             </a>
         </li>
-        <li class="nav-item mb-2">
-            <a href="surat_masuk.php" class="nav-link text-white rounded-pill px-4">
-                <i class="bi bi-envelope-paper me-2"></i> Surat Masuk
+        <li style="margin-bottom: 10px;">
+            <a href="surat_masuk.php" class="<?= ($current_page == 'surat_masuk') ? 'active' : '' ?>"
+               style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
+                <i class="fas fa-envelope-open-text"></i> <span>Surat Masuk</span>
             </a>
         </li>
-        <li class="nav-item mb-2">
-            <a href="riwayat.php" class="nav-link text-white rounded-pill px-4">
-                <i class="bi bi-clock-history me-2"></i> Riwayat
+        <li style="margin-bottom: 10px;">
+            <a href="riwayat.php" class="<?= ($current_page == 'riwayat') ? 'active' : '' ?>"
+               style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
+                <i class="fas fa-history"></i> <span>Riwayat</span>
+            </a>
+        </li>
+        <li style="margin-top: 50px;">
+            <a href="../../auth/logout.php" style="display: flex; align-items: center; gap: 15px; color: #ff4757; text-decoration: none; padding: 12px 20px; font-weight: bold;">
+                <i class="fas fa-sign-out-alt"></i> <span>Keluar</span>
             </a>
         </li>
     </ul>
-
-    <div class="mt-auto">
-        <a href="../../logout.php" class="text-danger text-decoration-none fw-bold">
-            <i class="bi bi-box-arrow-left me-2"></i> Keluar
-        </a>
-    </div>
 </div>

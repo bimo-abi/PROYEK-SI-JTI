@@ -1,101 +1,109 @@
-<?php include '../layout/header.php'; ?>
-<div class="d-flex bg-light">
-    <?php include '../layout/sidebar_admin.php'; ?>
-    
-    <div class="flex-grow-1" style="margin-left: 250px;">
-        <div class="bg-white p-3 d-flex justify-content-between align-items-center shadow-sm">
-            <h5 class="mb-0"><i class="bi bi-envelope-paper"></i> Surat Masuk</h5>
-            <div class="fw-bold"><i class="bi bi-person-circle"></i> Admin</div>
-        </div>
+<?php
+require_once '../../autoload.php';
+session_start();
 
-        <div class="p-4">
-            <div class="card border-0 shadow-sm rounded-4 p-4">
-                <table class="table table-bordered text-center align-middle small">
-                    <thead class="table-secondary">
-                        <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Prodi</th>
-                            <th>Gol</th>
-                            <th>NIM</th>
-                            <th>Semester</th>
-                            <th>Surat</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Rayhan Riyadhul Jinan</td>
-                            <td>Teknik Informatika</td>
-                            <td>C</td>
-                            <td>E41250835</td>
-                            <td>2</td>
-                            <td><a href="#" class="text-danger"><i class="bi bi-file-pdf"></i> pdf</a></td>
-                            <td>
-                                <button class="btn btn-info btn-sm text-white px-3" data-bs-toggle="modal" data-bs-target="#modalDetail">Lihat Detail</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+use Config\Database;
+
+// 1. Proteksi Halaman Admin
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../auth/login.php");
+    exit();
+}
+
+$db = (new Database())->getConnection();
+
+// 2. Ambil data surat yang statusnya 'proses'
+try {
+    $query = "SELECT p.*, u.nama, pr.nama_prodi, g.nama_golongan 
+              FROM pengajuan_surat p
+              JOIN detail_pengguna dp ON p.nim = dp.nomor_induk
+              JOIN pengguna u ON dp.id_pengguna = u.id
+              LEFT JOIN prodi pr ON dp.id_prodi = pr.id
+              LEFT JOIN golongan g ON dp.id_golongan = g.id
+              WHERE p.status = 'proses'
+              ORDER BY p.tanggal_pengajuan ASC";
+
+    $stmt = $db->query($query);
+    $surat_masuk = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Gagal mengambil data: " . $e->getMessage());
+}
+
+// Konfigurasi Layout
+$current_page = 'surat_masuk';
+$page_title = 'Daftar Surat Masuk';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Masuk - Admin SI-JTI</title>
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="margin: 0; background: #f4f7f6; font-family: 'Segoe UI', sans-serif;">
+    <div class="wrapper" style="display: flex;">
+        <?php include '../layouts/sidebar_admin.php'; ?>
+
+        <div class="main-container" style="flex-grow: 1; min-height: 100vh;">
+            <?php include '../layouts/topbar_admin.php'; ?>
+
+            <div class="content" style="padding: 30px;">
+                <div class="card-container" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                        <h4 style="display: flex; align-items: center; gap: 10px; color: #333; margin: 0;">
+                            <i class="fas fa-envelope-open-text" style="color: #00a2ed;"></i> Menunggu Verifikasi
+                        </h4>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
+                            <thead>
+                                <tr style="background: #f8f9fa; text-align: left;">
+                                    <th style="padding: 15px; border-bottom: 2px solid #eee; color: #666;">No</th>
+                                    <th style="padding: 15px; border-bottom: 2px solid #eee; color: #666;">Nama</th>
+                                    <th style="padding: 15px; border-bottom: 2px solid #eee; color: #666;">Prodi</th>
+                                    <th style="padding: 15px; border-bottom: 2px solid #eee; color: #666;">Gol</th>
+                                    <th style="padding: 15px; border-bottom: 2px solid #eee; color: #666;">NIM</th>
+                                    <th style="padding: 15px; border-bottom: 2px solid #eee; color: #666;">Surat</th>
+                                    <th style="padding: 15px; border-bottom: 2px solid #eee; color: #666; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (count($surat_masuk) > 0): ?>
+                                    <?php $no = 1; foreach ($surat_masuk as $row): ?>
+                                        <tr style="border-bottom: 1px solid #eee;">
+                                            <td style="padding: 15px;"><?= $no++ ?>.</td>
+                                            <td style="padding: 15px; font-weight: 600; color: #333;"><?= htmlspecialchars($row['nama']) ?></td>
+                                            <td style="padding: 15px; color: #555;"><?= htmlspecialchars($row['nama_prodi']) ?></td>
+                                            <td style="padding: 15px; text-align: center;"><?= htmlspecialchars($row['nama_golongan'] ?? '-') ?></td>
+                                            <td style="padding: 15px; font-family: monospace;"><?= htmlspecialchars($row['nim']) ?></td>
+                                            <td style="padding: 15px; text-align: center;">
+                                                <i class="fas fa-file-pdf" style="color: #e74c3c;"></i> .pdf
+                                            </td>
+                                            <td style="padding: 15px; text-align: center;">
+                                                <a href="detail_pengajuan.php?id=<?= $row['id'] ?>" 
+                                                   style="background: #00a2ed; color: white; padding: 7px 15px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">
+                                                    Lihat Detail
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 40px; color: #888; font-style: italic;">
+                                            Tidak ada surat masuk yang perlu diproses.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- MODAL LIHAT DETAIL (Sesuai Desain Frame "Lihat Detail") -->
-<div class="modal fade" id="modalDetail" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title w-100 text-center fw-bold">Verifikasi Keaslian Surat</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-5">
-                <div class="row">
-                    <!-- Sisi Kiri: Data Mahasiswa -->
-                    <div class="col-md-6 border-end">
-                        <p class="mb-1 fw-bold small">NIM :</p>
-                        <p class="text-muted mb-3 small">E41250835</p>
-
-                        <p class="mb-1 fw-bold small">Nama :</p>
-                        <p class="text-muted mb-3 small">Rayhan Riyadhul Jinan</p>
-
-                        <p class="mb-1 fw-bold small">Prodi :</p>
-                        <p class="text-muted mb-3 small">Teknik Informatika</p>
-
-                        <p class="mb-1 fw-bold small">Golongan :</p>
-                        <p class="text-muted mb-3 small">C</p>
-
-                        <p class="mb-1 fw-bold small">Email Kampus :</p>
-                        <p class="text-muted mb-3 small">rayhan@jti.polije.ac.id</p>
-
-                        <p class="mb-1 fw-bold small">Semester :</p>
-                        <p class="text-muted mb-3 small">2</p>
-                    </div>
-
-                    <!-- Sisi Kanan: Detail Izin & Lampiran -->
-                    <div class="col-md-6 ps-4">
-                        <p class="mb-1 fw-bold small">Keterangan Izin :</p>
-                        <p class="text-muted mb-3 small">Sakit</p>
-
-                        <p class="mb-1 fw-bold small text-primary">Lampiran (Foto Bukti) :</p>
-                        <!-- Menampilkan lampiran foto sesuai permintaan (JPG/JPEG) -->
-                        <div class="border rounded-3 p-2 bg-light text-center">
-                            <img src="../../assets/img/contoh-surat.jpg" class="img-fluid rounded-2 mb-2" alt="Bukti Surat">
-                            <br>
-                            <a href="../../assets/img/contoh-surat.jpg" target="_blank" class="small text-decoration-none">Buka Gambar Penuh</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-end mt-4 gap-2">
-                    <button class="btn btn-danger px-4 rounded-3" onclick="confirmAction('tolak')">Tolak</button>
-                    <button class="btn btn-primary px-4 rounded-3" onclick="confirmAction('terima')">Terima</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<?php include '../layout/footer.php'; ?>
+</body>
+</html>

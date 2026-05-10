@@ -1,53 +1,136 @@
-<?php include '../layout/header.php'; ?>
-<div class="d-flex bg-light">
-    <?php include '../layout/sidebar_admin.php'; ?>
-    
-    <div class="flex-grow-1" style="margin-left: 250px;">
-        <div class="bg-white p-3 d-flex justify-content-between align-items-center shadow-sm">
-            <h5 class="mb-0"><i class="bi bi-clock-history"></i> Riwayat</h5>
-            <div class="fw-bold"><i class="bi bi-person-circle"></i> Admin</div>
-        </div>
+<?php
+require_once '../../autoload.php';
+session_start();
 
-        <div class="p-4">
-            <div class="card border-0 shadow-sm rounded-4 p-4">
-                <table class="table table-bordered text-center align-middle small">
-                    <thead class="table-secondary">
-                        <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Prodi</th>
-                            <th>Gol</th>
-                            <th>NIM</th>
-                            <th>Semester</th>
-                            <th>Surat</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Rayhan Riyadhul Jinan</td>
-                            <td>Teknik Informatika</td>
-                            <td>C</td>
-                            <td>E41250835</td>
-                            <td>2</td>
-                            <td><a href="#" class="text-danger"><i class="bi bi-file-pdf"></i> pdf</a></td>
-                            <td><span class="badge bg-success w-75 py-2">Terverifikasi</span></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Bimo Abi</td>
-                            <td>Teknik Informatika</td>
-                            <td>C</td>
-                            <td>E41250904</td>
-                            <td>2</td>
-                            <td><a href="#" class="text-danger"><i class="bi bi-file-pdf"></i> pdf</a></td>
-                            <td><span class="badge bg-danger w-75 py-2">Ditolak</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+use Config\Database;
+
+// 1. Proteksi Halaman Admin
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../auth/login.php");
+    exit();
+}
+
+$db = (new Database())->getConnection();
+
+// 2. Logika Query Data Riwayat
+try {
+    // Kita mengambil data yang statusnya BUKAN 'proses' (berarti sudah Disetujui atau Ditolak)
+    $query = "SELECT p.*, u.nama, pr.nama_prodi, g.nama_golongan 
+              FROM pengajuan_surat p
+              JOIN detail_pengguna dp ON p.nim = dp.nomor_induk
+              JOIN pengguna u ON dp.id_pengguna = u.id
+              LEFT JOIN prodi pr ON dp.id_prodi = pr.id
+              LEFT JOIN golongan g ON dp.id_golongan = g.id
+              WHERE p.status IN ('disetujui', 'ditolak')
+              ORDER BY p.tanggal_pengajuan DESC";
+
+    $stmt = $db->query($query);
+    $riwayat_surat = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Gagal mengambil data riwayat: " . $e->getMessage());
+}
+
+// Konfigurasi Layout
+$current_page = 'riwayat';
+$page_title = 'Riwayat Verifikasi';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Admin - SI-JTI</title>
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6;">
+
+    <div class="wrapper" style="display: flex;">
+        <?php include '../layouts/sidebar_admin.php'; ?>
+
+        <div class="main-container" style="flex-grow: 1; min-height: 100vh;">
+            <?php include '../layouts/topbar_admin.php'; ?>
+
+            <div class="content" style="padding: 30px;">
+                <div class="card-history" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    
+                    <div style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-history" style="color: #00a2ed; font-size: 1.5rem;"></i>
+                        <h4 style="margin: 0; color: #333;">Riwayat Keputusan Surat</h4>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
+                            <thead>
+                                <tr style="background: #f8f9fa; text-align: left; border-bottom: 2px solid #eee;">
+                                    <th style="padding: 15px; color: #666; font-size: 0.9rem;">No</th>
+                                    <th style="padding: 15px; color: #666; font-size: 0.9rem;">Nama Mahasiswa</th>
+                                    <th style="padding: 15px; color: #666; font-size: 0.9rem;">Prodi</th>
+                                    <th style="padding: 15px; color: #666; font-size: 0.9rem;">Gol</th>
+                                    <th style="padding: 15px; color: #666; font-size: 0.9rem;">NIM</th>
+                                    <th style="padding: 15px; color: #666; font-size: 0.9rem;">Surat</th>
+                                    <th style="padding: 15px; color: #666; font-size: 0.9rem;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (count($riwayat_surat) > 0): ?>
+                                    <?php $no = 1; foreach ($riwayat_surat as $row): ?>
+                                        <tr style="border-bottom: 1px solid #eee; transition: 0.3s;">
+                                            <td style="padding: 15px; font-size: 0.9rem;"><?= $no++ ?>.</td>
+                                            <td style="padding: 15px; font-weight: 600; color: #333; font-size: 0.9rem;"><?= htmlspecialchars($row['nama']) ?></td>
+                                            <td style="padding: 15px; font-size: 0.85rem; color: #555;"><?= htmlspecialchars($row['nama_prodi']) ?></td>
+                                            <td style="padding: 15px; text-align: center; font-size: 0.85rem;"><?= htmlspecialchars($row['nama_golongan'] ?? '-') ?></td>
+                                            <td style="padding: 15px; font-family: monospace; font-size: 0.9rem;"><?= htmlspecialchars($row['nim']) ?></td>
+                                            <td style="padding: 15px; text-align: center;">
+                                                <?php if($row['file_path']): ?>
+                                                    <a href="../../assets/uploads/surat/<?= $row['file_path'] ?>" target="_blank" style="color: #e74c3c; text-decoration: none;">
+                                                        <i class="fas fa-file-pdf"></i> .pdf
+                                                    </a>
+                                                <?php else: ?>
+                                                    <span style="color: #ccc;">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td style="padding: 15px;">
+                                                <?php 
+                                                    $status = strtolower($row['status']);
+                                                    $color = ($status == 'disetujui') ? '#28a745' : '#dc3545';
+                                                    $label = ($status == 'disetujui') ? 'Terverifikasi' : 'Ditolak';
+                                                ?>
+                                                <span style="background: <?= $color ?>; color: white; padding: 5px 12px; border-radius: 5px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; display: inline-block; min-width: 90px; text-align: center;">
+                                                    <?= $label ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 50px; color: #999; font-style: italic;">
+                                            <i class="fas fa-history" style="font-size: 2rem; display: block; margin-bottom: 10px; opacity: 0.3;"></i>
+                                            Belum ada riwayat keputusan surat.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<?php include '../layout/footer.php'; ?>
+
+    <script>
+        // Notifikasi Sukses jika baru saja memproses surat
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('pesan') === 'berhasil') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Status surat telah diperbarui.',
+                confirmButtonColor: '#00a2ed'
+            });
+        }
+    </script>
+</body>
+</html>

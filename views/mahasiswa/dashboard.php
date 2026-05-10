@@ -3,7 +3,7 @@ require_once '../../autoload.php';
 session_start();
 
 // 1. Keamanan: Cek login & peran
-if (!isset($_SESSION['user_id']) || $_SESSION['peran'] !== 'mahasiswa') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'mahasiswa') {
     header("Location: ../auth/login.php");
     exit();
 }
