@@ -49,14 +49,14 @@ if (isset($_GET['action'])) {
             die("Registrasi Gagal: " . $e->getMessage());
         }
     }
-    // --- LOGIKA LOGIN (Cerdas Path) ---
+    // --- LOGIKA LOGIN ADMIN & MAHASISWA ---
     if ($_GET['action'] == 'login') {
         $identifier = Validator::sanitize($_POST['identifier']);
         $password = $_POST['password'];
 
-        $query = "SELECT p.* FROM pengguna p 
-                  LEFT JOIN detail_pengguna d ON p.id = d.id_pengguna 
-                  WHERE p.email = ? OR d.nomor_induk = ?";
+        $query = "SELECT p.*, d.nomor_induk FROM pengguna p 
+              LEFT JOIN detail_pengguna d ON p.id = d.id_pengguna 
+              WHERE p.email = ? OR d.nomor_induk = ?";
 
         $stmt = $db->prepare($query);
         $stmt->execute([$identifier, $identifier]);
@@ -65,17 +65,18 @@ if (isset($_GET['action'])) {
         if ($user && password_verify($password, $user['kata_sandi'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['nama']    = $user['nama'];
-            $_SESSION['role']    = strtolower($user['peran']);
+            $_SESSION['role']    = strtolower($user['peran']); // 'admin' atau 'mahasiswa'
+            $_SESSION['nim']     = $user['nomor_induk'];
 
-            $current_dir = dirname($_SERVER['PHP_SELF']);
-            $project_root = str_replace('/process', '', $current_dir);
-            // Redirect dengan URL lengkap: /NAMA_FOLDER/views/role/dashboard.php
-            header("Location: " . $project_root . "/views/" . $_SESSION['role'] . "/dashboard.php");
+            // Menentukan folder tujuan berdasarkan peran
+            $roleFolder = $_SESSION['role'];
+
+            // Redirect otomatis (contoh: /PROYEK-SI-JTI/views/admin/dashboard.php)
+            $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
+            header("Location: " . $project_root . "/views/" . $roleFolder . "/dashboard.php");
             exit();
         } else {
-            // Berlaku juga untuk redirect gagal
-            $current_dir = dirname($_SERVER['PHP_SELF']);
-            $project_root = str_replace('/process', '', $current_dir);
+            $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
             header("Location: " . $project_root . "/views/auth/login.php?status=failed");
             exit();
         }
