@@ -76,11 +76,11 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
             </div>
 
             <div class="form-group">
-                <label>Daftar Sebagai:</label>
-                <select name="role" class="form-control" required>
-                    <option value="">-- Pilih Role --</option>
+                <label>Login Sebagai:</label>
+                <select name="peran" required>
                     <option value="mahasiswa">Mahasiswa</option>
                     <option value="dosen">Dosen</option>
+                    <option value="admin">Admin</option>
                 </select>
             </div>
 

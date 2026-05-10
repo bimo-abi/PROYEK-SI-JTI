@@ -1,66 +1,150 @@
-<?php include '../layout/header.php'; ?>
-<div class="d-flex bg-light">
-    <?php include '../layout/sidebar_dosen.php'; ?>
-    
-    <div class="flex-grow-1">
-        <!-- Top Navbar -->
-        <div class="bg-white p-3 d-flex justify-content-between align-items-center shadow-sm">
-            <h5 class="mb-0"><i class="bi bi-house-door"></i> Dashboard</h5>
-            <div class="fw-bold"><i class="bi bi-person-circle"></i> Dosen</div>
-        </div>
+<?php
+require_once '../../autoload.php';
+session_start();
 
-        <div class="p-4">
-            <!-- Stat Cards (Sesuai Gambar) -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
-                        <img src="../../assets/img/icon-sakit.png" width="50" class="me-3">
-                        <div>
-                            <h2 class="mb-0 fw-bold">0</h2>
-                            <p class="small text-muted mb-0">Surat Izin Sakit</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
-                        <img src="../../assets/img/icon-kampus.png" width="50" class="me-3">
-                        <div>
-                            <h2 class="mb-0 fw-bold">0</h2>
-                            <p class="small text-muted mb-0">Surat Izin Kegiatan Kampus</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center">
-                        <img src="../../assets/img/icon-luar.png" width="50" class="me-3">
-                        <div>
-                            <h2 class="mb-0 fw-bold">0</h2>
-                            <p class="small text-muted mb-0">Surat Izin Kegiatan Luar</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'dosen') {
+    header("Location: ../auth/login.php");
+    exit();
+}
+?>
 
-            <div class="row">
-                <!-- Chart / Placeholder Area -->
-                <div class="col-md-8">
-                    <div class="card border-0 shadow-sm rounded-4 p-4" style="height: 400px;">
-                        <!-- Tempat Grafik atau Pesan Selamat Datang -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Dashboard Dosen</title>
+
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- Sidebar -->
+    <?php include '../layouts/sidebar_dosen.php'; ?>
+
+    <div class="main-container">
+
+        <!-- Topbar -->
+        <?php include '../layouts/topbar_dosen.php'; ?>
+
+        <!-- Content -->
+        <div class="content">
+
+            <div class="main-grid">
+
+                <!-- LEFT -->
+                <div class="left-column">
+
+                    <div class="section-title">
+                        Dashboard
                     </div>
-                </div>
-                <!-- Notifikasi -->
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 p-3">
-                        <h6><i class="bi bi-bell"></i> Notifikasi Terbaru</h6>
-                        <hr>
-                        <ul class="list-unstyled small">
-                            <li class="mb-2"><strong>1. IZIN MASUK</strong> - Rayhan..</li>
-                            <li class="mb-2"><strong>1. IZIN MASUK</strong> - Rayhan..</li>
+
+                    <!-- Statistik -->
+                    <div class="stats-grid">
+
+                        <div class="stat-card blue">
+                            Surat Izin Sakit
+                            <span>12</span>
+                        </div>
+
+                        <div class="stat-card green">
+                            Izin Kegiatan Kampus
+                            <span>8</span>
+                        </div>
+
+                        <div class="stat-card orange">
+                            Izin Kegiatan Luar
+                            <span>5</span>
+                        </div>
+
+                        <div class="stat-card red">
+                            Menunggu Verifikasi
+                            <span>3</span>
+                        </div>
+
+                    </div>
+
+                    <!-- Notifikasi -->
+                    <div class="notif-box">
+
+                        <h4>Notifikasi Terbaru</h4>
+
+                        <ul>
+
+                            <li>
+                                Rayhan mengajukan surat izin sakit
+                            </li>
+
+                            <li>
+                                Vira mengajukan kegiatan kampus
+                            </li>
+
+                            <li>
+                                2 surat menunggu verifikasi
+                            </li>
+
                         </ul>
+
                     </div>
+
                 </div>
+
+                <!-- RIGHT -->
+                <div class="right-column">
+
+                    <!-- Profile -->
+                    <div class="profile-card">
+
+                        <div class="avatar-wrapper">
+                            <img src="../../assets/img/avatar.png" alt="Dosen">
+                        </div>
+
+                        <p class="profile-name">
+                            DOSEN
+                        </p>
+
+                        <p class="academic-year">
+                            Sistem Informasi Surat
+                        </p>
+
+                    </div>
+
+                    <!-- Info -->
+                    <div class="info-card">
+
+                        <div class="info-header">
+                            <h5>Informasi Dosen</h5>
+                        </div>
+
+                        <div class="info-body">
+
+                            <p><strong>Status :</strong> Aktif</p>
+
+                            <p><strong>Role :</strong> Dosen</p>
+
+                            <p><strong>Total Surat :</strong> 25</p>
+
+                            <p><strong>Verifikasi :</strong> 18 selesai</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
-<?php include '../layout/footer.php'; ?>
+
+</body>
+</html>
