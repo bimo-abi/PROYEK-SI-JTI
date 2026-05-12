@@ -98,14 +98,13 @@ $current_page = 'daftar_pengajuan';
                                                     <?= htmlspecialchars($status) ?>
                                                 </span>
                                             </td>
-                                            <td style="padding: 15px; display: flex; gap: 10px;">
+                                            <td style="padding: 15px;">
                                                 <a href="detail_pengajuan.php?id=<?= $surat['id'] ?>" style="color: #666; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </a>
 
                                                 <?php if (!empty($surat['file_surat'])): ?>
-                                                    <a href="../../assets/uploads/pdf/<?= $surat['file_surat'] ?>" 
-                                                       style="color: #00a2ed; text-decoration: none; font-weight: 600; font-size: 0.85rem;" download>
+                                                    <a href="../../assets/uploads/pdf/<?= $surat['file_surat'] ?>" style="color: #00a2ed; text-decoration: none; font-weight: 600; font-size: 0.85rem; margin-left: 15px;" download>
                                                         <i class="fas fa-download"></i> Unduh
                                                     </a>
                                                 <?php endif; ?>
@@ -139,4 +138,5 @@ $current_page = 'daftar_pengajuan';
         }
     </script>
 </body>
+
 </html>
