@@ -17,7 +17,7 @@ if (!$id_pengajuan) {
 }
 
 // Ambil detail surat
-$query = "SELECT * FROM pengajuan_surat WHERE id = ?";
+$query = "SELECT * FROM pengajuan_surat WHERE id_pengajuan = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$id_pengajuan]);
 $surat = $stmt->fetch(PDO::FETCH_ASSOC);
