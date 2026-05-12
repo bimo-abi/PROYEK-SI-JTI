@@ -1,8 +1,6 @@
 <?php
 // Logika pengambilan foto profil yang sinkron dengan session
-$foto_topbar = !empty($_SESSION['foto_profil'])
-    ? "../../assets/img/profiles/" . $_SESSION['foto_profil']
-    : "../../assets/img/avatar.png";
+$foto_topbar = "../../assets/img/avatar.png";
 ?>
 
 <div class="topbar" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">

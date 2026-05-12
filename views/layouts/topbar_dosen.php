@@ -13,7 +13,7 @@ $foto_topbar = !empty($_SESSION['foto_profil'])
 
     <div class="topbar-user" style="display: flex; align-items: center; gap: 12px;">
         <div class="user-info" style="display: flex; align-items: center; gap: 10px;">
-            <!-- Nama Mahasiswa -->
+            <!-- Nama Dosen -->
             <span style="font-weight: 500; color: #555; font-size: 0.9rem;">
                 <?= htmlspecialchars($_SESSION['nama'] ?? 'user') ?>
             </span>

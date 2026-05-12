@@ -6,19 +6,22 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'dosen') {
     header("Location: ../auth/login.php");
     exit();
 }
+
+$current_page = 'dashboard';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Dosen</title>
 
-    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/dashboard_dosen.css">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
@@ -36,105 +39,61 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'dosen') {
         <!-- Content -->
         <div class="content">
 
-            <div class="main-grid">
+            <!-- Card Statistik -->
+            <div class="card-container">
 
-                <!-- LEFT -->
-                <div class="left-column">
+                <!-- Card 1 -->
+                <div class="card-stat">
+                    <img src="../../assets/img/mail.png" alt="Mail">
 
-                    <div class="section-title">
-                        Dashboard
+                    <div class="card-text">
+                        <h2>0</h2>
+                        <p>Surat izin sakit</p>
                     </div>
+                </div>
 
-                    <!-- Statistik -->
-                    <div class="stats-grid">
+                <!-- Card 2 -->
+                <div class="card-stat">
+                    <img src="../../assets/img/mail.png" alt="Mail">
 
-                        <div class="stat-card blue">
-                            Surat Izin Sakit
-                            <span>12</span>
-                        </div>
-
-                        <div class="stat-card green">
-                            Izin Kegiatan Kampus
-                            <span>8</span>
-                        </div>
-
-                        <div class="stat-card orange">
-                            Izin Kegiatan Luar
-                            <span>5</span>
-                        </div>
-
-                        <div class="stat-card red">
-                            Menunggu Verifikasi
-                            <span>3</span>
-                        </div>
-
+                    <div class="card-text">
+                        <h2>0</h2>
+                        <p>Surat izin kegiatan kampus</p>
                     </div>
+                </div>
 
-                    <!-- Notifikasi -->
-                    <div class="notif-box">
+                <!-- Card 3 -->
+                <div class="card-stat">
+                    <img src="../../assets/img/mail.png" alt="Mail">
 
-                        <h4>Notifikasi Terbaru</h4>
-
-                        <ul>
-
-                            <li>
-                                Rayhan mengajukan surat izin sakit
-                            </li>
-
-                            <li>
-                                Vira mengajukan kegiatan kampus
-                            </li>
-
-                            <li>
-                                2 surat menunggu verifikasi
-                            </li>
-
-                        </ul>
-
+                    <div class="card-text">
+                        <h2>0</h2>
+                        <p>Surat izin kegiatan luar</p>
                     </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom -->
+            <div class="bottom-container">
+
+                <!-- Box Besar -->
+                <div class="big-box">
 
                 </div>
 
-                <!-- RIGHT -->
-                <div class="right-column">
+                <!-- Notifikasi -->
+                <div class="notif-box">
 
-                    <!-- Profile -->
-                    <div class="profile-card">
+                    <h3>
+                        <i class="far fa-bell"></i>
+                        Notifikasi Terbaru
+                    </h3>
 
-                        <div class="avatar-wrapper">
-                            <img src="../../assets/img/avatar.png" alt="Dosen">
-                        </div>
-
-                        <p class="profile-name">
-                            DOSEN
-                        </p>
-
-                        <p class="academic-year">
-                            Sistem Informasi Surat
-                        </p>
-
-                    </div>
-
-                    <!-- Info -->
-                    <div class="info-card">
-
-                        <div class="info-header">
-                            <h5>Informasi Dosen</h5>
-                        </div>
-
-                        <div class="info-body">
-
-                            <p><strong>Status :</strong> Aktif</p>
-
-                            <p><strong>Role :</strong> Dosen</p>
-
-                            <p><strong>Total Surat :</strong> 25</p>
-
-                            <p><strong>Verifikasi :</strong> 18 selesai</p>
-
-                        </div>
-
-                    </div>
+                    <div class="notif-item"></div>
+                    <div class="notif-item"></div>
+                    <div class="notif-item"></div>
+                    <div class="notif-item"></div>
 
                 </div>
 
