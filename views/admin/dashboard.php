@@ -1,13 +1,11 @@
 <?php
 require_once '../../autoload.php';
 session_start();
-
-// 1. KEAMANAN: Wajib Admin
+//KEAMANAN: Wajib Admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit();
 }
-
 use Config\Database;
 
 $db = (new Database())->getConnection();
@@ -38,7 +36,6 @@ try {
 
 $current_page = 'dashboard';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 

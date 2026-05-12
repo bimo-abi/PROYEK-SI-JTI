@@ -8,10 +8,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/login.php");
     exit();
 }
-
 $db = (new Database())->getConnection();
 $user_id = $_SESSION['user_id'];
-
 try {
     // 1. Ambil NIM dari tabel detail_pengguna
     $query_nim = "SELECT nomor_induk FROM detail_pengguna WHERE id_pengguna = ?";
@@ -25,8 +23,7 @@ try {
 
     $nim = $res_nim['nomor_induk'];
 
-    // 2. Ambil data pengajuan (Sesuaikan query jika tidak ada tabel jenis_surat)
-    // Jika kolom di database adalah 'keperluan', kita gunakan itu.
+    // 2. Ambil data pengajuan - Menggunakan 'file_surat' sesuai perubahan di surat_process.php
     $query = "SELECT * FROM pengajuan_surat WHERE nim = ? ORDER BY tanggal_pengajuan DESC";
     $stmt = $db->prepare($query);
     $stmt->execute([$nim]);
@@ -82,31 +79,36 @@ $current_page = 'daftar_pengajuan';
                                         <tr style="border-bottom: 1px solid #eee;">
                                             <td style="padding: 15px;"><?= date('d M Y', strtotime($surat['tanggal_pengajuan'])) ?></td>
                                             <td style="padding: 15px; font-weight: 600;">
-                                                <?= htmlspecialchars($surat['jenis_surat']) ?>
+                                                <?= htmlspecialchars($surat['jenis_surat'] ?? 'Tidak Diketahui') ?>
                                             </td>
                                             <td style="padding: 15px; color: #777;">
                                                 <?php
-                                                // PERBAIKAN: Gunakan key 'keperluan' dan cek nullability
                                                 $text = $surat['keperluan'] ?? '-';
                                                 echo htmlspecialchars(substr($text, 0, 40));
-                                                echo (strlen($text) > 40) ? '...' : '';
+                                                if (strlen($text) > 40) echo '...';
                                                 ?>
                                             </td>
                                             <td style="padding: 15px;">
                                                 <?php
-                                                $status = strtolower($surat['status']);
-                                                $bg = '#ffc107';
-                                                if ($status == 'disetujui') $bg = '#28a745';
-                                                elseif ($status == 'ditolak') $bg = '#dc3545';
+                                                $status = strtolower($surat['status'] ?? 'menunggu');
+                                                // Warna label sesuai Figma: Menunggu (Kuning), Terverifikasi (Biru), Ditolak (Merah)
+                                                $bg = ($status == 'disetujui' || $status == 'terverifikasi') ? '#00a2ed' : (($status == 'ditolak') ? '#dc3545' : '#ffc107');
                                                 ?>
                                                 <span style="background: <?= $bg ?>; color: white; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; text-transform: uppercase;">
                                                     <?= htmlspecialchars($status) ?>
                                                 </span>
                                             </td>
-                                            <td style="padding: 15px;">
-                                                <a href="detail_pengajuan.php?id=<?php echo $surat['id']; ?>" style="color: #00a2ed; text-decoration: none; font-weight: 600;">
+                                            <td style="padding: 15px; display: flex; gap: 10px;">
+                                                <a href="detail_pengajuan.php?id=<?= $surat['id'] ?>" style="color: #666; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </a>
+
+                                                <?php if (!empty($surat['file_surat'])): ?>
+                                                    <a href="../../assets/uploads/pdf/<?= $surat['file_surat'] ?>" 
+                                                       style="color: #00a2ed; text-decoration: none; font-weight: 600; font-size: 0.85rem;" download>
+                                                        <i class="fas fa-download"></i> Unduh
+                                                    </a>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -127,7 +129,6 @@ $current_page = 'daftar_pengajuan';
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        // Sesuaikan dengan status=success dari surat_process.php
         if (urlParams.get('status') === 'success') {
             Swal.fire({
                 title: 'Berhasil!',
@@ -138,5 +139,4 @@ $current_page = 'daftar_pengajuan';
         }
     </script>
 </body>
-
 </html>

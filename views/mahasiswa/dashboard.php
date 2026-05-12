@@ -51,11 +51,9 @@ $current_page = 'dashboard';
 
 <body>
     <div class="wrapper">
-        <!-- 1. PEMANGGILAN SIDEBAR CUKUP DI SINI -->
         <?php include '../layouts/sidebar.php'; ?>
 
         <div class="main-container">
-            <!-- 2. PEMANGGILAN TOPBAR CUKUP DI SINI -->
             <?php include '../layouts/topbar.php'; ?>
 
             <div class="content">

@@ -18,7 +18,6 @@ if (!$id_pengajuan) {
     header("Location: surat_masuk.php");
     exit();
 }
-
 // 3. Query Data Lengkap
 try {
     $query = "SELECT p.*, u.nama, u.email, dp.nomor_induk, pr.nama_prodi, g.nama_golongan, j.nama_surat 

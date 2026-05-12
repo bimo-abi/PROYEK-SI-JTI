@@ -7,8 +7,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'mahasiswa') {
     header("Location: ../auth/login.php");
     exit();
 }
-
-// Penanda halaman aktif
 $current_page = 'pengajuan';
 ?>
 
@@ -31,63 +29,41 @@ $current_page = 'pengajuan';
 </head>
 
 <body>
-
     <div class="wrapper">
-
         <!-- SIDEBAR -->
         <?php include '../layouts/sidebar.php'; ?>
-
         <div class="main-container">
-
             <!-- TOPBAR -->
             <?php include '../layouts/topbar.php'; ?>
-
             <div class="content">
-
                 <div class="section-title">
                     <i class="fa-solid fa-envelope"></i>
                     Pengajuan Surat
                 </div>
-
                 <!-- BOX -->
                 <div class="selection-box text-center">
-
                     <h3>Pilih Jenis Surat</h3>
-
                     <p>
                         Silakan pilih jenis surat yang ingin Anda ajukan
                     </p>
-
                     <!-- FORM -->
                     <form action="form_pengajuan.php" method="GET" class="surat-grid-wrapper">
-
                         <!-- CARD CONTAINER -->
                         <div class="options-container">
-
                             <!-- SAKIT -->
                             <label class="surat-option">
-
                                 <input type="radio" name="jenis" value="sakit" required>
-
                                 <div class="option-card">
-
                                     <i class="fa-solid fa-notes-medical"></i>
-
                                     <p>
                                         Surat Izin Sakit
                                     </p>
-
                                 </div>
-
                             </label>
-
                             <!-- KAMPUS -->
                             <label class="surat-option">
-
                                 <input type="radio" name="jenis" value="kampus">
-
                                 <div class="option-card">
-
                                     <i class="fa-solid fa-building-columns"></i>
 
                                     <p>
@@ -95,9 +71,7 @@ $current_page = 'pengajuan';
                                     </p>
 
                                 </div>
-
                             </label>
-
                             <!-- LUAR -->
                             <label class="surat-option">
 
