@@ -12,17 +12,18 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 $db = (new Database())->getConnection();
 
-// 2. Logika Query Data Riwayat
 try {
-    // Kita mengambil data yang statusnya BUKAN 'proses' (berarti sudah Disetujui atau Ditolak)
-    $query = "SELECT p.*, u.nama, pr.nama_prodi, g.nama_golongan 
+    $query = "SELECT p.*, 
+                     u.nama, 
+                     pr.nama_prodi, 
+                     g.nama_golongan 
               FROM pengajuan_surat p
-              JOIN detail_pengguna dp ON p.nim = dp.nomor_induk
-              JOIN pengguna u ON dp.id_pengguna = u.id
+              LEFT JOIN pengguna u ON u.email LIKE CONCAT(p.nim, '%')
+              LEFT JOIN detail_pengguna dp ON p.nim = dp.nomor_induk
               LEFT JOIN prodi pr ON dp.id_prodi = pr.id
               LEFT JOIN golongan g ON dp.id_golongan = g.id
-              WHERE p.status IN ('disetujui', 'ditolak')
-              ORDER BY p.tanggal_pengajuan DESC";
+              WHERE p.status IN ('disetujui', 'ditolak', 'terverifikasi')
+              ORDER BY p.id_pengajuan DESC";
 
     $stmt = $db->query($query);
     $riwayat_surat = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -37,6 +38,7 @@ $page_title = 'Riwayat Verifikasi';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,6 +47,7 @@ $page_title = 'Riwayat Verifikasi';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6;">
 
     <div class="wrapper" style="display: flex;">
@@ -55,7 +58,7 @@ $page_title = 'Riwayat Verifikasi';
 
             <div class="content" style="padding: 30px;">
                 <div class="card-history" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    
+
                     <div style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-history" style="color: #00a2ed; font-size: 1.5rem;"></i>
                         <h4 style="margin: 0; color: #333;">Riwayat Keputusan Surat</h4>
@@ -76,7 +79,8 @@ $page_title = 'Riwayat Verifikasi';
                             </thead>
                             <tbody>
                                 <?php if (count($riwayat_surat) > 0): ?>
-                                    <?php $no = 1; foreach ($riwayat_surat as $row): ?>
+                                    <?php $no = 1;
+                                    foreach ($riwayat_surat as $row): ?>
                                         <tr style="border-bottom: 1px solid #eee; transition: 0.3s;">
                                             <td style="padding: 15px; font-size: 0.9rem;"><?= $no++ ?>.</td>
                                             <td style="padding: 15px; font-weight: 600; color: #333; font-size: 0.9rem;"><?= htmlspecialchars($row['nama']) ?></td>
@@ -84,8 +88,8 @@ $page_title = 'Riwayat Verifikasi';
                                             <td style="padding: 15px; text-align: center; font-size: 0.85rem;"><?= htmlspecialchars($row['nama_golongan'] ?? '-') ?></td>
                                             <td style="padding: 15px; font-family: monospace; font-size: 0.9rem;"><?= htmlspecialchars($row['nim']) ?></td>
                                             <td style="padding: 15px; text-align: center;">
-                                                <?php if($row['file_path']): ?>
-                                                    <a href="../../assets/uploads/surat/<?= $row['file_path'] ?>" target="_blank" style="color: #e74c3c; text-decoration: none;">
+                                                <?php if ($row['file_path']): ?>
+                                                    <a href="../../assets/uploads/pdf/<?= $row['file_path'] ?>" target="_blank" style="color: #e74c3c; text-decoration: none;">
                                                         <i class="fas fa-file-pdf"></i> .pdf
                                                     </a>
                                                 <?php else: ?>
@@ -93,10 +97,17 @@ $page_title = 'Riwayat Verifikasi';
                                                 <?php endif; ?>
                                             </td>
                                             <td style="padding: 15px;">
-                                                <?php 
-                                                    $status = strtolower($row['status']);
-                                                    $color = ($status == 'disetujui') ? '#28a745' : '#dc3545';
-                                                    $label = ($status == 'disetujui') ? 'Terverifikasi' : 'Ditolak';
+                                                <?php
+                                                $status = strtolower($row['status']);
+
+                                                // Tambahkan 'terverifikasi' ke dalam pengecekan status sukses
+                                                if ($status == 'disetujui' || $status == 'terverifikasi') {
+                                                    $color = '#28a745'; // Hijau
+                                                    $label = 'Terverifikasi';
+                                                } else {
+                                                    $color = '#dc3545'; // Merah
+                                                    $label = 'Ditolak';
+                                                }
                                                 ?>
                                                 <span style="background: <?= $color ?>; color: white; padding: 5px 12px; border-radius: 5px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; display: inline-block; min-width: 90px; text-align: center;">
                                                     <?= $label ?>
@@ -133,4 +144,5 @@ $page_title = 'Riwayat Verifikasi';
         }
     </script>
 </body>
+
 </html>

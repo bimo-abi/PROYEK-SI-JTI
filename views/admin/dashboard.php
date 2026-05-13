@@ -83,7 +83,7 @@ $current_page = 'dashboard';
                                 <img src="<?= $foto_sidebar ?? '../../assets/img/avatar.png' ?>?t=<?= time() ?>" alt="Admin Avatar">
                             </div>
                             <p class="profile-name"><?= htmlspecialchars($admin['nama']) ?></p>
-                            <p class="profile-role">Administrator</p>
+                            <p style="color: #00a2ed; font-weight: bold; font-size: 0.8rem; margin-top: -10px;">ADMINISTRATOR</p>
                         </div>
 
                         <div class="info-card">
