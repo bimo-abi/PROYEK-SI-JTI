@@ -39,8 +39,8 @@ $stmtStats = $db->prepare($queryStats);
 $stmtStats->execute([$nim_mhs]);
 $stats = $stmtStats->fetch(PDO::FETCH_ASSOC);
 
-// 3. Query Notifikasi Terbaru (maksimal 5)
-$queryNotif = "SELECT pesan, created_at FROM notifikasi WHERE nim = ? ORDER BY created_at DESC LIMIT 5";
+// 3. Query Notifikasi Terbaru (maksimal 5, hanya yang belum dibaca)
+$queryNotif = "SELECT pesan, created_at FROM notifikasi WHERE nim = ? AND is_read = 0 ORDER BY created_at DESC LIMIT 5";
 $stmtNotif = $db->prepare($queryNotif);
 $stmtNotif->execute([$nim_mhs]);
 $notifs_db = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);

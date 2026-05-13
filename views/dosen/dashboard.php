@@ -22,19 +22,21 @@ $stmt = $db->prepare($queryProfil);
 $stmt->execute([$user_id]);
 $dosen = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// 2. Statistik (Surat Masuk Berdasarkan Jenis)
+// 2. Statistik (Total Surat Berdasarkan Jenis)
 $stats = [
-    'Sakit' => 0,
-    'Kampus' => 0,
-    'Luar' => 0
+    'sakit' => 0,
+    'kampus' => 0,
+    'luar_kampus' => 0
 ];
 
-$queryStats = "SELECT jenis_surat, COUNT(*) as total FROM pengajuan_surat WHERE status = 'menunggu' GROUP BY jenis_surat";
+// Kita hitung semua surat yang sudah diverifikasi (karena dosen di halaman Data Mahasiswa hanya melihat yang terverifikasi)
+$queryStats = "SELECT jenis_surat, COUNT(*) as total FROM pengajuan_surat WHERE status IN ('disetujui', 'terverifikasi') GROUP BY jenis_surat";
 $resStats = $db->query($queryStats)->fetchAll(PDO::FETCH_ASSOC);
 foreach ($resStats as $s) {
-    if (stripos($s['jenis_surat'], 'Sakit') !== false) $stats['Sakit'] += $s['total'];
-    elseif (stripos($s['jenis_surat'], 'Kegiatan') !== false) $stats['Kampus'] += $s['total'];
-    else $stats['Luar'] += $s['total'];
+    $type = strtolower($s['jenis_surat']);
+    if (isset($stats[$type])) {
+        $stats[$type] = $s['total'];
+    }
 }
 
 // 3. Query Notifikasi Baru (Belum dibaca oleh dosen)
@@ -71,9 +73,9 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
                         <div class="section-title"><i class="fas fa-home" style="margin-right: 10px;"></i> Dashboard Dosen</div>
                         
                         <div class="stats-grid">
-                            <div class="stat-card blue"> Surat Izin Sakit <span><?= $stats['Sakit'] ?></span></div>
-                            <div class="stat-card green"> Kegiatan Kampus <span><?= $stats['Kampus'] ?></span></div>
-                            <div class="stat-card orange"> Kegiatan Luar <span><?= $stats['Luar'] ?></span></div>
+                            <div class="stat-card blue"> Izin Sakit <span><?= $stats['sakit'] ?></span></div>
+                            <div class="stat-card green"> Kegiatan Kampus <span><?= $stats['kampus'] ?></span></div>
+                            <div class="stat-card orange"> Kegiatan Luar <span><?= $stats['luar_kampus'] ?></span></div>
                         </div>
 
                         <div class="notif-box" style="margin-top: 30px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
