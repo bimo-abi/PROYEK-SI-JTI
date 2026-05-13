@@ -2,12 +2,28 @@
 require_once '../../autoload.php';
 session_start();
 
+use Config\Database;
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'dosen') {
     header("Location: ../auth/login.php");
     exit();
 }
 
+$db = (new Database())->getConnection();
 $current_page = 'data_mahasiswa';
+
+// Ambil data pengajuan yang sudah diproses (Disetujui/Ditolak/Terverifikasi)
+$query = "SELECT p.*, u.nama, pr.nama_prodi, g.nama_golongan, d.semester
+          FROM pengajuan_surat p
+          JOIN detail_pengguna d ON p.nim = d.nomor_induk
+          JOIN pengguna u ON d.id_pengguna = u.id
+          LEFT JOIN prodi pr ON d.id_prodi = pr.id
+          LEFT JOIN golongan g ON d.id_golongan = g.id
+          WHERE p.status IN ('disetujui', 'ditolak', 'terverifikasi')
+          ORDER BY p.tanggal_pengajuan DESC";
+
+$stmt = $db->query($query);
+$riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +44,7 @@ $current_page = 'data_mahasiswa';
                 <div class="card-container" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h4><i class="fas fa-users" style="color: #00a2ed;"></i> Data Mahasiswa</h4>
-                        <input type="text" placeholder="Cari mahasiswa..." style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; width: 250px;">
+                        <input type="text" id="searchInput" placeholder="Cari mahasiswa..." style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; width: 250px;">
                     </div>
                     
                     <table style="width: 100%; border-collapse: collapse;">
@@ -45,21 +61,42 @@ $current_page = 'data_mahasiswa';
                             </tr>
                         </thead>
                         <tbody>
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 12px;">1</td>
-                                <td style="padding: 12px;">Rayhan Riyadhul Jinan</td>
-                                <td style="padding: 12px;">Teknik Informatika</td>
-                                <td style="padding: 12px;">C</td>
-                                <td style="padding: 12px;">E41250835</td>
-                                <td style="padding: 12px;">2</td>
-                                <td style="padding: 12px; text-align: center;">
-                                    <a href="#" style="color: #ff4757; text-decoration: none;"><i class="fas fa-file-pdf"></i> PDF</a>
-                                </td>
-                                <td style="padding: 12px; text-align: center;">
-                                    <span style="background: #dc3545; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold;">Ditolak</span>
-                                </td>
-                            </tr>
-                            <!-- Tambahkan data dinamis lainnya di sini -->
+                            <?php if (count($riwayat) > 0): ?>
+                                <?php $no = 1; foreach ($riwayat as $row): ?>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 12px;"><?= $no++ ?></td>
+                                    <td style="padding: 12px; font-weight: 500;"><?= $row['nama'] ?></td>
+                                    <td style="padding: 12px;"><?= $row['nama_prodi'] ?? '-' ?></td>
+                                    <td style="padding: 12px;"><?= $row['nama_golongan'] ?? '-' ?></td>
+                                    <td style="padding: 12px;"><?= $row['nim'] ?></td>
+                                    <td style="padding: 12px;"><?= $row['semester'] ?></td>
+                                    <td style="padding: 12px; text-align: center;">
+                                        <?php if (!empty($row['file_path'])): ?>
+                                            <a href="../../assets/uploads/pdf/<?= $row['file_path'] ?>" target="_blank" style="color: #ff4757; text-decoration: none; font-weight: bold;">
+                                                <i class="fas fa-file-pdf"></i> PDF
+                                            </a>
+                                        <?php else: ?>
+                                            <span style="color: #ccc;">-</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td style="padding: 12px; text-align: center;">
+                                        <?php 
+                                            $status = strtolower($row['status']);
+                                            $is_ok = ($status == 'disetujui' || $status == 'terverifikasi');
+                                            $color = $is_ok ? '#28a745' : '#dc3545';
+                                            $label = $is_ok ? 'VERIFIKASI' : 'DITOLAK';
+                                        ?>
+                                        <span style="background: <?= $color ?>; color: white; padding: 5px 12px; border-radius: 5px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">
+                                            <?= $label ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="8" style="text-align: center; padding: 20px; color: #999;">Belum ada riwayat data mahasiswa.</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
