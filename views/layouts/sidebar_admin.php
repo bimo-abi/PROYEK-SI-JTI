@@ -1,14 +1,16 @@
 <?php
-$foto_sidebar = "../../assets/img/avatar.png"; // Default
-if (!empty($_SESSION['foto_profil'])) {
-    $foto_sidebar = "../../assets/img/profiles/" . $_SESSION['foto_profil'];
-} else if (isset($db)) {
+$foto_sidebar = "../../assets/img/profiles/avatar.jpg"; // Default Global
+
+if (isset($_SESSION['user_id']) && isset($db)) {
     $stmt_side = $db->prepare("SELECT foto_profil FROM detail_pengguna WHERE id_pengguna = ?");
     $stmt_side->execute([$_SESSION['user_id']]);
     $row_side = $stmt_side->fetch(PDO::FETCH_ASSOC);
+
     if (!empty($row_side['foto_profil'])) {
         $foto_sidebar = "../../assets/img/profiles/" . $row_side['foto_profil'];
         $_SESSION['foto_profil'] = $row_side['foto_profil'];
+    } else {
+        $_SESSION['foto_profil'] = null;
     }
 }
 ?>

@@ -37,7 +37,7 @@ if ($action == 'update_profile') {
             $target_file = $target_dir . $new_filename;
             if (move_uploaded_file($_FILES["foto_profil"]["tmp_name"], $target_file)) {
                 $foto_final = $new_filename;
-                if ($foto_lama && $foto_lama != 'avatar.png' && file_exists($target_dir . $foto_lama)) {
+                if ($foto_lama && !in_array($foto_lama, ['avatar.png', 'avatar.jpg']) && file_exists($target_dir . $foto_lama)) {
                     unlink($target_dir . $foto_lama);
                 }
             }

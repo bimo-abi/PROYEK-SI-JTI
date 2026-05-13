@@ -113,7 +113,7 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
                         <div class="profile-card">
                             <div class="avatar-wrapper">
                                 <?php 
-                                    $foto = !empty($dosen['foto_profil']) ? "../../assets/img/profiles/" . $dosen['foto_profil'] : "../../assets/img/avatar.png";
+                                    $foto = !empty($dosen['foto_profil']) ? "../../assets/img/profiles/" . $dosen['foto_profil'] : "../../assets/img/profiles/avatar.jpg";
                                 ?>
                                 <img src="<?= $foto ?>?t=<?= time() ?>" alt="Dosen Avatar">
                             </div>

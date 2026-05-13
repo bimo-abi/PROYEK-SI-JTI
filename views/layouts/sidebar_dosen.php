@@ -1,17 +1,18 @@
 <?php
 // Pastikan variabel $db sudah tersedia dari file yang meng-include sidebar ini
-$foto_sidebar = "../../assets/img/avatar.png"; // Default jika tidak ada foto
+$foto_sidebar = "../../assets/img/profiles/avatar.jpg"; // Default Global
 
-if (!empty($_SESSION['foto_profil'])) {
-    $foto_sidebar = "../../assets/img/profiles/" . $_SESSION['foto_profil'];
-} else if (isset($db)) {
-    // Ambil foto dari database jika session foto masih kosong
+if (isset($_SESSION['user_id']) && isset($db)) {
+    // Selalu ambil dari DB agar sinkron jika ada perubahan di tab lain
     $stmt_side = $db->prepare("SELECT foto_profil FROM detail_pengguna WHERE id_pengguna = ?");
     $stmt_side->execute([$_SESSION['user_id']]);
     $row_side = $stmt_side->fetch(PDO::FETCH_ASSOC);
+
     if (!empty($row_side['foto_profil'])) {
         $foto_sidebar = "../../assets/img/profiles/" . $row_side['foto_profil'];
         $_SESSION['foto_profil'] = $row_side['foto_profil'];
+    } else {
+        $_SESSION['foto_profil'] = null;
     }
 }
 ?>

@@ -53,7 +53,7 @@ $current_page = 'profil';
                         <!-- Bagian Foto & Form Upload -->
                         <div class="photo-section" style="text-align: center;">
                             <?php
-                            $foto = !empty($user['foto_profil']) ? "../../assets/img/profiles/" . $user['foto_profil'] : "../../assets/img/avatar.png";
+                            $foto = !empty($user['foto_profil']) ? "../../assets/img/profiles/" . $user['foto_profil'] : "../../assets/img/profiles/avatar.jpg";
                             ?>
                             <div style="position: relative; display: inline-block;">
                                 <img src="<?= $foto ?>?t=<?= time() ?>" alt="User Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #00a2ed; display: block;">
@@ -110,7 +110,7 @@ $current_page = 'profil';
         if (status === 'success') {
             Swal.fire({
                 title: 'Berhasil!',
-                text: 'Foto profil Anda telah diperbarui.',
+                text: 'Profil Anda berhasil diperbarui.',
                 icon: 'success',
                 confirmButtonColor: '#00a2ed'
             });
