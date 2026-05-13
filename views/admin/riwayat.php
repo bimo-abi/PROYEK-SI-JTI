@@ -89,12 +89,11 @@ $page_title = 'Riwayat Verifikasi';
                                             <td style="padding: 15px; font-family: monospace; font-size: 0.9rem;"><?= htmlspecialchars($row['nim']) ?></td>
                                             <td style="padding: 15px; text-align: center;">
                                                 <?php if ($row['file_path']): ?>
-                                                    <a href="../../assets/uploads/pdf/<?= $row['file_path'] ?>" target="_blank" style="color: #e74c3c; text-decoration: none;">
-                                                        <i class="fas fa-file-pdf"></i> .pdf
-                                                    </a>
-                                                <?php else: ?>
-                                                    <span style="color: #ccc;">-</span>
-                                                <?php endif; ?>
+                                                    <a href="../../assets/uploads/pdf/<?= $row['file_path'] ?>" target="_blank">
+                                                        <i class="fas fa-file-pdf"></i> .pdf </a>
+                                                    <?php else: ?>
+                                                        <span style="color: #ccc;">-</span>
+                                                    <?php endif; ?>
                                             </td>
                                             <td style="padding: 15px;">
                                                 <?php

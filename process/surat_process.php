@@ -23,34 +23,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
     $jenis_surat = $_POST['jenis_surat'] ?? 'Umum'; 
     $keperluan = htmlspecialchars($_POST['keperluan']);
 
-    // --- HANDLE FILE UPLOAD ---
-    $file_db_name = null;
-    // Ubah 'bukti' menjadi 'lampiran' jika di form pengajuan_surat.php name-nya adalah lampiran
-    $input_name = isset($_FILES['bukti']) ? 'bukti' : 'lampiran';
-
+   $input_name = 'file_pdf';
     if (isset($_FILES[$input_name]) && $_FILES[$input_name]['error'] == 0) {
-        // SESUAIKAN: Folder ke assets/uploads/pdf/ agar terbaca di dashboard
-        $target_dir = "../assets/uploads/pdf/";
-        
-        if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);
-        }
-
-        $extension = strtolower(pathinfo($_FILES[$input_name]["name"], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'pdf'];
-
-        if (in_array($extension, $allowed)) {
-            // Format Nama: 20260302_NIM_Jenis_Surat.pdf sesuai Figma
-            $file_db_name = date('Ymd') . "_" . $nim . "_" . str_replace(' ', '_', $jenis_surat) . "." . $extension;
-            $target_file = $target_dir . $file_db_name;
-
-            if (!move_uploaded_file($_FILES[$input_name]["tmp_name"], $target_file)) {
-                die("Gagal mengunggah berkas ke server.");
-            }
-        } else {
-            die("Format file tidak didukung.");
-        }
+    // Lokasi folder sesuai dengan image_55f4fc.png
+    $target_dir = "../assets/uploads/pdf/";
+    
+    if (!is_dir($target_dir)) {
+        mkdir($target_dir, 0777, true);
     }
+
+    $extension = strtolower(pathinfo($_FILES[$input_name]["name"], PATHINFO_EXTENSION));
+    
+    // Pastikan hanya PDF yang masuk sesuai aturan baru kamu
+    if ($extension == 'pdf') {
+        // Format Nama: 20260513_NIM_Jenis_Surat.pdf
+        $file_db_name = date('Ymd_His') . "_" . $nim . "_" . str_replace(' ', '_', $jenis_surat) . "." . $extension;
+        $target_file = $target_dir . $file_db_name;
+
+        if (!move_uploaded_file($_FILES[$input_name]["tmp_name"], $target_file)) {
+            die("Gagal mengunggah berkas ke server.");
+        }
+    } else {
+        die("Hanya format PDF yang diperbolehkan untuk pengajuan surat.");
+    }
+} else {
+    // Jika file tidak ada, kirim error agar kolom file_path tidak NULL
+    die("Error: Lampiran PDF wajib diunggah.");
+}
+    
 
     // --- EKSEKUSI DATABASE ---
     try {
