@@ -25,27 +25,28 @@ if (!empty($_SESSION['foto_profil'])) {
 
     <ul class="sidebar-menu" style="list-style: none; padding: 10px;">
         <li style="margin-bottom: 10px;">
-            <a href="dashboard.php" class="<?= ($current_page == 'dashboard') ? 'active' : '' ?>" 
-               style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
+            <a href="dashboard.php" class="<?= ($current_page == 'dashboard') ? 'active' : '' ?>"
+                style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
             </a>
         </li>
         <li style="margin-bottom: 10px;">
             <a href="surat_masuk.php" class="<?= ($current_page == 'surat_masuk') ? 'active' : '' ?>"
-               style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
+                style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
                 <i class="fas fa-envelope-open-text"></i> <span>Surat Masuk</span>
             </a>
         </li>
         <li style="margin-bottom: 10px;">
             <a href="riwayat.php" class="<?= ($current_page == 'riwayat') ? 'active' : '' ?>"
-               style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
+                style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
                 <i class="fas fa-history"></i> <span>Riwayat</span>
             </a>
         </li>
-        <li style="margin-top: 50px;">
-            <a href="../../auth/logout.php" style="display: flex; align-items: center; gap: 15px; color: #ff4757; text-decoration: none; padding: 12px 20px; font-weight: bold;">
-                <i class="fas fa-sign-out-alt"></i> <span>Keluar</span>
-            </a>
-        </li>
     </ul>
+
+    <div class="sidebar-logout" style="margin-top: auto; padding: 10px 20px;">
+        <a href="../../process/auth_process.php?action=logout" style="display: flex; align-items: center; gap: 15px; color: #ff4757; text-decoration: none; font-weight: bold;">
+            <i class="fas fa-sign-out-alt"></i> <span>Keluar</span>
+        </a>
+    </div>
 </div>

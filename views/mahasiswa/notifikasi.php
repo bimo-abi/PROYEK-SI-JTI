@@ -19,7 +19,7 @@ try {
     $nim = $_SESSION['nim'] ?? null;
 
     if ($nim) {
-        $query = "SELECT * FROM notifikasi WHERE nim = ? ORDER BY tanggal_notifikasi DESC";
+        $query = "SELECT * FROM notifikasi WHERE nim = ? ORDER BY created_at DESC";
         $stmt = $db->prepare($query);
         $stmt->execute([$nim]);
         $notifs = $stmt->fetchAll(PDO::FETCH_ASSOC);

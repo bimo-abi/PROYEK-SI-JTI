@@ -39,6 +39,12 @@ $stmtStats = $db->prepare($queryStats);
 $stmtStats->execute([$nim_mhs]);
 $stats = $stmtStats->fetch(PDO::FETCH_ASSOC);
 
+// 3. Query Notifikasi Terbaru (maksimal 5)
+$queryNotif = "SELECT pesan, created_at FROM notifikasi WHERE nim = ? ORDER BY created_at DESC LIMIT 5";
+$stmtNotif = $db->prepare($queryNotif);
+$stmtNotif->execute([$nim_mhs]);
+$notifs = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);
+
 $current_page = 'dashboard';
 ?>
 
@@ -73,10 +79,19 @@ $current_page = 'dashboard';
                         <div class="notif-box">
                             <h4>Notifikasi Terbaru</h4>
                             <ul>
-                                <li>Surat Keterangan aktif kuliah disetujui</li>
-                                <li>Profil berhasil diperbarui</li>
+                                <?php if (!empty($notifs)): ?>
+                                    <?php foreach ($notifs as $notif): ?>
+                                        <li style="margin-bottom: 8px;">
+                                            <?= htmlspecialchars($notif['pesan']) ?> 
+                                            <br>
+                                            <small style="color: #888; font-size: 0.75rem;"><?= date('d M Y, H:i', strtotime($notif['created_at'])) ?></small>
+                                        </li>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <li style="color: #888;">Belum ada notifikasi terbaru.</li>
+                                <?php endif; ?>
                             </ul>
-                            <a href="pengajuan_surat.php" class="btn-ajukan" style="text-decoration: none; display: inline-block;">
+                            <a href="pengajuan_surat.php" class="btn-ajukan" style="text-decoration: none; display: inline-block; margin-top: 10px;">
                                 + Ajukan Surat Baru
                             </a>
                         </div>

@@ -36,10 +36,11 @@ if (!empty($_SESSION['foto_profil'])) {
                 <i class="fas fa-envelope-open-text"></i> <span>Data Mahasiswa</span>
             </a>
         </li>
-        <li style="margin-top: 50px;">
-            <a href="../../auth/logout.php" style="display: flex; align-items: center; gap: 15px; color: #ff4757; text-decoration: none; padding: 12px 20px; font-weight: bold;">
-                <i class="fas fa-sign-out-alt"></i> <span>Keluar</span>
-            </a>
-        </li>
     </ul>
+
+    <div class="sidebar-logout" style="margin-top: auto; padding: 10px 20px;">
+        <a href="../../process/auth_process.php?action=logout" style="display: flex; align-items: center; gap: 15px; color: #ff4757; text-decoration: none; font-weight: bold;">
+            <i class="fas fa-sign-out-alt"></i> <span>Keluar</span>
+        </a>
+    </div>
 </div>
