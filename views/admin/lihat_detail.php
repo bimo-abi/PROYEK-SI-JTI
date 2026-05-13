@@ -1,22 +1,19 @@
 <?php
 require_once '../../autoload.php';
 session_start();
+
 use Config\Database;
 
 $db = (new Database())->getConnection();
 $id_pengajuan = $_GET['id'] ?? null;
 
-// Sekarang kita bisa panggil d.semester karena kolom sudah dibuat
-$query = "SELECT p.*, 
-                 u.nama, 
-                 pr.nama_prodi, 
-                 g.nama_golongan, 
-                 d.semester
+// Gunakan SELECT * agar lebih fleksibel terhadap perubahan kolom
+$query = "SELECT p.*, u.nama, pr.nama_prodi, g.nama_golongan, d.*
           FROM pengajuan_surat p
           LEFT JOIN pengguna u ON u.email LIKE CONCAT(p.nim, '%')
           LEFT JOIN detail_pengguna d ON p.nim = d.nomor_induk
-          LEFT JOIN prodi pr ON d.id_prodi = pr.id_prodi
-          LEFT JOIN golongan g ON d.id_golongan = g.id_golongan
+          LEFT JOIN prodi pr ON d.id_prodi = pr.id
+          LEFT JOIN golongan g ON d.id_golongan = g.id
           WHERE p.id_pengajuan = ?";
 
 $stmt = $db->prepare($query);
