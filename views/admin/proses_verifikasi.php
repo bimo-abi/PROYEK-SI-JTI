@@ -1,21 +1,17 @@
 <?php
-require_once '../../autoload.php';
-session_start();
-use Config\Database;
+require_once '../autoload.php';
+$db = (new Config\Database())->getConnection();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_pengajuan'])) {
-    $db = (new Database())->getConnection();
-    
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id_pengajuan'];
-    $status_baru = $_POST['status']; // 'disetujui' atau 'ditolak'
+    $status = $_POST['status'];
 
-    try {
-        $query = "UPDATE pengajuan_surat SET status = ? WHERE id = ?";
-        $stmt = $db->prepare($query);
-        $stmt->execute([$status_baru, $id]);
-
-        header("Location: surat_masuk.php?verif=success");
-    } catch (PDOException $e) {
-        die("Gagal update status: " . $e->getMessage());
+    $query = "UPDATE pengajuan_surat SET status = ? WHERE id_pengajuan = ?";
+    $stmt = $db->prepare($query);
+    
+    if ($stmt->execute([$status, $id])) {
+        header("Location: ../views/admin/dashboard.php?status=success");
+    } else {
+        echo "Gagal memperbarui status.";
     }
 }
