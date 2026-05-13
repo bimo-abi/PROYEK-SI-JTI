@@ -9,6 +9,11 @@
     <div class="auth-container">
         <form action="../../index.php?action=login" method="POST">
             <h2>Masuk ke Akun</h2>
+            <?php if (isset($_GET['status']) && $_GET['status'] == 'failed'): ?>
+                <div class="alert-danger">
+                Email atau Password salah!
+                </div>
+            <?php endif; ?>
             
             <div class="form-group">
                 <label>NIM / Email</label>
