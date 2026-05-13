@@ -18,15 +18,15 @@ if (!empty($_SESSION['foto_profil'])) {
     </div>
 
     <div class="sidebar-user-mini">
-        <img src="<?= $foto_sidebar ?>?t=<?= time() ?>" alt="User" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
+        <img src="<?= $foto_sidebar ?>?t=<?= time() ?>" alt="User">
         <p><?= isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : 'Dosen' ?></p>
-        <small style="color: #00a2ed; font-size: 0.75rem; margin-top: -10px; display: block; text-align: center;">Dosen</small>
+        <small>Dosen</small>
     </div>
 
     <ul class="sidebar-menu">
         <li>
             <a href="dashboard.php" class="<?= (isset($current_page) && $current_page == 'dashboard') ? 'active' : '' ?>">
-                <i class="fas fa-home"></i> Dashboard
+                <i class="fas fa-th-large"></i> Dashboard
             </a>
         </li>
         <li>

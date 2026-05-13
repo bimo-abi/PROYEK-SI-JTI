@@ -83,15 +83,17 @@ $current_page = 'dashboard';
                                 <img src="<?= $foto_sidebar ?? '../../assets/img/avatar.png' ?>?t=<?= time() ?>" alt="Admin Avatar">
                             </div>
                             <p class="profile-name"><?= htmlspecialchars($admin['nama']) ?></p>
-                            <p style="color: #00a2ed; font-weight: bold; font-size: 0.8rem; margin-top: -10px;">ADMINISTRATOR</p>
+                            <p class="profile-role">Administrator</p>
                         </div>
 
                         <div class="info-card">
+                            <div class="info-header">
+                                <h5>Info Profil</h5>
+                            </div>
                             <div class="info-body">
                                 <p><strong>NIP/ID :</strong> <?= htmlspecialchars($admin['nomor_induk'] ?? '-') ?></p>
                                 <p><strong>Email :</strong> <?= htmlspecialchars($admin['email'] ?? '-') ?></p>
-                                <p><strong>Akses :</strong> Full Access</p> <br>
-                                <a href="/PROYEK-SI-JTI/views/admin/edit_profil.php" class="btn-edit-profile">Ubah Profil</a>
+                                <p><strong>Akses :</strong> Full Access</p>
                             </div>
                         </div>
                     </div>

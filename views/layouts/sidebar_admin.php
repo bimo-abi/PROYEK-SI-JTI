@@ -18,24 +18,24 @@ if (!empty($_SESSION['foto_profil'])) {
     </div>
 
     <div class="sidebar-user-mini">
-        <img src="<?= $foto_sidebar ?>?t=<?= time() ?>" alt="User" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
-        <p><?= isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : 'Administrator' ?></p>
-        <small style="color: #00a2ed; font-size: 0.75rem; margin-top: -10px; display: block; text-align: center;">Administrator</small>
+        <img src="<?= $foto_sidebar ?>?t=<?= time() ?>" alt="User">
+        <p><?= htmlspecialchars($_SESSION['nama']) ?></p>
+        <small>Administrator</small>
     </div>
 
     <ul class="sidebar-menu">
         <li>
-            <a href="dashboard.php" class="<?= (isset($current_page) && $current_page == 'dashboard') ? 'active' : '' ?>">
-                <i class="fas fa-home"></i> Dashboard
+            <a href="dashboard.php" class="<?= ($current_page == 'dashboard') ? 'active' : '' ?>">
+                <i class="fas fa-th-large"></i> Dashboard
             </a>
         </li>
         <li>
-            <a href="surat_masuk.php" class="<?= (isset($current_page) && $current_page == 'surat_masuk') ? 'active' : '' ?>">
+            <a href="surat_masuk.php" class="<?= ($current_page == 'surat_masuk') ? 'active' : '' ?>">
                 <i class="fas fa-envelope-open-text"></i> Surat Masuk
             </a>
         </li>
         <li>
-            <a href="riwayat.php" class="<?= (isset($current_page) && $current_page == 'riwayat') ? 'active' : '' ?>">
+            <a href="riwayat.php" class="<?= ($current_page == 'riwayat') ? 'active' : '' ?>">
                 <i class="fas fa-history"></i> Riwayat
             </a>
         </li>

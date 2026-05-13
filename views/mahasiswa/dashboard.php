@@ -55,6 +55,9 @@ $current_page = 'dashboard';
     <meta charset="UTF-8">
     <title>Dashboard Mahasiswa - SI-JTI</title>
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    
+    <!-- FONT AWESOME CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
@@ -68,7 +71,7 @@ $current_page = 'dashboard';
                 <div class="main-grid">
                     <!-- Kolom Kiri: Statistik & Notif -->
                     <div class="left-column">
-                        <div class="section-title"><i class="icon-home"></i> Dashboard</div>
+                        <div class="section-title"><i class="fas fa-th-large" style="margin-right: 10px; color: #00a2ed;"></i> Dashboard</div>
                         <div class="stats-grid">
                             <div class="stat-card blue"> Semua Pengajuan <span><?= $stats['total'] ?? 0 ?></span></div>
                             <div class="stat-card green"> Pengajuan Diterima <span><?= $stats['diterima'] ?? 0 ?></span></div>
@@ -105,7 +108,7 @@ $current_page = 'dashboard';
                                 <img src="<?= $foto_sidebar ?? '../../assets/img/avatar.png' ?>?t=<?= time() ?>" alt="Mhs">
                             </div>
                             <p class="profile-name"><?= htmlspecialchars($mhs['nama']) ?></p>
-                            <p class="academic-year">Tahun Akademik<br>2025/2026</p>
+                            <p class="profile-role">Mahasiswa</p>
                         </div>
 
                         <!-- Card Detail Info -->
@@ -119,10 +122,8 @@ $current_page = 'dashboard';
                                 <p><strong>NIM :</strong> <?= htmlspecialchars($mhs['nomor_induk'] ?? 'E41250904') ?></p>
                                 <p><strong>Email :</strong> <?= htmlspecialchars($mhs['email'] ?? '-') ?></p>
 
-                                <a href="edit_profil.php" style="text-decoration: none;">
-                                    <button class="btn-edit-profile">
-                                        <i class="icon-pencil"></i> Ubah Profil
-                                    </button>
+                                <a href="edit_profil.php" class="btn-edit-profile">
+                                    <i class="fas fa-pencil-alt" style="margin-right: 5px;"></i> Ubah Profil
                                 </a>
                             </div>
                         </div>

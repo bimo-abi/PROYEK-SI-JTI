@@ -49,7 +49,7 @@ if (!$surat) die("Data tidak ditemukan.");
         <form action="../../process/proses_verifikasi.php" method="POST" style="display: inline;">
             <input type="hidden" name="id_pengajuan" value="<?= $surat['id_pengajuan'] ?>">
             <button type="submit" name="status" value="ditolak" style="background: red; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; margin-right: 10px;">Tolak</button>
-            <button type="submit" name="status" value="terverifikasi" style="background: #00a2ed; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer;">Terima</button>
+            <button type="submit" name="status" value="disetujui" style="background: #00a2ed; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer;">Terima</button>
         </form>
     </div>
 </div>

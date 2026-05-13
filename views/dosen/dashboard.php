@@ -8,6 +8,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'dosen') {
 }
 
 $current_page = 'dashboard';
+
+use Config\Database;
+$db = (new Database())->getConnection();
+$user_id = $_SESSION['user_id'];
+
+// Query Profil Dosen
+$queryProfil = "SELECT p.nama, p.email, d.nomor_induk
+                FROM pengguna p
+                LEFT JOIN detail_pengguna d ON p.id = d.id_pengguna
+                WHERE p.id = ?";
+$stmt = $db->prepare($queryProfil);
+$stmt->execute([$user_id]);
+$dosen = $stmt->fetch(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -46,6 +60,29 @@ $current_page = 'dashboard';
                             </ul>
                         </div>
                     </div>
+
+                    <!-- Kolom Kanan: Info Profil -->
+                    <div class="right-column">
+                        <div class="profile-card">
+                            <div class="avatar-wrapper">
+                                <img src="<?= $foto_sidebar ?? '../../assets/img/avatar.png' ?>?t=<?= time() ?>" alt="Dosen Avatar">
+                            </div>
+                            <p class="profile-name"><?= htmlspecialchars($dosen['nama']) ?></p>
+                            <p class="profile-role">Dosen</p>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-header">
+                                <h5>Info Profil</h5>
+                            </div>
+                            <div class="info-body">
+                                <p><strong>NIP/NIDN :</strong> <?= htmlspecialchars($dosen['nomor_induk'] ?? '-') ?></p>
+                                <p><strong>Email :</strong> <?= htmlspecialchars($dosen['email'] ?? '-') ?></p>
+                                <p><strong>Status :</strong> Dosen Aktif</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

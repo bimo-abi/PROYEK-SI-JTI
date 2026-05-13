@@ -6,7 +6,7 @@
 }
 
 body{
-    background: #f5f5f5;
+    background: #eef2f7; /* Cool light grey yang nyambung dengan tone sidebar biru gelap */
 }
 
 .wrapper{
@@ -17,26 +17,31 @@ body{
 /* SIDEBAR */
 .sidebar{
     width: 260px;
-    background: linear-gradient(to bottom, #0f172a, #1e3a5f, #3b82f6);
+    background: linear-gradient(180deg, #1a1a1a 0%, #2c3e50 100%);
     color: white;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 0;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.2);
 }
 
 .sidebar-brand{
     text-align: center;
-    margin-bottom: 30px;
+    padding: 30px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
 }
 
 .sidebar-brand h2{
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 2px;
 }
 
 .sidebar-user-mini{
     text-align: center;
-    margin-bottom: 40px;
+    padding: 0 20px 20px;
+    margin-bottom: 10px;
 }
 
 .sidebar-user-mini img{
@@ -45,19 +50,30 @@ body{
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 10px;
+    border: 2px solid #00a2ed;
+    padding: 3px;
+    background: white;
 }
 
 .sidebar-user-mini p{
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.sidebar-user-mini small{
+    color: #00a2ed;
+    font-weight: bold;
 }
 
 .sidebar-menu{
     list-style: none;
+    padding: 0 15px;
+    flex: 1;
 }
 
 .sidebar-menu li{
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
 .sidebar-menu a{
@@ -65,29 +81,69 @@ body{
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 15px;
+    gap: 15px;
+    padding: 12px 20px;
     border-radius: 10px;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
 }
 
 .sidebar-menu a:hover,
 .sidebar-menu a.active{
-    background: white;
-    color: #0f172a;
+    background: rgba(255,255,255,0.1);
+    color: #00a2ed;
+    transform: translateX(5px);
+}
+
+/* DROPDOWN SURAT */
+.dropdown-content {
+    background: rgba(0,0,0,0.15);
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    padding: 10px 20px 10px 50px;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.dropdown-content a:hover,
+.dropdown-content a.active-sub {
+    opacity: 1;
+    background: rgba(255,255,255,0.05);
+    color: #00a2ed;
+    transform: translateX(5px);
+}
+
+.arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-logout{
     margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 .sidebar-logout a{
-    color: #ff4d4d;
+    color: #ff4757;
     text-decoration: none;
     font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.sidebar-logout a:hover{
+    background: rgba(255, 71, 87, 0.1);
+    transform: translateX(5px);
 }
 
 /* MAIN */
@@ -104,12 +160,12 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 /* CONTENT */
 .content{
     padding: 25px;
-    background: #f5f5f5;
+    background: #eef2f7;
     min-height: 100vh;
 }
 
@@ -151,26 +207,34 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
 }
 
 .stat-card span{
-    font-size: 2rem;
+    font-size: 2.2rem;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
 
 .blue{
-    background: #3b82f6;
+    background: linear-gradient(135deg, #2c3e50, #3498db);
 }
 
 .green{
-    background: #22c55e;
+    background: linear-gradient(135deg, #115e59, #10b981);
 }
 
 .orange{
-    background: #f59e0b;
+    background: linear-gradient(135deg, #b45309, #f59e0b);
 }
 
 .red{
-    background: #ef4444;
+    background: linear-gradient(135deg, #7f1d1d, #ef4444);
 }
 
 /* NOTIF */
@@ -178,7 +242,7 @@ body{
     background: white;
     border-radius: 20px;
     padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
 }
 
 .notif-box h4{
@@ -204,7 +268,7 @@ body{
     padding: 30px;
     text-align: center;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
 }
 
 .avatar-wrapper img{
@@ -212,6 +276,9 @@ body{
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
+    border: 3px solid #00a2ed;
+    padding: 4px;
+    background: white;
 }
 
 .profile-name{
@@ -220,9 +287,13 @@ body{
     margin-top: 15px;
 }
 
-.academic-year{
-    color: gray;
-    margin-top: 10px;
+.profile-role{
+    color: #00a2ed;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* INFO CARD */
@@ -230,11 +301,11 @@ body{
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
 }
 
 .info-header{
-    background: #2563eb;
+    background: linear-gradient(135deg, #1a1a1a, #2c3e50);
     color: white;
     padding: 15px 20px;
 }
@@ -248,13 +319,25 @@ body{
 }
 
 .btn-edit-profile{
+    display: inline-block;
+    width: 100%;
+    text-align: center;
     margin-top: 15px;
     padding: 10px 15px;
     border: none;
-    background: #2563eb;
+    background: linear-gradient(135deg, #1a1a1a, #2c3e50);
     color: white;
+    font-weight: 600;
     border-radius: 10px;
     cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-edit-profile:hover {
+    background: linear-gradient(135deg, #00a2ed, #1e3a8a);
+    transform: translateY(-2px);
+    color: white;
 }
 
 /* ==========================================================================
@@ -269,7 +352,7 @@ body{
     background: #ffffff;
     border-radius: 20px;
     padding: 40px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
     margin: 20px auto;
     max-width: 800px;
 }
