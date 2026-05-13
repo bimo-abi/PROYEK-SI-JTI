@@ -13,7 +13,7 @@ use Config\Database;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db = (new Database())->getConnection();
     $user_id = $_SESSION['user_id'];
-    
+
     // Ambil data dari form
     $nama = $_POST['nama'];
     $email = $_POST['email'];
@@ -22,20 +22,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Mulai transaksi agar data konsisten
         $db->beginTransaction();
 
-        // Update nama dan email di tabel pengguna
-        $query = "UPDATE pengguna SET nama = ?, email = ? WHERE id = ?";
+        // 1. Tangkap NIM baru dari form
+        $nim_baru = $_POST['nim'];
+        $nim_lama = $_SESSION['nim']; 
+
+        // 2. Update tabel UTAMA (pengguna)
+        // Kita gunakan id sebagai acuan agar NIM (nomor_induk) bisa diubah
+        $query = "UPDATE pengguna SET nama = ?, email = ?, nomor_induk = ? WHERE id = ?";
         $stmt = $db->prepare($query);
-        $stmt->execute([$nama, $email, $user_id]);
+        $stmt->execute([$nama, $email, $nim_baru, $user_id]);
+
+        // 3. Update tabel DETAIL (detail_pengguna) 
+        // Sangat penting karena tabel ini menggunakan nomor_induk sebagai relasi
+        $queryDetail = "UPDATE detail_pengguna SET nomor_induk = ? WHERE nomor_induk = ?";
+        $stmtDetail = $db->prepare($queryDetail);
+        $stmtDetail->execute([$nim_baru, $nim_lama]);
 
         $db->commit();
 
-        // Update data session agar nama di sidebar/topbar langsung berubah
+        // 4. Update session agar data terbaru langsung tampil
         $_SESSION['nama'] = $nama;
+        $_SESSION['nim'] = $nim_baru;
 
-        // Redirect kembali ke halaman edit dengan status sukses
         header("Location: edit_profil.php?status=success");
         exit();
-
     } catch (PDOException $e) {
         $db->rollBack();
         die("Gagal memperbarui profil: " . $e->getMessage());

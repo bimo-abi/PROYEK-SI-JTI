@@ -60,7 +60,7 @@ $golongan_list = $db->query("SELECT * FROM golongan")->fetchAll();
                             </div>
                             <div>
                                 <label style="display:block; margin-bottom: 8px;">NIM</label>
-                                <input type="text" name="nomor_induk" value="<?= htmlspecialchars($user['nomor_induk']) ?>" readonly style="width:100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: #f9f9f9;">
+                                <input type="text" name="nomor_induk" value="<?= htmlspecialchars($user['nomor_induk']) ?>" required style="width:100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: #f9f9f9;">
                             </div>
 
                             <!-- Data Akademik -->

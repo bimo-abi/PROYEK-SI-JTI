@@ -21,33 +21,37 @@ $current_page = 'pengajuan';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Form Pengajuan - SI-JTI</title>
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
 </head>
+
 <body>
     <div class="wrapper">
         <?php include '../layouts/sidebar.php'; ?>
         <div class="main-container">
             <?php include '../layouts/topbar.php'; ?>
-            
+
             <div class="content">
                 <div class="form-container" style="background: white; padding: 30px; border-radius: 15px;">
                     <h3>Beranda mahasiswa (Form Pengajuan <?= $judul_halaman ?>)</h3>
                     <hr style="margin: 20px 0;">
-                    
+
                     <form action="../../process/surat_process.php?action=tambah" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="jenis_surat" value="<?= $jenis ?>">
-                        
+
                         <div style="margin-bottom: 15px;">
                             <label>Keperluan / Alasan :</label>
                             <textarea name="keperluan" rows="4" style="width: 100%; padding: 10px; border-radius: 8px;" required placeholder="Jelaskan alasan pengajuan surat..."></textarea>
                         </div>
 
-                        <div style="margin-bottom: 15px;">
-                            <label>Unggah Bukti Pendukung (Opsional - PDF/JPG) :</label>
-                            <input type="file" name="bukti" style="width: 100%; padding: 10px;">
+                        <!-- Di file form_pengajuan.php atau sejenisnya -->
+                        <div class="form-group">
+                            <label for="file_pdf">Upload Lampiran (PDF) <span style="color:red">*</span></label>
+                            <input type="file" name="file_pdf" id="file_pdf" accept="application/pdf" required>
+                            <!-- <small>Hanya file .pdf yang diperbolehkan.</small> -->
                         </div>
 
                         <div style="display: flex; gap: 10px;">
@@ -62,4 +66,5 @@ $current_page = 'pengajuan';
         </div>
     </div>
 </body>
+
 </html>
