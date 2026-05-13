@@ -87,7 +87,7 @@ $current_page = 'dashboard';
                         <!-- Card Foto & Tahun -->
                         <div class="profile-card">
                             <div class="avatar-wrapper">
-                                <img src="../../assets/img/avatar.png" alt="Mhs">
+                                <img src="<?= $foto_sidebar ?? '../../assets/img/avatar.png' ?>?t=<?= time() ?>" alt="Mhs">
                             </div>
                             <p class="profile-name"><?= htmlspecialchars($mhs['nama']) ?></p>
                             <p class="academic-year">Tahun Akademik<br>2025/2026</p>

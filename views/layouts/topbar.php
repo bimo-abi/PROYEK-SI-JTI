@@ -17,7 +17,7 @@ $foto_topbar = "../../assets/img/avatar.png";
             </span>
 
             <!-- Foto Profil Dinamis -->
-            <img src="<?= $foto_topbar ?>?t=<?= time() ?>"
+            <img src="<?= $foto_sidebar ?>?t=<?= time() ?>"
                 alt="Profile"
                 style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #00a2ed;">
         </div>

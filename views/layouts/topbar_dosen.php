@@ -1,8 +1,5 @@
 <?php
-// Logika pengambilan foto profil yang sinkron dengan session
-$foto_topbar = !empty($_SESSION['foto_profil'])
-    ? "../../assets/img/profiles/" . $_SESSION['foto_profil']
-    : "../../assets/img/avatar.png";
+// Foto profil mengambil dari $foto_sidebar yang sudah disiapkan di sidebar_dosen.php
 ?>
 
 <div class="topbar" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
@@ -19,7 +16,7 @@ $foto_topbar = !empty($_SESSION['foto_profil'])
             </span>
 
             <!-- Foto Profil Dinamis -->
-            <img src="<?= $foto_topbar ?>?t=<?= time() ?>"
+            <img src="<?= $foto_sidebar ?>?t=<?= time() ?>"
                 alt="Profile"
                 style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #00a2ed;">
         </div>

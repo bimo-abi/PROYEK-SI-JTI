@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $db = (new Database())->getConnection();
-$user_id = $_SESSION['user_id']; 
+$user_id = $_SESSION['user_id'];
 
 try {
     $query = "SELECT 
@@ -56,7 +56,7 @@ $current_page = 'profil';
 <body>
     <div class="wrapper">
         <?php include '../layouts/sidebar.php'; ?>
-        
+
         <div class="main-container">
             <?php include '../layouts/topbar.php'; ?>
 
@@ -150,4 +150,5 @@ $current_page = 'profil';
         }
     </script>
 </body>
-</html> 
+
+</html>

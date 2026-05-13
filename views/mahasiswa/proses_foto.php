@@ -19,8 +19,8 @@ if (isset($_POST['upload']) && isset($_SESSION['user_id'])) {
     // 2. Validasi
     if (in_array($file_ext, $allowed_ext)) {
         if ($file_size < 2000000) { // Maksimal 2MB
-            // Beri nama unik agar tidak bentrok (NIM_timestamp.ext)
-            $new_name = $_SESSION['nim'] . "_" . time() . "." . $file_ext;
+            // Beri nama unik agar tidak bentrok (user_id_timestamp.ext)
+            $new_name = $user_id . "_" . time() . "." . $file_ext;
             $destination = "../../assets/img/profiles/" . $new_name;
 
             if (move_uploaded_file($file_tmp, $destination)) {

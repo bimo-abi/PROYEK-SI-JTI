@@ -6,6 +6,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit();
 }
+
 use Config\Database;
 
 $db = (new Database())->getConnection();
@@ -79,7 +80,7 @@ $current_page = 'dashboard';
                     <div class="right-column">
                         <div class="profile-card">
                             <div class="avatar-wrapper">
-                                <img src="../../assets/img/avatar.png" alt="Admin Avatar">
+                                <img src="<?= $foto_sidebar ?? '../../assets/img/avatar.png' ?>?t=<?= time() ?>" alt="Admin Avatar">
                             </div>
                             <p class="profile-name"><?= htmlspecialchars($admin['nama']) ?></p>
                             <p style="color: #00a2ed; font-weight: bold; font-size: 0.8rem; margin-top: -10px;">ADMINISTRATOR</p>
