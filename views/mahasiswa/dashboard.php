@@ -42,8 +42,6 @@ $stats = $stmtStats->fetch(PDO::FETCH_ASSOC);
 $current_page = 'dashboard';
 ?>
 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
