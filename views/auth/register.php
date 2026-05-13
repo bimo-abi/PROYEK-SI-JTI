@@ -77,7 +77,7 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
 
             <div class="form-group">
                 <label>Login Sebagai:</label>
-                <select name="peran" required>
+                <select name="role" required>
                     <option value="mahasiswa">Mahasiswa</option>
                     <option value="dosen">Dosen</option>
                     <option value="admin">Admin</option>

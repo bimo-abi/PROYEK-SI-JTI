@@ -18,7 +18,7 @@ if (isset($_GET['action'])) {
         $nim_nip = Validator::sanitize($_POST['nomor_induk']);
         $id_prodi = $_POST['id_prodi'];
         $id_golongan = $_POST['id_golongan'];
-        $peran = $_POST['role']; // Sesuai dengan name="role" di register.php
+        $peran = $_POST['role'] ?? ''; // Sesuai dengan name="role" di register.php
         $pass = $_POST['password'];
         $confirm_pass = $_POST['confirm_password'];
 
