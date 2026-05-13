@@ -15,10 +15,19 @@ if (isset($_GET['action'])) {
     if ($_GET['action'] == 'register') {
         $nama = Validator::sanitize($_POST['nama']);
         $email = Validator::sanitize($_POST['email']);
-        $nim_nip = Validator::sanitize($_POST['nomor_induk']);
-        $id_prodi = $_POST['id_prodi'];
-        $id_golongan = $_POST['id_golongan'];
+        
         $peran = $_POST['role'] ?? ''; // Sesuai dengan name="role" di register.php
+        
+        // Atur nilai default null jika dosen
+        if ($peran === 'dosen') {
+            $nim_nip = null;
+            $id_golongan = null;
+            $id_prodi = null;
+        } else {
+            $nim_nip = !empty($_POST['nomor_induk']) ? Validator::sanitize($_POST['nomor_induk']) : null;
+            $id_golongan = !empty($_POST['id_golongan']) ? $_POST['id_golongan'] : null;
+            $id_prodi = !empty($_POST['id_prodi']) ? $_POST['id_prodi'] : null;
+        }
         $pass = $_POST['password'];
         $confirm_pass = $_POST['confirm_password'];
 

@@ -2,7 +2,7 @@
 require_once '../../autoload.php';
 session_start();
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'dosen') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'dosen') {
     header("Location: ../auth/login.php");
     exit();
 }
@@ -14,96 +14,41 @@ $current_page = 'dashboard';
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Dosen</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="../../assets/css/dashboard_dosen.css">
-
-    <!-- Font Awesome -->
+    <title>Dashboard Dosen - SI-JTI</title>
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
+    <div class="wrapper">
+        <?php include '../layouts/sidebar_dosen.php'; ?>
 
-<div class="wrapper">
+        <div class="main-container">
+            <?php include '../layouts/topbar_dosen.php'; ?>
 
-    <!-- Sidebar -->
-    <?php include '../layouts/sidebar_dosen.php'; ?>
+            <div class="content">
+                <div class="main-grid">
+                    <!-- Kolom Kiri: Statistik & Notif -->
+                    <div class="left-column">
+                        <div class="section-title"><i class="fas fa-home" style="margin-right: 10px;"></i> Dashboard Dosen</div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card blue"> Surat Izin Sakit <span>0</span></div>
+                            <div class="stat-card green"> Kegiatan Kampus <span>0</span></div>
+                            <div class="stat-card orange"> Kegiatan Luar <span>0</span></div>
+                        </div>
 
-    <div class="main-container">
-
-        <!-- Topbar -->
-        <?php include '../layouts/topbar_dosen.php'; ?>
-
-        <!-- Content -->
-        <div class="content">
-
-            <!-- Card Statistik -->
-            <div class="card-container">
-
-                <!-- Card 1 -->
-                <div class="card-stat">
-                    <img src="../../assets/img/mail.png" alt="Mail">
-
-                    <div class="card-text">
-                        <h2>0</h2>
-                        <p>Surat izin sakit</p>
+                        <div class="notif-box" style="margin-top: 30px;">
+                            <h4 style="display: flex; align-items: center; gap: 10px;">
+                                <i class="far fa-bell" style="color: #00a2ed;"></i> Notifikasi Terbaru
+                            </h4>
+                            <ul>
+                                <li style="color: #888; margin-top: 10px;">Belum ada notifikasi terbaru.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Card 2 -->
-                <div class="card-stat">
-                    <img src="../../assets/img/mail.png" alt="Mail">
-
-                    <div class="card-text">
-                        <h2>0</h2>
-                        <p>Surat izin kegiatan kampus</p>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="card-stat">
-                    <img src="../../assets/img/mail.png" alt="Mail">
-
-                    <div class="card-text">
-                        <h2>0</h2>
-                        <p>Surat izin kegiatan luar</p>
-                    </div>
-                </div>
-
             </div>
-
-            <!-- Bottom -->
-            <div class="bottom-container">
-
-                <!-- Box Besar -->
-                <div class="big-box">
-
-                </div>
-
-                <!-- Notifikasi -->
-                <div class="notif-box">
-
-                    <h3>
-                        <i class="far fa-bell"></i>
-                        Notifikasi Terbaru
-                    </h3>
-
-                    <div class="notif-item"></div>
-                    <div class="notif-item"></div>
-                    <div class="notif-item"></div>
-                    <div class="notif-item"></div>
-
-                </div>
-
-            </div>
-
         </div>
-
     </div>
-
-</div>
-
 </body>
 </html>

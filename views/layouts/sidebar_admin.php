@@ -12,41 +12,38 @@ if (!empty($_SESSION['foto_profil'])) {
     }
 }
 ?>
-<div class="sidebar" style="background: linear-gradient(180deg, #1a1a1a 0%, #2c3e50 100%); color: white; min-height: 100vh; width: 250px;">
-    <div class="sidebar-brand" style="padding: 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <h2 style="font-weight: 800; letter-spacing: 2px;">SI - JTI</h2>
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <h2>SI - JTI</h2>
     </div>
 
-    <div class="sidebar-user" style="text-align: center; padding: 20px;">
-        <img src="<?= $foto_sidebar ?>?t=<?= time() ?>" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid #00a2ed; padding: 3px; object-fit: cover;">
-        <p style="margin-top: 10px; font-weight: 600;"><?= htmlspecialchars($_SESSION['nama']) ?></p>
-        <small style="color: #00a2ed; font-size: 0.75rem;">Administrator</small>
+    <div class="sidebar-user-mini">
+        <img src="<?= $foto_sidebar ?>?t=<?= time() ?>" alt="User" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
+        <p><?= isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : 'Administrator' ?></p>
+        <small style="color: #00a2ed; font-size: 0.75rem; margin-top: -10px; display: block; text-align: center;">Administrator</small>
     </div>
 
-    <ul class="sidebar-menu" style="list-style: none; padding: 10px;">
-        <li style="margin-bottom: 10px;">
-            <a href="dashboard.php" class="<?= ($current_page == 'dashboard') ? 'active' : '' ?>"
-                style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
-                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+    <ul class="sidebar-menu">
+        <li>
+            <a href="dashboard.php" class="<?= (isset($current_page) && $current_page == 'dashboard') ? 'active' : '' ?>">
+                <i class="fas fa-home"></i> Dashboard
             </a>
         </li>
-        <li style="margin-bottom: 10px;">
-            <a href="surat_masuk.php" class="<?= ($current_page == 'surat_masuk') ? 'active' : '' ?>"
-                style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
-                <i class="fas fa-envelope-open-text"></i> <span>Surat Masuk</span>
+        <li>
+            <a href="surat_masuk.php" class="<?= (isset($current_page) && $current_page == 'surat_masuk') ? 'active' : '' ?>">
+                <i class="fas fa-envelope-open-text"></i> Surat Masuk
             </a>
         </li>
-        <li style="margin-bottom: 10px;">
-            <a href="riwayat.php" class="<?= ($current_page == 'riwayat') ? 'active' : '' ?>"
-                style="display: flex; align-items: center; gap: 15px; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px;">
-                <i class="fas fa-history"></i> <span>Riwayat</span>
+        <li>
+            <a href="riwayat.php" class="<?= (isset($current_page) && $current_page == 'riwayat') ? 'active' : '' ?>">
+                <i class="fas fa-history"></i> Riwayat
             </a>
         </li>
     </ul>
 
-    <div class="sidebar-logout" style="margin-top: auto; padding: 10px 20px;">
-        <a href="../../process/auth_process.php?action=logout" style="display: flex; align-items: center; gap: 15px; color: #ff4757; text-decoration: none; font-weight: bold;">
-            <i class="fas fa-sign-out-alt"></i> <span>Keluar</span>
+    <div class="sidebar-logout">
+        <a href="../../process/auth_process.php?action=logout">
+            <i class="fas fa-sign-out-alt"></i> Keluar
         </a>
     </div>
 </div>

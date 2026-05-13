@@ -45,9 +45,9 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                 </div>
             <?php endif; ?>
 
-            <div class="form-group">
+            <div class="form-group" id="group-prodi">
                 <label>Program Studi:</label>
-                <select name="id_prodi" required>
+                <select name="id_prodi" id="input-prodi" required>
                     <option value="">-- Pilih Program Studi</option>
                     <?php foreach ($dataProdi as $prodi): ?>
                         <option value="<?= $prodi['id'] ?>"><?= $prodi['nama_prodi'] ?></option>
@@ -60,9 +60,9 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                 <input type="email" name="email" required>
             </div>
 
-            <div class="form-group">
-                <label>NIM / NIP:</label>
-                <input type="text" name="nomor_induk" required>
+            <div class="form-group" id="group-nim">
+                <label>NIM:</label>
+                <input type="text" name="nomor_induk" id="input-nim" required>
             </div>
 
             <div class="form-group">
@@ -71,9 +71,9 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
             </div>
 
             <!-- INPUT GOLONGAN YANG BARU DITAMBAHKAN -->
-            <div class="form-group">
+            <div class="form-group" id="group-golongan">
                 <label>Golongan:</label>
-                <select name="id_golongan" required>
+                <select name="id_golongan" id="input-golongan" required>
                     <option value="">-- Pilih Golongan</option>
                     <?php foreach ($dataGolongan as $gol): ?>
                         <option value="<?= $gol['id'] ?>"><?= $gol['nama_golongan'] ?></option>
@@ -83,10 +83,9 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
 
             <div class="form-group">
                 <label>Login Sebagai:</label>
-                <select name="role" required>
+                <select name="role" id="input-role" required>
                     <option value="mahasiswa">Mahasiswa</option>
                     <option value="dosen">Dosen</option>
-                    <option value="admin">Admin</option>
                 </select>
             </div>
 
@@ -106,6 +105,7 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
     </div>
 
     <script>
+        // Sembunyikan alert setelah 5 detik
         setTimeout(function() {
             let alerts = document.querySelectorAll('.alert-danger');
             alerts.forEach(function(alert) {
@@ -114,6 +114,37 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                 setTimeout(() => alert.remove(), 500);
             });
         }, 5000);
+
+        // Atur input berdasarkan role
+        document.getElementById('input-role').addEventListener('change', function() {
+            var role = this.value;
+            var groupNim = document.getElementById('group-nim');
+            var inputNim = document.getElementById('input-nim');
+            var groupGol = document.getElementById('group-golongan');
+            var inputGol = document.getElementById('input-golongan');
+            var groupProdi = document.getElementById('group-prodi');
+            var inputProdi = document.getElementById('input-prodi');
+
+            if (role === 'dosen') {
+                groupNim.style.display = 'none';
+                inputNim.required = false;
+                
+                groupGol.style.display = 'none';
+                inputGol.required = false;
+                
+                groupProdi.style.display = 'none';
+                inputProdi.required = false;
+            } else {
+                groupNim.style.display = 'block';
+                inputNim.required = true;
+                
+                groupGol.style.display = 'block';
+                inputGol.required = true;
+                
+                groupProdi.style.display = 'block';
+                inputProdi.required = true;
+            }
+        });
     </script>
 </body>
 
