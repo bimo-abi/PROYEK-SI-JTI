@@ -61,7 +61,7 @@ try {
                                         <td style="padding: 12px;"><?= htmlspecialchars($s['nomor_induk']) ?></td>
                                         <td style="padding: 12px;"><?= htmlspecialchars($s['jenis_surat']) ?></td>
                                         <td style="padding: 12px;">
-                                            <a href="detail_verifikasi.php?id=<?= $s['id'] ?>" style="color: #00a2ed; text-decoration: none; font-weight: bold;">
+                                            <a href="detail_verifikasi.php?id=<?= $s['id_pengajuan'] ?>" style="color: #00a2ed; text-decoration: none; font-weight: bold;">
                                                 <i class="fas fa-search"></i> Periksa
                                             </a>
                                         </td>

@@ -1,5 +1,5 @@
 <?php
-require_once '../../autoload.php';
+require_once '../autoload.php';
 session_start();
 
 use Config\Database;
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
 
     if (isset($_FILES[$input_name]) && $_FILES[$input_name]['error'] == 0) {
         // SESUAIKAN: Folder ke assets/uploads/pdf/ agar terbaca di dashboard
-        $target_dir = "../../assets/uploads/pdf/";
+        $target_dir = "../assets/uploads/pdf/";
         
         if (!is_dir($target_dir)) {
             mkdir($target_dir, 0777, true);
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
     // --- EKSEKUSI DATABASE ---
     try {
         // Gunakan nama kolom 'file_surat' agar sesuai dengan logika download kita
-        $query = "INSERT INTO pengajuan_surat (nim, jenis_surat, keperluan, file_surat, status, tanggal_pengajuan) 
+        $query = "INSERT INTO pengajuan_surat (nim, jenis_surat, keperluan, file_path, status, tanggal_pengajuan) 
                   VALUES (?, ?, ?, ?, 'menunggu', NOW())";
         
         $stmt = $db->prepare($query);
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
             $file_db_name // Nama file yang disimpan di folder assets/uploads/pdf/
         ]);
 
-        header("Location: ../mahasiswa/daftar_pengajuan.php?status=success");
+        header("Location: ../views/mahasiswa/daftar_pengajuan.php?status=success");
         exit();
 
     } catch (\PDOException $e) {
