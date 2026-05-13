@@ -88,9 +88,9 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
                                         <li style="padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
                                             <div>
                                                 <a href="detail_mahasiswa.php?id=<?= $n['id_pengajuan'] ?>" style="text-decoration: none; color: #333; font-weight: bold; display: block;">
-                                                    <?= htmlspecialchars($n['nama_mhs']) ?>
+                                                    <?= htmlspecialchars($n['nama_mhs'] ?? '') ?>
                                                 </a>
-                                                <small style="color: #666;">Mengajukan: <?= htmlspecialchars($n['jenis_surat']) ?></small>
+                                                <small style="color: #666;">Mengajukan: <?= htmlspecialchars($n['jenis_surat'] ?? '') ?></small>
                                             </div>
                                             <div style="text-align: right;">
                                                 <span style="display: block; font-size: 0.75rem; color: #999;"><?= date('d M, H:i', strtotime($n['tanggal_pengajuan'])) ?></span>

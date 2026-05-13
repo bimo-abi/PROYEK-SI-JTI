@@ -156,8 +156,8 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     data-tanggal="<?= $tgl_formatted ?>"
                                     style="border-bottom: 1px solid #eee;">
                                     <td style="padding: 12px;"><?= $no++ ?></td>
-                                    <td style="padding: 12px; font-weight: 500;"><?= htmlspecialchars($row['nama']) ?></td>
-                                    <td style="padding: 12px;"><?= htmlspecialchars($row['nim']) ?></td>
+                                    <td style="padding: 12px; font-weight: 500;"><?= htmlspecialchars($row['nama'] ?? '') ?></td>
+                                    <td style="padding: 12px;"><?= htmlspecialchars($row['nim'] ?? '') ?></td>
                                     <td style="padding: 12px;"><?= htmlspecialchars($row['nama_golongan'] ?? '-') ?></td>
                                     <td style="padding: 12px;"><?= htmlspecialchars($row['nama_prodi'] ?? '-') ?></td>
                                     <td style="padding: 12px; text-align: center;"><?= date('d/m/Y', strtotime($row['tgl_raw'])) ?></td>

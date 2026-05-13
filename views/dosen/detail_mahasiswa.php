@@ -78,11 +78,11 @@ $current_page = 'data_mahasiswa';
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
                                     <td style="padding: 10px 0; color: #888; width: 120px;">Nama</td>
-                                    <td style="font-weight: bold;">: <?= htmlspecialchars($data['nama']) ?></td>
+                                    <td style="font-weight: bold;">: <?= htmlspecialchars($data['nama'] ?? '') ?></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 10px 0; color: #888;">NIM</td>
-                                    <td>: <?= htmlspecialchars($data['nim']) ?></td>
+                                    <td>: <?= htmlspecialchars($data['nim'] ?? '') ?></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 10px 0; color: #888;">Prodi</td>
@@ -107,7 +107,7 @@ $current_page = 'data_mahasiswa';
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
                                     <td style="padding: 10px 0; color: #888; width: 120px;">Jenis Surat</td>
-                                    <td style="font-weight: bold;">: <?= htmlspecialchars($data['jenis_surat']) ?></td>
+                                    <td style="font-weight: bold;">: <?= htmlspecialchars($data['jenis_surat'] ?? '') ?></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 10px 0; color: #888;">Tgl Pengajuan</td>

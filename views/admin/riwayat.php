@@ -18,8 +18,8 @@ try {
                      pr.nama_prodi, 
                      g.nama_golongan 
               FROM pengajuan_surat p
-              LEFT JOIN pengguna u ON u.email LIKE CONCAT(p.nim, '%')
-              LEFT JOIN detail_pengguna dp ON p.nim = dp.nomor_induk
+              JOIN detail_pengguna dp ON p.nim = dp.nomor_induk
+              JOIN pengguna u ON dp.id_pengguna = u.id
               LEFT JOIN prodi pr ON dp.id_prodi = pr.id
               LEFT JOIN golongan g ON dp.id_golongan = g.id
               WHERE p.status IN ('disetujui', 'ditolak', 'terverifikasi')
@@ -83,10 +83,10 @@ $page_title = 'Riwayat Verifikasi';
                                     foreach ($riwayat_surat as $row): ?>
                                         <tr style="border-bottom: 1px solid #eee; transition: 0.3s;">
                                             <td style="padding: 15px; font-size: 0.9rem;"><?= $no++ ?>.</td>
-                                            <td style="padding: 15px; font-weight: 600; color: #333; font-size: 0.9rem;"><?= htmlspecialchars($row['nama']) ?></td>
-                                            <td style="padding: 15px; font-size: 0.85rem; color: #555;"><?= htmlspecialchars($row['nama_prodi']) ?></td>
+                                            <td style="padding: 15px; font-weight: 600; color: #333; font-size: 0.9rem;"><?= htmlspecialchars($row['nama'] ?? '') ?></td>
+                                            <td style="padding: 15px; font-size: 0.85rem; color: #555;"><?= htmlspecialchars($row['nama_prodi'] ?? '') ?></td>
                                             <td style="padding: 15px; text-align: center; font-size: 0.85rem;"><?= htmlspecialchars($row['nama_golongan'] ?? '-') ?></td>
-                                            <td style="padding: 15px; font-family: monospace; font-size: 0.9rem;"><?= htmlspecialchars($row['nim']) ?></td>
+                                            <td style="padding: 15px; font-family: monospace; font-size: 0.9rem;"><?= htmlspecialchars($row['nim'] ?? '') ?></td>
                                             <td style="padding: 15px; text-align: center;">
                                                 <?php if ($row['file_path']): ?>
                                                     <a href="../../assets/uploads/pdf/<?= $row['file_path'] ?>" target="_blank">

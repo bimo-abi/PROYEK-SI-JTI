@@ -9,13 +9,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 use Config\Database;
 $db = (new Database())->getConnection();
+$current_page = 'surat_masuk';
 
 try {
     // Query untuk mengambil data pengajuan mahasiswa beserta detail profilnya
     $query = "SELECT p.*, u.nama, pr.nama_prodi, g.nama_golongan, d.nomor_induk 
               FROM pengajuan_surat p
-              JOIN pengguna u ON p.nim = (SELECT nomor_induk FROM detail_pengguna WHERE id_pengguna = u.id)
-              LEFT JOIN detail_pengguna d ON u.id = d.id_pengguna
+              JOIN detail_pengguna d ON p.nim = d.nomor_induk
+              JOIN pengguna u ON d.id_pengguna = u.id
               LEFT JOIN prodi pr ON d.id_prodi = pr.id
               LEFT JOIN golongan g ON d.id_golongan = g.id
               WHERE p.status = 'menunggu'
@@ -57,9 +58,9 @@ try {
                             <?php if (count($daftar_surat) > 0): ?>
                                 <?php foreach ($daftar_surat as $s): ?>
                                     <tr style="border-bottom: 1px solid #eee;">
-                                        <td style="padding: 12px;"><?= htmlspecialchars($s['nama']) ?></td>
-                                        <td style="padding: 12px;"><?= htmlspecialchars($s['nomor_induk']) ?></td>
-                                        <td style="padding: 12px;"><?= htmlspecialchars($s['jenis_surat']) ?></td>
+                                        <td style="padding: 12px;"><?= htmlspecialchars($s['nama'] ?? '') ?></td>
+                                        <td style="padding: 12px;"><?= htmlspecialchars($s['nomor_induk'] ?? '') ?></td>
+                                        <td style="padding: 12px;"><?= htmlspecialchars($s['jenis_surat'] ?? '') ?></td>
                                         <td style="padding: 12px;">
                                             <a href="lihat_detail.php?id=<?= $s['id_pengajuan'] ?>" style="color: #00a2ed; text-decoration: none; font-weight: bold;">
                                                 <i class="fas fa-search"></i> Periksa

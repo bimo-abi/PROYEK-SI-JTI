@@ -36,7 +36,7 @@ if (!empty($_SESSION['foto_profil'])) {
         </li>
         <li>
             <a href="riwayat.php" class="<?= ($current_page == 'riwayat') ? 'active' : '' ?>">
-                <i class="fas fa-history"></i> Riwayat
+                <i class="fas fa-history"></i> Riwayat Surat
             </a>
         </li>
     </ul>

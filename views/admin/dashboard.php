@@ -66,14 +66,47 @@ $current_page = 'dashboard';
                             <div class="stat-card red"> Ditolak <span><?= $totalReject ?></span> </div>
                         </div>
 
-                        <div class="notif-box">
-                            <h4>Manajemen Surat</h4>
-                            <ul>
-                                <li>Halo <?= htmlspecialchars($admin['nama']) ?>, Anda login sebagai Administrator.</li>
-                                <li>Terdapat <strong><?= $totalPending ?></strong> pengajuan surat baru yang butuh verifikasi.</li>
+<?php
+// 4. AMBIL DAFTAR SURAT MASUK (MENUNGGU VERIFIKASI)
+$queryIncoming = "SELECT p.id_pengajuan, p.jenis_surat, p.tanggal_pengajuan, u.nama as nama_mhs 
+                  FROM pengajuan_surat p
+                  JOIN detail_pengguna d ON p.nim = d.nomor_induk
+                  JOIN pengguna u ON d.id_pengguna = u.id
+                  WHERE p.status = 'menunggu'
+                  ORDER BY p.tanggal_pengajuan DESC LIMIT 5";
+$incoming_surats = $db->query($queryIncoming)->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+                        <div class="notif-box" style="margin-top: 30px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                            <h4 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                <i class="fas fa-envelope-open-text" style="color: #f39c12;"></i> Pengajuan Butuh Verifikasi
+                            </h4>
+                            <ul style="list-style: none; padding: 0;">
+                                <?php if (!empty($incoming_surats)): ?>
+                                    <?php foreach ($incoming_surats as $n): ?>
+                                        <li style="padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <a href="lihat_detail.php?id=<?= $n['id_pengajuan'] ?>" style="text-decoration: none; color: #333; font-weight: bold; display: block;">
+                                                    <?= htmlspecialchars($n['nama_mhs'] ?? '') ?>
+                                                </a>
+                                                <small style="color: #666;">Jenis: <?= htmlspecialchars($n['jenis_surat'] ?? '') ?></small>
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <span style="display: block; font-size: 0.75rem; color: #999;"><?= date('d M, H:i', strtotime($n['tanggal_pengajuan'])) ?></span>
+                                                <span style="font-size: 0.7rem; background: #fff3e0; color: #e67e22; padding: 2px 8px; border-radius: 10px; font-weight: bold;">MENUNGGU</span>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                    <li style="text-align: center; margin-top: 15px;">
+                                        <a href="surat_masuk.php" style="color: #f39c12; text-decoration: none; font-size: 0.85rem; font-weight: bold;">Kelola Semua Surat <i class="fas fa-arrow-right"></i></a>
+                                    </li>
+                                <?php else: ?>
+                                    <li style="color: #888; text-align: center; padding: 20px;">
+                                        <i class="fas fa-check-circle" style="color: #2ecc71; font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                                        Semua surat telah diproses.
+                                    </li>
+                                <?php endif; ?>
                             </ul>
-                            <br>
-                            <a href="/PROYEK-SI-JTI/views/admin/surat_masuk.php" class="btn-ajukan" style="background-color: #f39c12;">Kelola Pengajuan</a>
                         </div>
                     </div>
 
