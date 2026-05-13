@@ -43,7 +43,29 @@ $stats = $stmtStats->fetch(PDO::FETCH_ASSOC);
 $queryNotif = "SELECT pesan, created_at FROM notifikasi WHERE nim = ? ORDER BY created_at DESC LIMIT 5";
 $stmtNotif = $db->prepare($queryNotif);
 $stmtNotif->execute([$nim_mhs]);
-$notifs = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);
+$notifs_db = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);
+
+// Cek surat terverifikasi atau ditolak yang belum dibaca
+$queryUnread = "SELECT id_pengajuan, jenis_surat, tanggal_pengajuan, status FROM pengajuan_surat WHERE nim = ? AND status IN ('disetujui', 'ditolak') AND is_read = 0 ORDER BY tanggal_pengajuan DESC";
+$stmtUnread = $db->prepare($queryUnread);
+$stmtUnread->execute([$nim_mhs]);
+$unread_surats = $stmtUnread->fetchAll(PDO::FETCH_ASSOC);
+
+$notifs = [];
+foreach ($unread_surats as $s) {
+    $status_text = ($s['status'] == 'disetujui') ? 'terverifikasi/disetujui' : 'ditolak';
+    $notifs[] = [
+        'pesan' => "Surat " . $s['jenis_surat'] . " Anda telah " . $status_text . ".",
+        'created_at' => $s['tanggal_pengajuan'],
+        'is_unread_surat' => true,
+        'id_pengajuan' => $s['id_pengajuan']
+    ];
+}
+foreach ($notifs_db as $n) {
+    $n['is_unread_surat'] = false;
+    $notifs[] = $n;
+}
+$notifs = array_slice($notifs, 0, 5);
 
 $current_page = 'dashboard';
 ?>
@@ -85,7 +107,13 @@ $current_page = 'dashboard';
                                 <?php if (!empty($notifs)): ?>
                                     <?php foreach ($notifs as $notif): ?>
                                         <li style="margin-bottom: 8px;">
-                                            <?= htmlspecialchars($notif['pesan']) ?> 
+                                            <?php if (isset($notif['is_unread_surat']) && $notif['is_unread_surat']): ?>
+                                                <a href="detail_pengajuan.php?id=<?= $notif['id_pengajuan'] ?>" style="text-decoration: none; color: #00a2ed; font-weight: bold;">
+                                                    <?= htmlspecialchars($notif['pesan']) ?>
+                                                </a>
+                                            <?php else: ?>
+                                                <?= htmlspecialchars($notif['pesan']) ?> 
+                                            <?php endif; ?>
                                             <br>
                                             <small style="color: #888; font-size: 0.75rem;"><?= date('d M Y, H:i', strtotime($notif['created_at'])) ?></small>
                                         </li>

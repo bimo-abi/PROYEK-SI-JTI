@@ -22,7 +22,30 @@ try {
         $query = "SELECT * FROM notifikasi WHERE nim = ? ORDER BY created_at DESC";
         $stmt = $db->prepare($query);
         $stmt->execute([$nim]);
-        $notifs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $notifs_db = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Ambil surat terverifikasi atau ditolak yang belum dibaca
+        $queryUnread = "SELECT id_pengajuan, jenis_surat, tanggal_pengajuan, status FROM pengajuan_surat WHERE nim = ? AND status IN ('disetujui', 'ditolak') AND is_read = 0 ORDER BY tanggal_pengajuan DESC";
+        $stmtUnread = $db->prepare($queryUnread);
+        $stmtUnread->execute([$nim]);
+        $unread_surats = $stmtUnread->fetchAll(PDO::FETCH_ASSOC);
+
+        $notifs = [];
+        foreach ($unread_surats as $s) {
+            $is_disetujui = $s['status'] == 'disetujui';
+            $notifs[] = [
+                'judul' => $is_disetujui ? 'Surat Disetujui' : 'Surat Ditolak',
+                'pesan' => "Surat pengajuan " . $s['jenis_surat'] . " Anda telah " . ($is_disetujui ? 'disetujui' : 'ditolak') . ". Klik untuk melihat detail.",
+                'created_at' => $s['tanggal_pengajuan'],
+                'is_read' => 0,
+                'is_unread_surat' => true,
+                'id_pengajuan' => $s['id_pengajuan']
+            ];
+        }
+        foreach ($notifs_db as $n) {
+            $n['is_unread_surat'] = false;
+            $notifs[] = $n;
+        }
     }
 } catch (Exception $e) {
     // Opsional: log error jika gagal
@@ -76,6 +99,7 @@ $current_page = 'notifikasi';
                     <?php if (count($notifs) > 0): ?>
                         <?php foreach ($notifs as $n): ?>
                             <div class="notif-item <?= $n['is_read'] == 0 ? 'unread' : '' ?>"
+                                <?= (isset($n['is_unread_surat']) && $n['is_unread_surat']) ? 'onclick="window.location.href=\'detail_pengajuan.php?id='.$n['id_pengajuan'].'\'"' : '' ?>
                                 style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px;">
 
                                 <div class="notif-icon" style="background: <?= $n['is_read'] == 0 ? '#e3f2fd' : '#f5f5f5' ?>; color: <?= $n['is_read'] == 0 ? '#00a2ed' : '#9e9e9e' ?>; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem;">
@@ -85,7 +109,13 @@ $current_page = 'notifikasi';
                                 <div class="notif-body" style="flex: 1;">
                                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                                         <h5 style="margin: 0; color: #333; font-weight: <?= $n['is_read'] == 0 ? 'bold' : 'normal' ?>;">
-                                            <?= htmlspecialchars($n['judul']) ?>
+                                            <?php if (isset($n['is_unread_surat']) && $n['is_unread_surat']): ?>
+                                                <a href="detail_pengajuan.php?id=<?= $n['id_pengajuan'] ?>" style="text-decoration: none; color: inherit;">
+                                                    <?= htmlspecialchars($n['judul']) ?>
+                                                </a>
+                                            <?php else: ?>
+                                                <?= htmlspecialchars($n['judul']) ?>
+                                            <?php endif; ?>
                                         </h5>
                                         <small style="color: #999; font-size: 0.75rem;">
                                             <i class="far fa-clock"></i> <?= date('d M, H:i', strtotime($n['created_at'])) ?>

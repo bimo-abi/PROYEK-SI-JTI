@@ -21,7 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
 
     $nim = $_SESSION['nim']; 
     $jenis_surat = $_POST['jenis_surat'] ?? 'Umum'; 
-    $keperluan = htmlspecialchars($_POST['keperluan']);
+    
+    // Tangani data dari form pengajuan yang baru (keterangan + tanggal)
+    $keterangan = $_POST['keterangan'] ?? '';
+    $tanggal_mulai = $_POST['tanggal_mulai'] ?? '';
+    $tanggal_selesai = $_POST['tanggal_selesai'] ?? '';
+    
+    if (!empty($keterangan) && !empty($tanggal_mulai) && !empty($tanggal_selesai)) {
+        $keperluan_raw = "Tanggal: " . $tanggal_mulai . " s/d " . $tanggal_selesai . "\nKeterangan: " . $keterangan;
+        $keperluan = htmlspecialchars($keperluan_raw);
+    } else {
+        $keperluan = htmlspecialchars($_POST['keperluan'] ?? '');
+    }
 
    $input_name = 'file_pdf';
     if (isset($_FILES[$input_name]) && $_FILES[$input_name]['error'] == 0) {
