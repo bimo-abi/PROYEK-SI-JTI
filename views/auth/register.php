@@ -39,6 +39,12 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                 </div>
             <?php endif; ?>
 
+            <?php if (isset($_GET['error']) && $_GET['error'] == 'email'): ?>
+                <div class="alert-danger">
+                    Email sudah terdaftar, silahkan gunakan email lain.
+                </div>
+            <?php endif; ?>
+
             <div class="form-group">
                 <label>Program Studi:</label>
                 <select name="id_prodi" required>

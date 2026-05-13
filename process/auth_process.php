@@ -29,6 +29,16 @@ if (isset($_GET['action'])) {
 
         try {
             $db->beginTransaction();
+            // Cek email sudah terdaftar atau belum
+            $checkEmail = "SELECT COUNT(*) FROM pengguna WHERE email = ?";
+            $stmtEmail = $db->prepare($checkEmail);
+            $stmtEmail->execute([$email]);
+
+            if ($stmtEmail->fetchColumn() > 0) {
+            header("Location: ../views/auth/register.php?error=email");
+            exit();
+            }
+            
             $hashed_password = password_hash($pass, PASSWORD_BCRYPT);
 
             $sqlUser = "INSERT INTO pengguna (nama, email, kata_sandi, peran) VALUES (?, ?, ?, ?)";
