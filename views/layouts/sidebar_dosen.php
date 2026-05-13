@@ -40,8 +40,8 @@ if (!empty($_SESSION['foto_profil'])) {
         </li>
         <!-- Tambahan Menu Edit Profil Sesuai Permintaan -->
         <li>
-            <a href="edit_profile.php" class="<?= (isset($current_page) && $current_page == 'edit_profile') ? 'active' : '' ?>">
-                <i class="fas fa-user-cog"></i> Edit Profil
+            <a href="profil.php" class="<?= (isset($current_page) && ($current_page == 'profil' || $current_page == 'edit_profile')) ? 'active' : '' ?>">
+                <i class="fas fa-user-circle"></i> Profil Saya
             </a>
         </li>
     </ul>

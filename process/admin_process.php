@@ -13,43 +13,41 @@ if ($action == 'update_profile') {
     $id_pengguna = $_SESSION['user_id'];
     $nama = $_POST['nama'];
     $nip = $_POST['nip'];
+    $email = $_POST['email'] ?? '';
+    $nomor_telepon = $_POST['nomor_telepon'] ?? '';
+    $alamat = $_POST['alamat'] ?? '';
     $foto_lama = $_SESSION['foto_profil'] ?? '';
 
     try {
         $db->beginTransaction();
 
-        // 1. Update Tabel Pengguna (Nama)
-        $queryUser = "UPDATE pengguna SET nama = ? WHERE id = ?";
+        // 1. Update Tabel Pengguna (Nama & Email)
+        $queryUser = "UPDATE pengguna SET nama = ?, email = ? WHERE id = ?";
         $stmtUser = $db->prepare($queryUser);
-        $stmtUser->execute([$nama, $id_pengguna]);
+        $stmtUser->execute([$nama, $email, $id_pengguna]);
 
         // 2. Handle Upload Foto
         $foto_final = $foto_lama;
+        // ... (foto handling remains the same)
         if (isset($_FILES['foto_profil']) && $_FILES['foto_profil']['error'] == 0) {
             $target_dir = "../assets/img/profiles/";
-            
-            // Buat folder jika belum ada
-            if (!is_dir($target_dir)) {
-                mkdir($target_dir, 0777, true);
-            }
-
+            if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
             $file_extension = pathinfo($_FILES["foto_profil"]["name"], PATHINFO_EXTENSION);
             $new_filename = "profile_" . $id_pengguna . "_" . time() . "." . $file_extension;
             $target_file = $target_dir . $new_filename;
-
             if (move_uploaded_file($_FILES["foto_profil"]["tmp_name"], $target_file)) {
                 $foto_final = $new_filename;
-                // Hapus foto lama agar tidak memenuhi storage (kecuali avatar default)
                 if ($foto_lama && $foto_lama != 'avatar.png' && file_exists($target_dir . $foto_lama)) {
                     unlink($target_dir . $foto_lama);
                 }
             }
         }
 
-        // 3. Update Tabel Detail_Pengguna (NIP & Foto)
-        $queryDetail = "UPDATE detail_pengguna SET nomor_induk = ?, foto_profil = ? WHERE id_pengguna = ?";
+        // 3. Update Tabel Detail_Pengguna (Foto, Telepon, Alamat)
+        // NIP tidak diupdate agar tetap sesuai data di database
+        $queryDetail = "UPDATE detail_pengguna SET foto_profil = ?, nomor_telepon = ?, alamat = ? WHERE id_pengguna = ?";
         $stmtDetail = $db->prepare($queryDetail);
-        $stmtDetail->execute([$nip, $foto_final, $id_pengguna]);
+        $stmtDetail->execute([$foto_final, $nomor_telepon, $alamat, $id_pengguna]);
 
         // 4. Update Session agar tampilan langsung berubah
         $_SESSION['nama'] = $nama;
@@ -57,8 +55,8 @@ if ($action == 'update_profile') {
 
         $db->commit();
         
-        // Redirect kembali ke halaman edit dengan status sukses
-        $redirect = ($_SESSION['role'] == 'dosen') ? '../views/dosen/edit_profile.php' : '../views/admin/edit_profile.php';
+        // Redirect kembali ke halaman profil dengan status sukses
+        $redirect = ($_SESSION['role'] == 'dosen') ? '../views/dosen/profil.php' : '../views/admin/edit_profile.php';
         header("Location: " . $redirect . "?status=success");
         exit();
 

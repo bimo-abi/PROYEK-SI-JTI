@@ -13,14 +13,39 @@ use Config\Database;
 $db = (new Database())->getConnection();
 $user_id = $_SESSION['user_id'];
 
-// Query Profil Dosen
-$queryProfil = "SELECT p.nama, p.email, d.nomor_induk
+// 1. Query Profil Dosen
+$queryProfil = "SELECT p.nama, p.email, d.nomor_induk, d.foto_profil
                 FROM pengguna p
                 LEFT JOIN detail_pengguna d ON p.id = d.id_pengguna
                 WHERE p.id = ?";
 $stmt = $db->prepare($queryProfil);
 $stmt->execute([$user_id]);
 $dosen = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// 2. Statistik (Surat Masuk Berdasarkan Jenis)
+$stats = [
+    'Sakit' => 0,
+    'Kampus' => 0,
+    'Luar' => 0
+];
+
+$queryStats = "SELECT jenis_surat, COUNT(*) as total FROM pengajuan_surat WHERE status = 'menunggu' GROUP BY jenis_surat";
+$resStats = $db->query($queryStats)->fetchAll(PDO::FETCH_ASSOC);
+foreach ($resStats as $s) {
+    if (stripos($s['jenis_surat'], 'Sakit') !== false) $stats['Sakit'] += $s['total'];
+    elseif (stripos($s['jenis_surat'], 'Kegiatan') !== false) $stats['Kampus'] += $s['total'];
+    else $stats['Luar'] += $s['total'];
+}
+
+// 3. Query Notifikasi Baru (Belum dibaca oleh dosen)
+// Kita ambil semua surat dengan status 'menunggu' atau 'terverifikasi' yang is_read_dosen = 0
+$queryNotif = "SELECT p.id_pengajuan, p.jenis_surat, p.tanggal_pengajuan, u.nama as nama_mhs 
+               FROM pengajuan_surat p
+               JOIN detail_pengguna d ON p.nim = d.nomor_induk
+               JOIN pengguna u ON d.id_pengguna = u.id
+               WHERE p.is_read_dosen = 0 
+               ORDER BY p.tanggal_pengajuan DESC LIMIT 5";
+$notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -46,17 +71,37 @@ $dosen = $stmt->fetch(PDO::FETCH_ASSOC);
                         <div class="section-title"><i class="fas fa-home" style="margin-right: 10px;"></i> Dashboard Dosen</div>
                         
                         <div class="stats-grid">
-                            <div class="stat-card blue"> Surat Izin Sakit <span>0</span></div>
-                            <div class="stat-card green"> Kegiatan Kampus <span>0</span></div>
-                            <div class="stat-card orange"> Kegiatan Luar <span>0</span></div>
+                            <div class="stat-card blue"> Surat Izin Sakit <span><?= $stats['Sakit'] ?></span></div>
+                            <div class="stat-card green"> Kegiatan Kampus <span><?= $stats['Kampus'] ?></span></div>
+                            <div class="stat-card orange"> Kegiatan Luar <span><?= $stats['Luar'] ?></span></div>
                         </div>
 
-                        <div class="notif-box" style="margin-top: 30px;">
-                            <h4 style="display: flex; align-items: center; gap: 10px;">
-                                <i class="far fa-bell" style="color: #00a2ed;"></i> Notifikasi Terbaru
+                        <div class="notif-box" style="margin-top: 30px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                            <h4 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                <i class="far fa-bell" style="color: #00a2ed;"></i> Notifikasi Pengajuan Baru
                             </h4>
-                            <ul>
-                                <li style="color: #888; margin-top: 10px;">Belum ada notifikasi terbaru.</li>
+                            <ul style="list-style: none; padding: 0;">
+                                <?php if (!empty($notifs)): ?>
+                                    <?php foreach ($notifs as $n): ?>
+                                        <li style="padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <a href="detail_mahasiswa.php?id=<?= $n['id_pengajuan'] ?>" style="text-decoration: none; color: #333; font-weight: bold; display: block;">
+                                                    <?= htmlspecialchars($n['nama_mhs']) ?>
+                                                </a>
+                                                <small style="color: #666;">Mengajukan: <?= htmlspecialchars($n['jenis_surat']) ?></small>
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <span style="display: block; font-size: 0.75rem; color: #999;"><?= date('d M, H:i', strtotime($n['tanggal_pengajuan'])) ?></span>
+                                                <span style="font-size: 0.7rem; background: #e3f2fd; color: #00a2ed; padding: 2px 8px; border-radius: 10px; font-weight: bold;">BARU</span>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                    <li style="text-align: center; margin-top: 15px;">
+                                        <a href="data_mahasiswa.php" style="color: #00a2ed; text-decoration: none; font-size: 0.85rem; font-weight: bold;">Lihat Semua Data <i class="fas fa-arrow-right"></i></a>
+                                    </li>
+                                <?php else: ?>
+                                    <li style="color: #888; text-align: center; padding: 20px;">Belum ada pengajuan baru yang belum dibaca.</li>
+                                <?php endif; ?>
                             </ul>
                         </div>
                     </div>
@@ -65,7 +110,10 @@ $dosen = $stmt->fetch(PDO::FETCH_ASSOC);
                     <div class="right-column">
                         <div class="profile-card">
                             <div class="avatar-wrapper">
-                                <img src="<?= $foto_sidebar ?? '../../assets/img/avatar.png' ?>?t=<?= time() ?>" alt="Dosen Avatar">
+                                <?php 
+                                    $foto = !empty($dosen['foto_profil']) ? "../../assets/img/profiles/" . $dosen['foto_profil'] : "../../assets/img/avatar.png";
+                                ?>
+                                <img src="<?= $foto ?>?t=<?= time() ?>" alt="Dosen Avatar">
                             </div>
                             <p class="profile-name"><?= htmlspecialchars($dosen['nama']) ?></p>
                             <p class="profile-role">Dosen</p>
