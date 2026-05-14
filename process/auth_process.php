@@ -9,29 +9,47 @@ use Classes\Validator;
 
 $db = (new Database())->getConnection();
 
+/**
+ * Fungsi Helper untuk validasi email student polije
+ */
+function isStudentPolijeEmail($email)
+{
+    return preg_match("/^[a-zA-Z0-9._%+-]+@student\.polije\.ac\.id$/", $email);
+}
+
 if (isset($_GET['action'])) {
+
+    $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
 
     // --- LOGIKA REGISTRASI ---
     if ($_GET['action'] == 'register') {
         $nama = Validator::sanitize($_POST['nama']);
         $email = Validator::sanitize($_POST['email']);
-        
-        $peran = $_POST['role'] ?? ''; // Sesuai dengan name="role" di register.php
-        
-        // Atur nilai default null jika dosen
+        $peran = $_POST['role'] ?? 'mahasiswa';
+
+        if ($peran === 'mahasiswa' && !isStudentPolijeEmail($email)) {
+            header("Location: " . $project_root . "/views/auth/register.php?error=email_format");
+            exit();
+        }
+
         if ($peran === 'dosen') {
             $nim_nip = null;
             $id_golongan = null;
             $id_prodi = null;
         } else {
-            $nim_nip = !empty($_POST['nomor_induk']) ? Validator::sanitize($_POST['nomor_induk']) : null;
+            $nim_nip = !empty($_POST['nim']) ? Validator::sanitize($_POST['nim']) : null;
             $id_golongan = !empty($_POST['id_golongan']) ? $_POST['id_golongan'] : null;
             $id_prodi = !empty($_POST['id_prodi']) ? $_POST['id_prodi'] : null;
         }
+
         $pass = $_POST['password'];
         $confirm_pass = $_POST['confirm_password'];
 
-        $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
+        if (strlen($pass) < 8 || strlen($pass) > 12) {
+            header("Location: " . $project_root . "/views/auth/register.php?error=password_length");
+            exit();
+        }
+
         if ($pass !== $confirm_pass) {
             header("Location: " . $project_root . "/views/auth/register.php?error=password");
             exit();
@@ -39,25 +57,21 @@ if (isset($_GET['action'])) {
 
         try {
             $db->beginTransaction();
-            // Cek email sudah terdaftar atau belum
             $checkEmail = "SELECT COUNT(*) FROM pengguna WHERE email = ?";
             $stmtEmail = $db->prepare($checkEmail);
             $stmtEmail->execute([$email]);
 
-            $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
             if ($stmtEmail->fetchColumn() > 0) {
                 header("Location: " . $project_root . "/views/auth/register.php?error=email");
                 exit();
             }
-            
-            $hashed_password = password_hash($pass, PASSWORD_BCRYPT);
 
+            $hashed_password = password_hash($pass, PASSWORD_BCRYPT);
             $sqlUser = "INSERT INTO pengguna (nama, email, kata_sandi, peran) VALUES (?, ?, ?, ?)";
             $stmtUser = $db->prepare($sqlUser);
             $stmtUser->execute([$nama, $email, $hashed_password, $peran]);
 
             $lastId = $db->lastInsertId();
-
             $sqlDetail = "INSERT INTO detail_pengguna (id_pengguna, id_prodi, id_golongan, nomor_induk) VALUES (?, ?, ?, ?)";
             $stmtDetail = $db->prepare($sqlDetail);
             $stmtDetail->execute([$lastId, $id_prodi, $id_golongan, $nim_nip]);
@@ -70,14 +84,15 @@ if (isset($_GET['action'])) {
             die("Registrasi Gagal: " . $e->getMessage());
         }
     }
-    // --- LOGIKA LOGIN ADMIN & MAHASISWA ---
+
+    // --- LOGIKA LOGIN ---
     if ($_GET['action'] == 'login') {
         $identifier = Validator::sanitize($_POST['identifier']);
         $password = $_POST['password'];
 
         $query = "SELECT p.*, d.nomor_induk FROM pengguna p 
-              LEFT JOIN detail_pengguna d ON p.id = d.id_pengguna 
-              WHERE p.email = ? OR d.nomor_induk = ?";
+                  LEFT JOIN detail_pengguna d ON p.id = d.id_pengguna 
+                  WHERE p.email = ? OR d.nomor_induk = ?";
 
         $stmt = $db->prepare($query);
         $stmt->execute([$identifier, $identifier]);
@@ -86,29 +101,105 @@ if (isset($_GET['action'])) {
         if ($user && password_verify($password, $user['kata_sandi'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['nama']    = $user['nama'];
-            $_SESSION['role']    = strtolower($user['peran']); // 'admin' atau 'mahasiswa'
+            $_SESSION['role']    = strtolower($user['peran']);
             $_SESSION['nim']     = $user['nomor_induk'];
 
-            // Menentukan folder tujuan berdasarkan peran
             $roleFolder = $_SESSION['role'];
-
-            // Redirect otomatis (contoh: /PROYEK-SI-JTI/views/admin/dashboard.php)
-            $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
             header("Location: " . $project_root . "/views/" . $roleFolder . "/dashboard.php");
             exit();
         } else {
-            $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
             header("Location: " . $project_root . "/views/auth/login.php?status=failed");
             exit();
         }
     }
 
-    // --- LOGIKA LOGOUT ---
-    if ($_GET['action'] == 'logout') {
-        session_unset();
-        session_destroy();
-        $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
-        header("Location: " . $project_root . "/views/auth/login.php?status=logout");
-        exit();
+    // --- LOGIKA MINTA RESET PASSWORD ---
+    if ($_GET['action'] == 'proses_lupa_password') {
+        $email = Validator::sanitize($_POST['email']);
+
+        $stmt = $db->prepare("SELECT id FROM pengguna WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            $token = bin2hex(random_bytes(32));
+            $expired_at = date("Y-m-d H:i:s", strtotime('+1 hour'));
+
+            try {
+                $db->beginTransaction();
+
+                // 1. TAMBAHKAN INI: Hapus token lama jika sudah ada (mencegah Duplicate Entry)
+                $deleteOld = $db->prepare("DELETE FROM token_reset_sandi WHERE email = ?");
+                $deleteOld->execute([$email]);
+
+                // 2. Baru masukkan token yang baru
+                $sql = "INSERT INTO token_reset_sandi (email, token, expired_at) VALUES (?, ?, ?)";
+                $stmtToken = $db->prepare($sql);
+                $stmtToken->execute([$email, $token, $expired_at]);
+
+                $db->commit();
+
+                header("Location: " . $project_root . "/views/auth/reset_password.php?token=" . $token);
+                exit();
+            } catch (Exception $e) {
+                $db->rollBack();
+                die("Gagal memproses token: " . $e->getMessage());
+            }
+        } else {
+            header("Location: " . $project_root . "/views/auth/lupa_password.php?status=not_found");
+            exit();
+        }
+    }
+
+    // --- LOGIKA SIMPAN PASSWORD BARU ---
+    if ($_GET['action'] == 'simpan_password_baru') {
+        $token = $_POST['token'] ?? '';
+        $pass = $_POST['password'];
+        $confirm_pass = $_POST['confirm_password'];
+
+        // Validasi Panjang 8-12 Karakter
+        if (strlen($pass) < 8 || strlen($pass) > 12) {
+            header("Location: " . $project_root . "/views/auth/reset_password.php?token=$token&error=password_length");
+            exit();
+        }
+
+        if ($pass !== $confirm_pass) {
+            header("Location: " . $project_root . "/views/auth/reset_password.php?token=$token&error=password");
+            exit();
+        }
+
+        // Ambil email berdasarkan token yang belum expired
+        $stmt = $db->prepare("SELECT email FROM token_reset_sandi WHERE token = ? AND expired_at > NOW()");
+        $stmt->execute([$token]);
+        $dataToken = $stmt->fetch();
+
+        if ($dataToken) {
+            $email = $dataToken['email'];
+            $hashed_password = password_hash($pass, PASSWORD_BCRYPT);
+
+            try {
+                $db->beginTransaction();
+                // 1. Update password di tabel pengguna
+                $update = $db->prepare("UPDATE pengguna SET kata_sandi = ? WHERE email = ?");
+                $update->execute([$hashed_password, $email]);
+
+                // 2. Hapus token agar tidak bisa dipakai lagi
+                $delete = $db->prepare("DELETE FROM token_reset_sandi WHERE email = ?");
+                $delete->execute([$email]);
+
+                $db->commit();
+                header("Location: " . $project_root . "/views/auth/login.php?status=reset_success");
+                exit();
+            } catch (Exception $e) {
+                $db->rollBack();
+                die("Gagal reset password: " . $e->getMessage());
+            }
+        } else {
+            echo "<script>
+                alert('Token tidak valid atau sudah kadaluarsa!');
+                window.location.href = '" . $project_root . "/views/auth/login.php';
+              </script>";
+            exit();
+        }
     }
 }

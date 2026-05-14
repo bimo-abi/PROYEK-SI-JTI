@@ -15,6 +15,7 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +25,7 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
     <link rel="stylesheet" href="../../assets/css/register.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body class="auth-page">
     <div class="auth-split-layout">
         <!-- Visual Side -->
@@ -49,106 +51,128 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                     <?php if (isset($_GET['error'])): ?>
                         <div class="alert-danger">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <?php 
+                            <<?php
                                 if ($_GET['error'] == 'duplicate_nim') echo "NIM sudah terdaftar, silakan login.";
                                 else if ($_GET['error'] == 'password') echo "Konfirmasi password tidak sesuai.";
+                                else if ($_GET['error'] == 'password_length') echo "Kata sandi harus berjumlah 8-12 karakter."; // PESAN BARU
                                 else if ($_GET['error'] == 'email') echo "Email sudah terdaftar, gunakan email lain.";
-                                else echo "Terjadi kesalahan, silakan coba lagi.";
-                            ?>
-                        </div>
-                    <?php endif; ?>
+                                else if ($_GET['error'] == 'email_format') echo "Gagal! Mahasiswa wajib menggunakan email @student.polije.ac.id";
+                                ?>
+                                </div>
+                            <?php endif; ?>
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nama Lengkap</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-id-card"></i>
-                                <input type="text" name="nama" placeholder="Budi Santoso" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Email Kampus</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-envelope"></i>
-                                <input type="email" name="email" placeholder="email@polije.ac.id" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mendaftar Sebagai</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-users"></i>
-                            <select name="role" id="input-role" required style="padding-left: 48px;">
-                                <option value="mahasiswa">Mahasiswa</option>
-                                <option value="dosen">Dosen</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="mhs-fields">
-                        <div class="form-group">
-                            <label>NIM (Nomor Induk Mahasiswa)</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-hashtag"></i>
-                                <input type="text" name="nomor_induk" id="input-nim" placeholder="E41250904" required>
-                            </div>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Program Studi</label>
-                                <div class="input-wrapper">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <select name="id_prodi" id="input-prodi" required style="padding-left: 48px;">
-                                        <option value="">Pilih Prodi</option>
-                                        <?php foreach ($dataProdi as $prodi): ?>
-                                            <option value="<?= $prodi['id'] ?>"><?= $prodi['nama_prodi'] ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nama Lengkap</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-id-card"></i>
+                                        <input type="text" name="nama" placeholder="" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Mendaftar Sebagai</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-users"></i>
+                                        <select name="role" id="input-role" required style="padding-left: 48px;">
+                                            <option value="mahasiswa">Mahasiswa</option>
+                                            <option value="dosen">Dosen</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label>Golongan</label>
-                                <div class="input-wrapper">
-                                    <i class="fas fa-layer-group"></i>
-                                    <select name="id_golongan" id="input-golongan" required style="padding-left: 48px;">
-                                        <option value="">Pilih Golongan</option>
-                                        <?php foreach ($dataGolongan as $gol): ?>
-                                            <option value="<?= $gol['id'] ?>"><?= $gol['nama_golongan'] ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+
+                            <div id="mhs-fields">
+                                <div class="form-group">
+                                    <label>NIM (Nomor Induk Mahasiswa)</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-hashtag"></i>
+                                        <input type="text" name="nim" placeholder="" id="input-nim">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Email Kampus</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-envelope"></i>
+                                        <input type="email"
+                                            name="email"
+                                            id="input-email-mhs"
+                                            placeholder="E41xxxxx@student.polije.ac.id"
+                                            pattern="[a-zA-Z0-9._%+-]+@student\.polije\.ac\.id$"
+                                            title="Gunakan email resmi: (NIM)@student.polije.ac.id">
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Program Studi</label>
+                                        <div class="input-wrapper">
+                                            <i class="fas fa-graduation-cap"></i>
+                                            <select name="id_prodi" id="input-prodi" style="padding-left: 48px;">
+                                                <option value="">Pilih Prodi</option>
+                                                <?php foreach ($dataProdi as $prodi): ?>
+                                                    <option value="<?= $prodi['id'] ?>"><?= $prodi['nama_prodi'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Golongan</label>
+                                        <div class="input-wrapper">
+                                            <i class="fas fa-layer-group"></i>
+                                            <select name="id_golongan" id="input-golongan" style="padding-left: 48px;">
+                                                <option value="">Pilih Golongan</option>
+                                                <?php foreach ($dataGolongan as $gol): ?>
+                                                    <option value="<?= $gol['id'] ?>"><?= $gol['nama_golongan'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Kata Sandi</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" name="password" placeholder="••••••••" required>
+                            <div id="dosen-fields" style="display: none;">
+                                <div class="form-group">
+                                    <label>Email Dosen</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-envelope"></i>
+                                        <input type="email" name="email_dosen" placeholder="nama@polije.ac.id" id="input-email-dosen">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Konfirmasi Sandi</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-shield-halved"></i>
-                                <input type="password" name="confirm_password" placeholder="••••••••" required>
-                            </div>
-                        </div>
-                    </div>
 
-                    <button type="submit" class="btn-primary" style="margin-top: 16px;">
-                        Daftar Sekarang <i class="fas fa-check-circle"></i>
-                    </button>
-                    
-                    <div class="text-divider">Sudah punya akun?</div>
-                    
-                    <a href="login.php" class="btn-secondary">
-                        Masuk ke Akun
-                    </a>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Kata Sandi (8-12 Karakter)</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-lock"></i>
+                                        <input type="password" name="password"
+                                            placeholder="8-12 karakter"
+                                            minlength="8"
+                                            maxlength="12"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Konfirmasi Sandi</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-shield-halved"></i>
+                                        <input type="password" name="confirm_password"
+                                            placeholder="8-12 karakter"
+                                            minlength="8"
+                                            maxlength="12"
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary" style="margin-top: 16px;">
+                                Daftar Sekarang <i class="fas fa-check-circle"></i>
+                            </button>
+
+                            <div class="text-divider"><span>Sudah punya akun?</span></div>
+
+                            <a href="login.php" class="btn-secondary">Masuk ke Akun</a>
                 </form>
             </div>
         </div>
@@ -156,33 +180,51 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
 
     <script>
         document.getElementById('input-role').addEventListener('change', function() {
-            const isMhs = this.value === 'mahasiswa';
+            const role = this.value;
             const mhsFields = document.getElementById('mhs-fields');
-            const inputs = mhsFields.querySelectorAll('input, select');
-            
-            if (isMhs) {
+            const dosenFields = document.getElementById('dosen-fields');
+
+            // Input Mahasiswa
+            const nimInput = document.getElementById('input-nim');
+            const emailMhs = document.getElementById('input-email-mhs');
+            const prodiInput = document.getElementById('input-prodi');
+            const golInput = document.getElementById('input-golongan');
+
+            // Input Dosen
+            const emailDosen = document.getElementById('input-email-dosen');
+
+            if (role === 'mahasiswa') {
                 mhsFields.style.display = 'block';
-                mhsFields.style.opacity = '0';
-                setTimeout(() => {
-                    mhsFields.style.transition = 'opacity 0.3s ease';
-                    mhsFields.style.opacity = '1';
-                }, 10);
+                dosenFields.style.display = 'none';
+
+                // Set required untuk mahasiswa
+                nimInput.required = true;
+                emailMhs.required = true;
+                prodiInput.required = true;
+                golInput.required = true;
+
+                // Lepas required dosen
+                emailDosen.required = false;
             } else {
                 mhsFields.style.display = 'none';
+                dosenFields.style.display = 'block';
+
+                // Lepas required mahasiswa
+                nimInput.required = false;
+                emailMhs.required = false;
+                prodiInput.required = false;
+                golInput.required = false;
+
+                // Set required untuk dosen
+                emailDosen.required = true;
             }
-            
-            inputs.forEach(input => input.required = isMhs);
         });
 
-        setTimeout(function() {
-            let alerts = document.querySelectorAll('.alert-danger');
-            alerts.forEach(function(alert) {
-                alert.style.transition = "opacity 0.5s";
-                alert.style.opacity = "0";
-                setTimeout(() => alert.remove(), 500);
-            });
-        }, 5000);
+        // Inisialisasi awal saat halaman dimuat
+        window.onload = function() {
+            document.getElementById('input-role').dispatchEvent(new Event('change'));
+        };
     </script>
 </body>
+
 </html>
-
