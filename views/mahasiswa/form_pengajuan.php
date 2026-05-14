@@ -98,16 +98,22 @@ $current_page = 'pengajuan';
                         </div>
 
                         <div style="display: grid; grid-template-columns: 140px 1fr; align-items: center; margin-bottom: 15px; gap: 15px;">
-                            <label class="form-label">Tanggal Mulai <span>:</span></label>
+                                <label class="form-label">Tanggal Mulai <span>:</span></label>
                             <div style="width: 200px;">
-                                <input type="date" name="tanggal_mulai" class="form-input" required>
+                                <input type="date" 
+                                    name="tanggal_mulai" 
+                                    id="tanggal_mulai"
+                                    class="form-input" 
+                                    value="<?= date('Y-m-d'); ?>" 
+                                    min="<?= date('Y-m-d'); ?>"
+                                    required>
                             </div>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 140px 1fr; align-items: center; margin-bottom: 30px; gap: 15px;">
                             <label class="form-label">Tanggal Selesai <span>:</span></label>
                             <div style="width: 200px;">
-                                <input type="date" name="tanggal_selesai" class="form-input" required>
+                                <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-input" required>
                             </div>
                         </div>
 
@@ -131,6 +137,36 @@ $current_page = 'pengajuan';
             </div>
         </div>
     </div>
+<script>
+    const inputMulai = document.getElementById('tanggal_mulai');
+    const inputSelesai = document.getElementById('tanggal_selesai');
+
+    function hitungTanggalSelesai() {
+        if (inputMulai.value) {
+            let date = new Date(inputMulai.value);
+            
+            // Tambahkan 3 hari
+            date.setDate(date.getDate() + 3);
+            
+            // Format ke YYYY-MM-DD agar bisa dibaca input date
+            let year = date.getFullYear();
+            let month = String(date.getMonth() + 1).padStart(2, '0');
+            let day = String(date.getDate()).padStart(2, '0');
+            
+            let hasil = `${year}-${month}-${day}`;
+            
+            inputSelesai.value = hasil;
+            // Opsional: set minimal tanggal selesai agar tidak bisa backdate
+            inputSelesai.min = inputMulai.value;
+        }
+    }
+
+    // Jalankan fungsi saat pertama kali halaman dibuka
+    window.onload = hitungTanggalSelesai;
+
+    // Jalankan fungsi setiap kali Tanggal Mulai diubah
+    inputMulai.addEventListener('change', hitungTanggalSelesai);
+</script>
 </body>
 
 </html>
