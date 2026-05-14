@@ -1,0 +1,12 @@
+/* REGISTER SPECIFIC STYLES */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 480px) {
+    .form-grid { 
+        grid-template-columns: 1fr; 
+    }
+}

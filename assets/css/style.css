@@ -1,141 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Color Palette - Calm & Premium */
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-soft: rgba(37, 99, 235, 0.08);
+    --secondary: #64748b;
+    --background: #fdfdfd;
+    --surface: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --input-bg: #f8fafc;
+    
+    /* Functional Colors */
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+    
+    /* Radii */
+    --radius-lg: 24px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    
+    /* Transitions */
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-    url("../img/jti\ gedung.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--background);
+    color: var(--text-main);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Container utama */
-.auth-container {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 400px;
+/* Common Typography */
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
 }
 
-.register-wide {
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
+.subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
 }
 
-h2,
-h3 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.alert-danger {
-  background-color: #ffebee;
-  color: #c62828; 
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ef9a9a;
-  font-size: 0.85rem;
-  text-align: center;
-  margin-bottom: 20px;
-  width: 100%; 
-  display: block; 
-}
-
-p.subtitle {
-  text-align: center;
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 20px;
-}
-
-/* Form Styling */
+/* Common Form Elements */
 .form-group {
-  margin-bottom: 15px;
+    margin-bottom: 24px;
 }
 
 label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: #444;
-  margin-bottom: 5px;
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 8px;
 }
 
-input,
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #f9f9f9;
-  font-size: 0.9rem;
+.input-wrapper {
+    position: relative;
 }
 
-input:focus,
-select:focus {
-  outline: none;
-  border-color: #00a2ed;
-  background: #fff;
+.input-wrapper i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
 }
 
-/* Tombol */
+input, select {
+    width: 100%;
+    padding: 14px 16px;
+    padding-left: 48px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--surface);
+    box-shadow: 0 0 0 4px var(--primary-soft);
+}
+
+input:focus + i {
+    color: var(--primary);
+}
+
+/* Common Alert Styling */
+.alert-danger {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    padding: 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid #fee2e2;
+    font-size: 0.875rem;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Common Buttons */
 .btn-primary {
-  width: 100%;
-  padding: 12px;
-  background: #00a2ed;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: 0.3s;
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btn-primary:hover {
-  background: #0081bc;
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 .btn-secondary {
-  display: block;
-  text-align: center;
-  width: 100%;
-  padding: 12px;
-  background: #6c757d;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: bold;
-  margin-top: 10px;
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    margin-top: 8px;
 }
 
-.text-center {
-  text-align: center;
-  margin: 15px 0;
-  color: #888;
-}
-
-.flex-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.forgot-link {
-  font-size: 0.8rem;
-  color: #00a2ed;
-  text-decoration: none;
+.btn-secondary:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
 }

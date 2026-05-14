@@ -1,0 +1,22 @@
+/* LOGIN SPECIFIC STYLES */
+.flex-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.flex-label label {
+    margin-bottom: 0;
+}
+
+.forgot-link {
+    font-size: 0.8125rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}

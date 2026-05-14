@@ -1,0 +1,115 @@
+/* AUTHENTICATION LAYOUT STYLES */
+.auth-page {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: var(--background);
+}
+
+.auth-split-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Visual Side (Left) */
+.auth-visual-side {
+    flex: 1.2;
+    background: linear-gradient(rgba(37, 99, 235, 0.85), rgba(29, 78, 216, 0.9)), url('../img/jti%20gedung.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 4rem;
+}
+
+.auth-visual-content {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.auth-visual-content h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.auth-visual-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Form Side (Right) */
+.auth-form-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--surface);
+    padding: 3rem;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.auth-container h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.auth-container .subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+}
+
+/* Text Divider */
+.text-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin: 1.5rem 0;
+}
+
+.text-divider::before,
+.text-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border);
+}
+
+.text-divider::before {
+    margin-right: 1rem;
+}
+
+.text-divider::after {
+    margin-left: 1rem;
+}
+
+/* Form Layout Specifics */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .auth-visual-side {
+        display: none;
+    }
+    
+    .auth-form-side {
+        padding: 2rem 1.5rem;
+    }
+}
