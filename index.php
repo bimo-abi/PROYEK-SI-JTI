@@ -15,7 +15,7 @@ if ($action === 'login') {
 
 // Cek Session
 if (isset($_SESSION['user_id'])) {
-    $role = $_SESSION['peran'];
+    $role = $_SESSION['role'];
     header("Location: views/$role/dashboard.php");
     exit();
 } else {

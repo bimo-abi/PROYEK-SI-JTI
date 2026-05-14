@@ -31,8 +31,9 @@ if (isset($_GET['action'])) {
         $pass = $_POST['password'];
         $confirm_pass = $_POST['confirm_password'];
 
+        $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
         if ($pass !== $confirm_pass) {
-            header("Location: ../views/auth/register.php?error=password");
+            header("Location: " . $project_root . "/views/auth/register.php?error=password");
             exit();
         }
 
@@ -43,9 +44,10 @@ if (isset($_GET['action'])) {
             $stmtEmail = $db->prepare($checkEmail);
             $stmtEmail->execute([$email]);
 
+            $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
             if ($stmtEmail->fetchColumn() > 0) {
-            header("Location: ../views/auth/register.php?error=email");
-            exit();
+                header("Location: " . $project_root . "/views/auth/register.php?error=email");
+                exit();
             }
             
             $hashed_password = password_hash($pass, PASSWORD_BCRYPT);
@@ -61,7 +63,7 @@ if (isset($_GET['action'])) {
             $stmtDetail->execute([$lastId, $id_prodi, $id_golongan, $nim_nip]);
 
             $db->commit();
-            header("Location: ../views/auth/login.php?status=registered");
+            header("Location: " . $project_root . "/views/auth/login.php?status=registered");
             exit();
         } catch (PDOException $e) {
             $db->rollBack();
@@ -105,7 +107,8 @@ if (isset($_GET['action'])) {
     if ($_GET['action'] == 'logout') {
         session_unset();
         session_destroy();
-        header("Location: ../views/auth/login.php?status=logout");
+        $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
+        header("Location: " . $project_root . "/views/auth/login.php?status=logout");
         exit();
     }
 }

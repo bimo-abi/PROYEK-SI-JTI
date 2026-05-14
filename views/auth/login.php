@@ -49,7 +49,7 @@
                     <div class="form-group">
                         <div class="flex-label">
                             <label>Kata Sandi</label>
-                            <a href="#" class="forgot-link">Lupa kata sandi?</a>
+                            <a href="lupa_password.php" class="forgot-link">Lupa kata sandi?</a>
                         </div>
                         <div class="input-wrapper">
                             <i class="fas fa-lock"></i>
