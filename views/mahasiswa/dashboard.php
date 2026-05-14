@@ -46,7 +46,7 @@ $stmtNotif->execute([$nim_mhs]);
 $notifs_db = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);
 
 // Cek surat terverifikasi atau ditolak yang belum dibaca
-$queryUnread = "SELECT id_pengajuan, jenis_surat, tanggal_pengajuan, status FROM pengajuan_surat WHERE nim = ? AND status IN ('disetujui', 'ditolak') AND is_read = 0 ORDER BY tanggal_pengajuan DESC";
+$queryUnread = "SELECT id_pengajuan, jenis_surat, tanggal_pengajuan, status FROM pengajuan_surat WHERE nim = ? AND status IN ('disetujui', 'ditolak') ORDER BY tanggal_pengajuan DESC LIMIT 5";
 $stmtUnread = $db->prepare($queryUnread);
 $stmtUnread->execute([$nim_mhs]);
 $unread_surats = $stmtUnread->fetchAll(PDO::FETCH_ASSOC);

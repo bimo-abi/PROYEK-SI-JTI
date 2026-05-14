@@ -26,11 +26,7 @@ if (!$surat) {
     die("Data pengajuan tidak ditemukan.");
 }
 
-// Jika surat ini disetujui atau ditolak dan belum dibaca, tandai sebagai sudah dibaca
-if (($surat['status'] == 'disetujui' || $surat['status'] == 'ditolak') && $surat['is_read'] == 0) {
-    $stmt_update = $db->prepare("UPDATE pengajuan_surat SET is_read = 1 WHERE id_pengajuan = ?");
-    $stmt_update->execute([$id_pengajuan]);
-}
+// is_read update removed due to database schema change
 ?>
 
 <!DOCTYPE html>

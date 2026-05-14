@@ -40,12 +40,12 @@ foreach ($resStats as $s) {
 }
 
 // 3. Query Notifikasi Baru (Belum dibaca oleh dosen)
-// Kita ambil semua surat dengan status 'menunggu' atau 'terverifikasi' yang is_read_dosen = 0
+// Kita ambil semua surat dengan status 'menunggu' sebagai notifikasi pengajuan baru
 $queryNotif = "SELECT p.id_pengajuan, p.jenis_surat, p.tanggal_pengajuan, u.nama as nama_mhs 
                FROM pengajuan_surat p
                JOIN detail_pengguna d ON p.nim = d.nomor_induk
                JOIN pengguna u ON d.id_pengguna = u.id
-               WHERE p.is_read_dosen = 0 
+               WHERE p.status = 'menunggu'
                ORDER BY p.tanggal_pengajuan DESC LIMIT 5";
 $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
 

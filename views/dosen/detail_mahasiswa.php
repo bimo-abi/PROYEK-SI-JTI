@@ -34,10 +34,7 @@ if (!$data) {
     die("Data tidak ditemukan.");
 }
 
-// Tandai sebagai sudah dibaca oleh dosen
-if ($data['is_read_dosen'] == 0) {
-    $db->prepare("UPDATE pengajuan_surat SET is_read_dosen = 1 WHERE id_pengajuan = ?")->execute([$id_pengajuan]);
-}
+// is_read_dosen update removed due to database schema change
 
 $current_page = 'data_mahasiswa';
 ?>
