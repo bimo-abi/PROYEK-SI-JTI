@@ -3,6 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once __DIR__ . '/../autoload.php';
 session_start();
+date_default_timezone_set('Asia/Jakarta');
 
 use Config\Database;
 use Classes\Validator;
