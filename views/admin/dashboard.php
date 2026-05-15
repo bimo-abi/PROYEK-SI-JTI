@@ -66,16 +66,16 @@ $current_page = 'dashboard';
                             <div class="stat-card red"> Ditolak <span><?= $totalReject ?></span> </div>
                         </div>
 
-<?php
-// 4. AMBIL DAFTAR SURAT MASUK (MENUNGGU VERIFIKASI)
-$queryIncoming = "SELECT p.id_pengajuan, p.jenis_surat, p.tanggal_pengajuan, u.nama as nama_mhs 
+                        <?php
+                        // 4. AMBIL DAFTAR SURAT MASUK (MENUNGGU VERIFIKASI)
+                        $queryIncoming = "SELECT p.id_pengajuan, p.jenis_surat, p.tanggal_pengajuan, u.nama as nama_mhs 
                   FROM pengajuan_surat p
                   JOIN detail_pengguna d ON p.nim = d.nomor_induk
                   JOIN pengguna u ON d.id_pengguna = u.id
                   WHERE p.status = 'menunggu'
                   ORDER BY p.tanggal_pengajuan DESC LIMIT 5";
-$incoming_surats = $db->query($queryIncoming)->fetchAll(PDO::FETCH_ASSOC);
-?>
+                        $incoming_surats = $db->query($queryIncoming)->fetchAll(PDO::FETCH_ASSOC);
+                        ?>
 
                         <div class="notif-box" style="margin-top: 30px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                             <h4 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
@@ -116,7 +116,7 @@ $incoming_surats = $db->query($queryIncoming)->fetchAll(PDO::FETCH_ASSOC);
                                 <img src="<?= $foto_sidebar ?? '../../assets/img/profiles/avatar.jpg' ?>?t=<?= time() ?>" alt="Admin Avatar">
                             </div>
                             <p class="profile-name"><?= htmlspecialchars($admin['nama']) ?></p>
-                            <p style="color: #00a2ed; font-weight: bold; font-size: 0.8rem; margin-top: -10px;">ADMINISTRATOR</p>
+                            <!-- <p style="color: #00a2ed; font-weight: bold; font-size: 0.8rem; margin-top: -10px;">ADMINISTRATOR</p> -->
                         </div>
 
                         <div class="info-card">
@@ -134,6 +134,18 @@ $incoming_surats = $db->query($queryIncoming)->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('status') === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Profil Diperbarui!',
+                text: 'Data profil Anda telah berhasil disimpan.',
+                confirmButtonColor: '#00a2ed'
+            });
+        }
+    </script>
 </body>
 
 </html>
