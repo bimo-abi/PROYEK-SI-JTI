@@ -22,67 +22,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
     $nim = $_SESSION['nim']; 
     $jenis_surat = $_POST['jenis_surat'] ?? 'Umum'; 
     
-    // Tangani data dari form pengajuan yang baru (keterangan + tanggal)
+    // 1. TANGKAP DATA FORM SECARA TERPISAH
     $keterangan = $_POST['keterangan'] ?? '';
-    $tanggal_mulai = $_POST['tanggal_mulai'] ?? '';
-    $tanggal_selesai = $_POST['tanggal_selesai'] ?? '';
+    $tgl_mulai = $_POST['tgl_mulai'] ?? ''; // Sesuaikan name dengan form
+    $tgl_selesai = $_POST['tgl_selesai'] ?? ''; // Sesuaikan name dengan form
     
-    if (!empty($keterangan) && !empty($tanggal_mulai) && !empty($tanggal_selesai)) {
-        $keperluan_raw = "Tanggal: " . $tanggal_mulai . " s/d " . $tanggal_selesai . "\nKeterangan: " . $keterangan;
-        $keperluan = htmlspecialchars($keperluan_raw);
-    } else {
-        $keperluan = htmlspecialchars($_POST['keperluan'] ?? '');
-    }
+    // Tetap buat variabel keperluan untuk kompatibilitas data lama jika diperlukan
+    $keperluan = "Tanggal: " . $tgl_mulai . " s/d " . $tgl_selesai . " | Keterangan: " . $keterangan;
 
-   $input_name = 'file_pdf';
+    // 2. PROSES UPLOAD PDF
+    $input_name = 'file_pdf';
+    $file_db_name = null;
+
     if (isset($_FILES[$input_name]) && $_FILES[$input_name]['error'] == 0) {
-    // Lokasi folder sesuai dengan image_55f4fc.png
-    $target_dir = "../assets/uploads/pdf/";
-    
-    if (!is_dir($target_dir)) {
-        mkdir($target_dir, 0777, true);
-    }
+        $target_dir = "../assets/uploads/pdf/";
+        
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
 
-    $extension = strtolower(pathinfo($_FILES[$input_name]["name"], PATHINFO_EXTENSION));
-    
-    // Pastikan hanya PDF yang masuk sesuai aturan baru kamu
-    if ($extension == 'pdf') {
-        // Format Nama: 20260513_NIM_Jenis_Surat.pdf
-        $file_db_name = date('Ymd_His') . "_" . $nim . "_" . str_replace(' ', '_', $jenis_surat) . "." . $extension;
-        $target_file = $target_dir . $file_db_name;
+        $extension = strtolower(pathinfo($_FILES[$input_name]["name"], PATHINFO_EXTENSION));
+        
+        if ($extension == 'pdf') {
+            $file_db_name = date('Ymd_His') . "_" . $nim . "_" . str_replace(' ', '_', $jenis_surat) . "." . $extension;
+            $target_file = $target_dir . $file_db_name;
 
-        if (!move_uploaded_file($_FILES[$input_name]["tmp_name"], $target_file)) {
-            die("Gagal mengunggah berkas ke server.");
+            if (!move_uploaded_file($_FILES[$input_name]["tmp_name"], $target_file)) {
+                die("Gagal mengunggah berkas ke server.");
+            }
+        } else {
+            die("Hanya format PDF yang diperbolehkan.");
         }
     } else {
-        die("Hanya format PDF yang diperbolehkan untuk pengajuan surat.");
+        die("Error: Lampiran PDF wajib diunggah.");
     }
-} else {
-    // Jika file tidak ada, kirim error agar kolom file_path tidak NULL
-    die("Error: Lampiran PDF wajib diunggah.");
-}
     
-
-    // --- EKSEKUSI DATABASE ---
+    // 3. EKSEKUSI DATABASE DENGAN KOLOM TERPISAH
     try {
-        // Gunakan nama kolom 'file_surat' agar sesuai dengan logika download kita
-        $query = "INSERT INTO pengajuan_surat (nim, jenis_surat, keperluan, file_path, status, tanggal_pengajuan) 
-                  VALUES (?, ?, ?, ?, 'menunggu', NOW())";
+        // Query disesuaikan dengan struktur baru di image_250f3d.jpg
+        $query = "INSERT INTO pengajuan_surat (nim, jenis_surat, tgl_mulai, tgl_selesai, keterangan, keperluan, file_path, status, tanggal_pengajuan) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, 'menunggu', NOW())";
         
         $stmt = $db->prepare($query);
         $stmt->execute([
             $nim, 
             $jenis_surat, 
-            $keperluan, 
-            $file_db_name // Nama file yang disimpan di folder assets/uploads/pdf/
+            $tgl_mulai,    // Masuk ke kolom tgl_mulai
+            $tgl_selesai,  // Masuk ke kolom tgl_selesai
+            $keterangan,   // Masuk ke kolom keterangan
+            $keperluan,    // Tetap diisi agar riwayat lama tidak kosong
+            $file_db_name 
         ]);
 
         header("Location: ../views/mahasiswa/daftar_pengajuan.php?status=success");
         exit();
 
     } catch (\PDOException $e) {
-        if ($file_db_name && file_exists("../../assets/uploads/pdf/" . $file_db_name)) {
-            unlink("../../assets/uploads/pdf/" . $file_db_name);
+        if ($file_db_name && file_exists("../assets/uploads/pdf/" . $file_db_name)) {
+            unlink("../assets/uploads/pdf/" . $file_db_name);
         }
         die("Gagal mengirim pengajuan: " . $e->getMessage());
     }
