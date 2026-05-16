@@ -109,7 +109,7 @@ $current_page = 'profil';
                         </div>
                     </div>
 
-                    <div class="info-box" style="background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+                    <!-- <div class="info-box" style="background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
                         <h5 style="margin-top: 0; color: #4f46e5; border-bottom: 2px solid #e0e7ff; display: block; padding-bottom: 10px; margin-bottom: 20px; font-size: 1.1rem;">
                             <i class="fas fa-map-marker-alt"></i> Kontak & Lokasi
                         </h5>
@@ -121,7 +121,7 @@ $current_page = 'profil';
                             <label style="display: block; color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">Alamat Domisili</label>
                             <p style="margin: 0; color: #1e293b; font-weight: 500;">Data alamat belum dilengkapi.</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

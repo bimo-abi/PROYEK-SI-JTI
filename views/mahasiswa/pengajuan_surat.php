@@ -37,8 +37,8 @@ $current_page = 'pengajuan';
             <?php include '../layouts/topbar.php'; ?>
             <div class="content">
                 <div class="section-title">
-                    <i class="fa-solid fa-envelope"></i>
-                    Pengajuan Surat
+                    <!-- <i class="fa-solid fa-envelope"></i> -->
+                    
                 </div>
                 <!-- BOX -->
                 <div class="selection-box text-center">

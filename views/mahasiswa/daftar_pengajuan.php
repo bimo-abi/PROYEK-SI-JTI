@@ -87,7 +87,7 @@ $current_page = 'daftar_pengajuan';
             <div class="content">
                 <div class="card-container" style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <h4 style="margin: 0; color: #1e293b;"><i class="fas fa-list-alt" style="color: #4f46e5; margin-right: 10px;"></i> Riwayat Pengajuan Surat</h4>
+                        <h4 style="margin: 0; color: #1e293b;"><i class="fas fa-list-alt" style="color: #4f46e5; margin-right: 10px;"></i> Daftar Pengajuan Surat</h4>
                         <a href="pengajuan_surat.php" style="background: #4f46e5; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600;">
                             <i class="fas fa-plus"></i> Ajukan Surat Baru
                         </a>

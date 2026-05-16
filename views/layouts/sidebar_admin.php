@@ -36,9 +36,9 @@ if (isset($_SESSION['foto_profil']) && !empty($_SESSION['foto_profil'])) {
         <img src="<?= $foto_sidebar ?>?t=<?= time() ?>"
             style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #00a2ed;">
         <p style="margin-top: 10px; font-weight: 600; color: white; margin-bottom: 0;">
-            <?= htmlspecialchars($_SESSION['nama'] ?? 'Administrator') ?>
+            <!-- <?= htmlspecialchars($_SESSION['nama'] ?? 'Administrator') ?> -->
         </p>
-        <!-- <small style="color: #00a2ed; font-weight: 500;">Administrator</small> -->
+        <small style="color: #00a2ed; font-weight: 500;">Administrator</small>
     </div>
 
     <ul class="sidebar-menu">

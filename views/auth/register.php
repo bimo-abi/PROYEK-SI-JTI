@@ -141,7 +141,43 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                                 </div>
                             </div>
 
-                            <div class="form-grid">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; color: #333;">Kata Sandi (8-12 Karakter)</label>
+                                    <div style="position: relative; width: 100%;">
+                                        <i class="fa-solid fa-lock" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;"></i>
+
+                                        <input type="password" name="password" id="password" required
+                                            placeholder="8-12 karakter"
+                                            class="form-input"
+                                            style="padding: 11px 42px 11px 40px; /* Kanan diberi ruang 42px agar teks tidak menabrak ikon mata */
+                          width: 100%; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none;">
+
+                                        <i class="fa-solid fa-eye-slash" onclick="togglePasswordVisibility('password', this)"
+                                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8; font-size: 1rem; z-index: 10;"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; color: #333;">Konfirmasi Sandi</label>
+                                    <div style="position: relative; width: 100%;">
+                                        <i class="fa-solid fa-shield-halved" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;"></i>
+
+                                        <input type="password" name="confirm_password" id="confirm_password" required
+                                            placeholder="Ulangi sandi"
+                                            class="form-input"
+                                            style="padding: 11px 42px 11px 40px; 
+                          width: 100%; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; outline: none;">
+
+                                        <i class="fa-solid fa-eye-slash" onclick="togglePasswordVisibility('confirm_password', this)"
+                                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8; font-size: 1rem; z-index: 10;"></i>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- <div class="form-grid">
                                 <div class="form-group">
                                     <label>Kata Sandi (8-12 Karakter)</label>
                                     <div class="input-wrapper">
@@ -164,7 +200,7 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                                             required>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <button type="submit" class="btn-primary" style="margin-top: 16px;">
                                 Daftar Sekarang <i class="fas fa-check-circle"></i>
@@ -179,50 +215,69 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
     </div>
 
     <script>
-        document.getElementById('input-role').addEventListener('change', function() {
-            const role = this.value;
-            const mhsFields = document.getElementById('mhs-fields');
-            const dosenFields = document.getElementById('dosen-fields');
+        function togglePasswordVisibility(inputId, iconElement) {
+            const passwordInput = document.getElementById(inputId);
 
-            // Input Mahasiswa
-            const nimInput = document.getElementById('input-nim');
-            const emailMhs = document.getElementById('input-email-mhs');
-            const prodiInput = document.getElementById('input-prodi');
-            const golInput = document.getElementById('input-golongan');
-
-            // Input Dosen
-            const emailDosen = document.getElementById('input-email-dosen');
-
-            if (role === 'mahasiswa') {
-                mhsFields.style.display = 'block';
-                dosenFields.style.display = 'none';
-
-                // Set required untuk mahasiswa
-                nimInput.required = true;
-                emailMhs.required = true;
-                prodiInput.required = true;
-                golInput.required = true;
-
-                // Lepas required dosen
-                emailDosen.required = false;
-            } else {
-                mhsFields.style.display = 'none';
-                dosenFields.style.display = 'block';
-
-                // Lepas required mahasiswa
-                nimInput.required = false;
-                emailMhs.required = false;
-                prodiInput.required = false;
-                golInput.required = false;
-
-                // Set required untuk dosen
-                emailDosen.required = true;
+            if (passwordInput) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    iconElement.classList.remove('fa-eye-slash');
+                    iconElement.classList.add('fa-eye'); // Berubah jadi mata terbuka
+                } else {
+                    passwordInput.type = 'password';
+                    iconElement.classList.remove('fa-eye');
+                    iconElement.classList.add('fa-eye-slash'); // Berubah jadi mata tercoret
+                }
             }
-        });
+        };
 
-        // Inisialisasi awal saat halaman dimuat
-        window.onload = function() {
-            document.getElementById('input-role').dispatchEvent(new Event('change'));
+        // --- 2. LOGIKA PILIHAN ROLE (MAHASISWA / DOSEN) ---
+        const inputRole = document.getElementById('input-role');
+
+        if (inputRole) {
+            inputRole.addEventListener('change', function() {
+                const role = this.value;
+                const mhsFields = document.getElementById('mhs-fields');
+                const dosenFields = document.getElementById('dosen-fields');
+
+                // Input Elemen Mahasiswa
+                const nimInput = document.getElementById('input-nim');
+                const emailMhs = document.getElementById('input-email-mhs');
+                const prodiInput = document.getElementById('input-prodi');
+                const golInput = document.getElementById('input-golongan');
+
+                // Input Elemen Dosen
+                const emailDosen = document.getElementById('input-email-dosen');
+
+                if (role === 'mahasiswa') {
+                    if (mhsFields) mhsFields.style.display = 'block';
+                    if (dosenFields) dosenFields.style.display = 'none';
+
+                    // Set required wajib untuk mahasiswa
+                    if (nimInput) nimInput.required = true;
+                    if (emailMhs) emailMhs.required = true;
+                    if (prodiInput) prodiInput.required = true;
+                    if (golInput) golInput.required = true;
+
+                    // Lepas required milik dosen
+                    if (emailDosen) emailDosen.required = false;
+                } else {
+                    if (mhsFields) mhsFields.style.display = 'none';
+                    if (dosenFields) dosenFields.style.display = 'block';
+
+                    // Lepas required milik mahasiswa
+                    if (nimInput) nimInput.required = false;
+                    if (emailMhs) emailMhs.required = false;
+                    if (prodiInput) prodiInput.required = false;
+                    if (golInput) golInput.required = false;
+
+                    // Set required wajib untuk dosen
+                    if (emailDosen) emailDosen.required = true;
+                }
+            });
+
+            // Trigger event secara otomatis agar kondisi awal form sesuai dengan default dropdown terpilih
+            inputRole.dispatchEvent(new Event('change'));
         };
     </script>
 </body>

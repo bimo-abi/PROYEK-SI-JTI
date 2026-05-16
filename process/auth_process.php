@@ -152,7 +152,7 @@ if (isset($_GET['action'])) {
         }
     }
 
-    // --- LOGIKA SIMPAN PASSWORD BARU ---
+    //LOGIKA SIMPAN PASSWORD BARU
     if ($_GET['action'] == 'simpan_password_baru') {
         $token = $_POST['token'] ?? '';
         $pass = $_POST['password'];
@@ -201,6 +201,36 @@ if (isset($_GET['action'])) {
                 window.location.href = '" . $project_root . "/views/auth/login.php';
               </script>";
             exit();
+        }
+    }
+
+    if (isset($_GET['action']) && $_GET['action'] == 'update_profile') {
+        // Pastikan session sudah berjalan
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $user_id = $_SESSION['user_id'];
+        $nama = $_POST['nama'];
+        $email = $_POST['email'];
+
+        try {
+            // Query update terfokus hanya pada tabel pengguna (nama dan email)
+            $sql = "UPDATE pengguna SET nama = ?, email = ? WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            $result = $stmt->execute([$nama, $email, $user_id]);
+
+            if ($result) {
+                // Berhasil, tendang balik ke halaman profil dengan status sukses
+                header("Location: ../views/dosen/profil.php?status=success");
+                exit();
+            } else {
+                header("Location: ../views/dosen/edit_profile.php?status=error");
+                exit();
+            }
+        } catch (\PDOException $e) {
+            // Jika ada error internal database, paksa tampilkan teks errornya agar tidak jadi halaman putih
+            die("Error Database saat menyimpan data: " . $e->getMessage());
         }
     }
 }

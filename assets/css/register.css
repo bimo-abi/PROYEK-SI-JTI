@@ -58,6 +58,30 @@
   transform: translateY(-1px);
 }
 
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  padding-right: 45px !important; /* Memberi ruang di kanan agar teks tidak tertutup ikon mata */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #94a3b8;
+  z-index: 10;
+  transition: color 0.2s;
+}
+
+.toggle-password:hover {
+  color: #4f46e5;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

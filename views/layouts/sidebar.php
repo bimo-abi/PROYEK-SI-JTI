@@ -24,9 +24,8 @@ if (isset($_SESSION['user_id']) && isset($db)) {
     </div>
 
     <div class="sidebar-user-mini">
-        <!-- Foto Profil Dinamis dengan cache-buster time() -->
-        <img src="<?= $foto_sidebar ?>?t=<?= time() ?>" alt="User">
-        <p><?= isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : 'Mahasiswa' ?></p>
+        <img src="<?= $foto_sidebar ?>?t=<?= time() ?>" alt="User"> <br>
+        <!-- <p><?= isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : 'Mahasiswa' ?></p> -->
         <small>Mahasiswa</small>
     </div>
 
@@ -37,8 +36,6 @@ if (isset($_SESSION['user_id']) && isset($db)) {
             </a>
         </li>
 
-        <!-- Menu Dropdown Surat -->
-        <!-- Perbaikan: Sinkronisasi current_page agar menu tetap terbuka saat di sub-menu -->
         <li class="dropdown <?= (isset($current_page) && ($current_page == 'pengajuan' || $current_page == 'daftar_pengajuan')) ? 'active' : '' ?>">
             <a href="javascript:void(0)" class="dropbtn" onclick="toggleDropdown()">
                 <i class="fas fa-envelope"></i> Surat <span class="arrow">▼</span>

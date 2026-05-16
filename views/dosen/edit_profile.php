@@ -13,8 +13,8 @@ $db = (new Database())->getConnection();
 $current_page = 'edit_profile';
 
 try {
-    // Perbaikan Query: Hapus nomor_telepon dan alamat karena tidak ada di DB
-    $stmt = $db->prepare("SELECT u.nama, u.email, d.nomor_induk, d.foto_profil
+    // Query bersih tanpa kolom nomor_telepon dan alamat
+    $stmt = $db->prepare("SELECT u.nama, u.email, d.nomor_induk 
                           FROM pengguna u 
                           JOIN detail_pengguna d ON u.id = d.id_pengguna 
                           WHERE u.id = ?");
@@ -53,7 +53,7 @@ try {
                     </h4>
                     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-                    <form action="../../process/auth_process.php?action=update_profile" method="POST" enctype="multipart/form-data">
+                    <form action="../../process/proses_edit_profil_dosen.php" method="POST">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
                             <div>
@@ -66,33 +66,19 @@ try {
                                 <input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required style="width:100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; outline: none;">
                             </div>
 
-                            <div>
+                            <div style="grid-column: span 2;">
                                 <label style="display:block; margin-bottom: 8px; font-weight: 600; color: #444;">NIP / NIDN</label>
                                 <input type="text" value="<?= htmlspecialchars($user['nomor_induk'] ?? '') ?>" readonly style="width:100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; background: #f8fafc; cursor: not-allowed; color: #64748b;">
-                                <small style="color: #94a3b8; margin-top: 5px; display: block;">* Identitas utama tidak dapat diubah secara mandiri.</small>
+                                <small style="color: #94a3b8; margin-top: 5px; display: block;">* Identitas nomor induk utama dikunci dan tidak dapat diubah secara mandiri.</small>
                             </div>
 
-                            <div style="grid-column: span 2; background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px dashed #cbd5e1; margin-top: 10px;">
-                                <label style="display:block; margin-bottom: 15px; font-weight: 700; color: #1e293b;">Foto Profil</label>
-                                <div style="display: flex; align-items: center; gap: 25px;">
-                                    <?php
-                                    $foto_path = !empty($user['foto_profil']) ? "../../assets/img/profiles/" . $user['foto_profil'] : "../../assets/img/profiles/avatar.png";
-                                    ?>
-                                    <img src="<?= $foto_path ?>?t=<?= time() ?>" id="previewImg" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-
-                                    <div style="flex: 1;">
-                                        <input type="file" name="foto_profil" id="fileInput" accept="image/*" onchange="previewFile(this)" style="margin-bottom: 8px; font-size: 0.9rem;">
-                                        <p style="margin: 0; color: #64748b; font-size: 0.8rem;">Gunakan format JPG atau PNG. Maksimal ukuran file 2MB.</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <div style="margin-top: 40px; display: flex; gap: 15px;">
                             <button type="submit" style="background: #4f46e5; color: white; border: none; padding: 14px 35px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.3s; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);">
                                 <i class="fas fa-save"></i> Simpan Perubahan
                             </button>
-                            <a href="profil.php" style="background: #f1f5f9; color: #475569; text-decoration: none; padding: 14px 35px; border-radius: 12px; font-weight: 600; transition: 0.3s;">
+                            <a href="profil.php" style="background: #f1f5f9; color: #475569; text-decoration: none; padding: 14px 35px; border-radius: 12px; font-weight: 600; transition: 0.3s; display: inline-block; text-align: center;">
                                 Batal
                             </a>
                         </div>
@@ -101,37 +87,6 @@ try {
             </div>
         </div>
     </div>
-
-    <script>
-        // Preview Foto Profil secara Real-time
-        function previewFile(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('previewImg').setAttribute('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // SweetAlert Notifikasi
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('status') === 'success') {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: 'Profil Anda telah diperbarui.',
-                confirmButtonColor: '#4f46e5'
-            });
-        } else if (urlParams.get('status') === 'error') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: 'Terjadi kesalahan saat menyimpan data.',
-                confirmButtonColor: '#ef4444'
-            });
-        }
-    </script>
 </body>
 
 </html>

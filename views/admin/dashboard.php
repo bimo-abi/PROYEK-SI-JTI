@@ -126,7 +126,7 @@ $current_page = 'dashboard';
                             <div class="info-body">
                                 <p><strong>NIP/ID :</strong> <?= htmlspecialchars($admin['nomor_induk'] ?? '-') ?></p>
                                 <p><strong>Email :</strong> <?= htmlspecialchars($admin['email'] ?? '-') ?></p>
-                                <p><strong>Akses :</strong> Full Access</p>
+                                <!-- <p><strong>Akses :</strong> Full Access</p> -->
                             </div>
                         </div>
                     </div>

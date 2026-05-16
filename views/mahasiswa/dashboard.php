@@ -93,7 +93,7 @@ $current_page = 'dashboard';
                 <div class="main-grid">
                     <!-- Kolom Kiri: Statistik & Notif -->
                     <div class="left-column">
-                        <div class="section-title"><i class="fas fa-th-large" style="margin-right: 10px; color: #00a2ed;"></i> Dashboard</div>
+                        <!-- <div class="section-title"><i class="fas fa-th-large" style="margin-right: 10px; color: #00a2ed;"></i> Dashboard</div> -->
                         <div class="stats-grid">
                             <div class="stat-card blue"> Semua Pengajuan <span><?= $stats['total'] ?? 0 ?></span></div>
                             <div class="stat-card green"> Pengajuan Diterima <span><?= $stats['diterima'] ?? 0 ?></span></div>
@@ -136,7 +136,7 @@ $current_page = 'dashboard';
                                 <img src="<?= $foto_sidebar ?? '../../assets/img/profiles/avatar.jpg' ?>?t=<?= time() ?>" alt="Mhs">
                             </div>
                             <p class="profile-name"><?= htmlspecialchars($mhs['nama']) ?></p>
-                            <p class="profile-role">Mahasiswa</p>
+                            <!-- <p class="profile-role">Mahasiswa</p> -->
                         </div>
 
                         <!-- Card Detail Info -->
