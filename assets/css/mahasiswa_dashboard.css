@@ -1,0 +1,211 @@
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-soft: rgba(37, 99, 235, 0.08);
+    --secondary: #64748b;
+    --background: #fdfdfd;
+    --surface: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --input-bg: #f8fafc;
+    
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+    
+    --radius-lg: 24px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mahasiswa-dashboard-content, .mahasiswa-dashboard-content *:not(i) {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+.mahasiswa-dashboard-content {
+    color: var(--text-main);
+    line-height: 1.5 !important;
+}
+
+.mahasiswa-dashboard-content .main-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 320px !important;
+    gap: 32px !important;
+}
+
+@media (max-width: 1024px) {
+    .mahasiswa-dashboard-content .main-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+.mahasiswa-dashboard-content .left-column {
+    flex: none !important;
+    width: auto !important;
+}
+
+.mahasiswa-dashboard-content .right-column {
+    width: auto !important;
+}
+
+.mahasiswa-dashboard-content .stat-card {
+    padding: 24px !important;
+    border-radius: 24px !important;
+    color: white !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: var(--transition) !important;
+    box-shadow: var(--shadow) !important;
+    display: block !important;
+}
+
+.mahasiswa-dashboard-content .stat-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.mahasiswa-dashboard-content .stat-card i {
+    position: absolute !important;
+    right: -10px !important;
+    bottom: -10px !important;
+    font-size: 5rem !important;
+    opacity: 0.15 !important;
+    top: auto !important;
+    left: auto !important;
+}
+
+.mahasiswa-dashboard-content .stat-card .label {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    opacity: 0.9 !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    text-shadow: none !important;
+}
+
+.mahasiswa-dashboard-content .stat-card .value {
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-shadow: none !important;
+}
+
+.mahasiswa-dashboard-content .blue { background: linear-gradient(135deg, #2563eb, #1d4ed8) !important; }
+.mahasiswa-dashboard-content .green { background: linear-gradient(135deg, #10b981, #059669) !important; }
+.mahasiswa-dashboard-content .orange { background: linear-gradient(135deg, #f59e0b, #d97706) !important; }
+.mahasiswa-dashboard-content .red { background: linear-gradient(135deg, #ef4444, #dc2626) !important; }
+
+.mahasiswa-dashboard-content .section-card {
+    background: var(--surface);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.mahasiswa-dashboard-content .section-title {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.mahasiswa-dashboard-content .notif-list {
+    list-style: none;
+}
+
+.mahasiswa-dashboard-content .notif-item {
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    transition: var(--transition);
+}
+
+.mahasiswa-dashboard-content .notif-item:hover {
+    background: var(--background);
+    border-color: #60a5fa; /* primary-light */
+}
+
+.mahasiswa-dashboard-content .profile-card-premium {
+    text-align: center;
+    background: var(--surface);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+}
+
+.mahasiswa-dashboard-content .profile-card-premium .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 32px;
+    margin: 0 auto 20px;
+    border: 4px solid var(--background) !important;
+    box-shadow: var(--shadow-md) !important;
+    padding: 0 !important;
+}
+
+.mahasiswa-dashboard-content .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.mahasiswa-dashboard-content .btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: white;
+}
+
+.mahasiswa-dashboard-content .btn-secondary {
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    margin-top: 8px;
+    border: none;
+}
+
+.mahasiswa-dashboard-content .btn-secondary:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+.mahasiswa-dashboard-content .text-primary {
+    color: var(--primary) !important;
+}
+
+.mahasiswa-dashboard-content .text-muted {
+    color: var(--text-muted) !important;
+}
