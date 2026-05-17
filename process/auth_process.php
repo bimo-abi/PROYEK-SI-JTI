@@ -23,18 +23,27 @@ if (isset($_GET['action'])) {
     $project_root = str_replace('/process', '', dirname($_SERVER['PHP_SELF']));
 
     // --- LOGIKA REGISTRASI ---
+    // --- LOGIKA REGISTRASI (FIXED FOR DOSEN EMAIL) ---
     if ($_GET['action'] == 'register') {
         $nama = Validator::sanitize($_POST['nama']);
-        $email = Validator::sanitize($_POST['email']);
         $peran = $_POST['role'] ?? 'mahasiswa';
 
+        // Tentukan email berdasarkan peran yang dipilih
+        if ($peran === 'dosen') {
+            $email = !empty($_POST['email_dosen']) ? Validator::sanitize($_POST['email_dosen']) : '';
+        } else {
+            $email = !empty($_POST['email']) ? Validator::sanitize($_POST['email']) : '';
+        }
+
+        // Validasi format khusus email mahasiswa
         if ($peran === 'mahasiswa' && !isStudentPolijeEmail($email)) {
             header("Location: " . $project_root . "/views/auth/register.php?error=email_format");
             exit();
         }
 
         if ($peran === 'dosen') {
-            $nim_nip = null;
+            // Dosen menggunakan NIP yang di-input ke field 'nip'
+            $nim_nip = !empty($_POST['nip']) ? Validator::sanitize($_POST['nip']) : null;
             $id_golongan = null;
             $id_prodi = null;
         } else {
