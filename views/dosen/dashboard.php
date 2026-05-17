@@ -57,6 +57,7 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Dashboard Dosen - SI-JTI</title>
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../../assets/css/mahasiswa_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -66,73 +67,103 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
         <div class="main-container">
             <?php include '../layouts/topbar_dosen.php'; ?>
 
-            <div class="content">
-                <div class="main-grid">
-                    <!-- Kolom Kiri: Statistik & Notif -->
-                    <div class="left-column">
-                        <div class="section-title"><i class="fas fa-home" style="margin-right: 10px;"></i> Dashboard Dosen</div>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-card blue"> Izin Sakit <span><?= $stats['sakit'] ?></span></div>
-                            <div class="stat-card green"> Kegiatan Kampus <span><?= $stats['kampus'] ?></span></div>
-                            <div class="stat-card orange"> Kegiatan Luar <span><?= $stats['luar_kampus'] ?></span></div>
-                        </div>
+            <div class="content mahasiswa-dashboard-content">
+                <div class="section-title" style="margin-bottom: 24px;">Dashboard Dosen</div>
+                
+                <!-- Stats Section -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px;">
+                    <div class="stat-card blue">
+                        <i class="fas fa-procedures"></i>
+                        <span class="label">Izin Sakit</span>
+                        <span class="value"><?= $stats['sakit'] ?></span>
+                    </div>
+                    <div class="stat-card green">
+                        <i class="fas fa-university"></i>
+                        <span class="label">Kegiatan Kampus</span>
+                        <span class="value"><?= $stats['kampus'] ?></span>
+                    </div>
+                    <div class="stat-card orange">
+                        <i class="fas fa-globe"></i>
+                        <span class="label">Kegiatan Luar</span>
+                        <span class="value"><?= $stats['luar_kampus'] ?></span>
+                    </div>
+                </div>
 
-                        <div class="notif-box" style="margin-top: 30px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                            <h4 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                                <i class="far fa-bell" style="color: #00a2ed;"></i> Notifikasi Pengajuan Baru
-                            </h4>
-                            <ul style="list-style: none; padding: 0;">
+                <div class="main-grid">
+                    <!-- Kolom Kiri: Notif -->
+                    <div class="left-column">
+                        <div class="section-card" style="margin-bottom: 24px;">
+                            <div class="section-title">
+                                <i class="fas fa-bell text-primary"></i> Notifikasi Pengajuan Baru
+                            </div>
+                            <div class="notif-list">
                                 <?php if (!empty($notifs)): ?>
                                     <?php foreach ($notifs as $n): ?>
-                                        <li style="padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-                                            <div>
-                                                <a href="detail_mahasiswa.php?id=<?= $n['id_pengajuan'] ?>" style="text-decoration: none; color: #333; font-weight: bold; display: block;">
-                                                    <?= htmlspecialchars($n['nama_mhs'] ?? '') ?>
-                                                </a>
-                                                <small style="color: #666;">Mengajukan: <?= htmlspecialchars($n['jenis_surat'] ?? '') ?></small>
+                                        <div class="notif-item" style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div style="display: flex; gap: 16px; align-items: flex-start; flex: 1;">
+                                                <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--background); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </div>
+                                                <div style="flex: 1;">
+                                                    <a href="detail_mahasiswa.php?id=<?= $n['id_pengajuan'] ?>" style="text-decoration: none; color: inherit;">
+                                                        <p style="margin: 0; font-weight: 600; font-size: 0.9375rem;">
+                                                            <?= htmlspecialchars($n['nama_mhs'] ?? '') ?>
+                                                        </p>
+                                                    </a>
+                                                    <small style="color: var(--text-muted);">Mengajukan: <?= htmlspecialchars($n['jenis_surat'] ?? '') ?></small>
+                                                </div>
                                             </div>
-                                            <div style="text-align: right;">
-                                                <span style="display: block; font-size: 0.75rem; color: #999;"><?= date('d M, H:i', strtotime($n['tanggal_pengajuan'])) ?></span>
-                                                <span style="font-size: 0.7rem; background: #e3f2fd; color: #00a2ed; padding: 2px 8px; border-radius: 10px; font-weight: bold;">BARU</span>
+                                            <div style="text-align: right; min-width: 100px;">
+                                                <span style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;"><?= date('d M, H:i', strtotime($n['tanggal_pengajuan'])) ?></span>
+                                                <span style="font-size: 0.7rem; background: #e3f2fd; color: #00a2ed; padding: 4px 8px; border-radius: 10px; font-weight: bold;">BARU</span>
                                             </div>
-                                        </li>
+                                        </div>
                                     <?php endforeach; ?>
-                                    <li style="text-align: center; margin-top: 15px;">
-                                        <a href="data_mahasiswa.php" style="color: #00a2ed; text-decoration: none; font-size: 0.85rem; font-weight: bold;">Lihat Semua Data <i class="fas fa-arrow-right"></i></a>
-                                    </li>
                                 <?php else: ?>
-                                    <li style="color: #888; text-align: center; padding: 20px;">Belum ada pengajuan baru yang belum dibaca.</li>
+                                    <div style="text-align: center; color: var(--text-muted); padding: 20px;">
+                                        <p>Belum ada pengajuan baru yang belum dibaca.</p>
+                                    </div>
                                 <?php endif; ?>
-                            </ul>
+                            </div>
+                            <?php if (!empty($notifs)): ?>
+                            <div style="margin-top: 24px; text-align: center;">
+                                <a href="data_mahasiswa.php" class="btn-primary" style="display: inline-flex; width: auto; padding: 12px 32px;">
+                                    Lihat Semua Data <i class="fas fa-arrow-right" style="margin-left: 8px; margin-right: 0;"></i>
+                                </a>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
                     <!-- Kolom Kanan: Info Profil -->
                     <div class="right-column">
-                        <div class="profile-card">
-                            <div class="avatar-wrapper">
+                        <div class="profile-card-premium">
+                            <div class="avatar-wrapper" style="position: relative; display: inline-block;">
                                 <?php 
                                     $foto = !empty($dosen['foto_profil']) ? "../../assets/img/profiles/" . $dosen['foto_profil'] : "../../assets/img/profiles/avatar.jpg";
                                 ?>
-                                <img src="<?= $foto ?>?t=<?= time() ?>" alt="Dosen Avatar">
+                                <img src="<?= $foto ?>?t=<?= time() ?>" alt="Dosen Avatar" class="avatar">
+                                <div style="position: absolute; bottom: 15px; right: 5px; width: 24px; height: 24px; background: var(--success); border: 4px solid var(--surface); border-radius: 50%;"></div>
                             </div>
-                            <p class="profile-name"><?= htmlspecialchars($dosen['nama']) ?></p>
-                            <p class="profile-role">Dosen</p>
-                        </div>
-
-                        <div class="info-card">
-                            <div class="info-header">
-                                <h5>Info Profil</h5>
+                            <h3 style="margin-bottom: 4px;"><?= htmlspecialchars($dosen['nama']) ?></h3>
+                            <p style="color: var(--primary); font-weight: 700; font-size: 0.875rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px;">Dosen Aktif</p>
+                            
+                            <div style="text-align: left; background: var(--background); padding: 20px; border-radius: 20px;">
+                                <div style="margin-bottom: 12px;">
+                                    <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.7rem;">NIP/NIDN</small>
+                                    <p style="margin: 0; font-weight: 600; font-size: 0.9rem;"><?= htmlspecialchars($dosen['nomor_induk'] ?? '-') ?></p>
+                                </div>
+                                <div>
+                                    <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.7rem;">Email</small>
+                                    <p style="margin: 0; font-weight: 600; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($dosen['email'] ?? '-') ?></p>
+                                </div>
                             </div>
-                            <div class="info-body">
-                                <p><strong>NIP/NIDN :</strong> <?= htmlspecialchars($dosen['nomor_induk'] ?? '-') ?></p>
-                                <p><strong>Email :</strong> <?= htmlspecialchars($dosen['email'] ?? '-') ?></p>
-                                <p><strong>Status :</strong> Dosen Aktif</p>
-                            </div>
+                            
+                            <a href="profil.php" class="btn-secondary" style="margin-top: 24px; width: 100%;">
+                                <i class="fas fa-user-edit" style="margin-right: 8px;"></i> Edit Profil
+                            </a>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

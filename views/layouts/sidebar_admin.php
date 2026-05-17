@@ -65,7 +65,7 @@ if (isset($_SESSION['foto_profil']) && !empty($_SESSION['foto_profil'])) {
     </ul>
 
     <div class="sidebar-logout">
-        <a href="../../process/auth_process.php?action=logout" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+        <a href="../../process/logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
             <i class="fas fa-sign-out-alt"></i> Keluar
         </a>
     </div>

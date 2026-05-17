@@ -47,7 +47,7 @@ if (isset($_SESSION['user_id']) && isset($db)) {
     </ul>
 
     <div class="sidebar-logout">
-        <a href="../../process/auth_process.php?action=logout" onclick="return confirm('Apakah anda yakin ingin keluar?')">
+        <a href="../../process/logout.php" onclick="return confirm('Apakah anda yakin ingin keluar?')">
             <i class="fas fa-sign-out-alt"></i> Keluar
         </a>
     </div>
