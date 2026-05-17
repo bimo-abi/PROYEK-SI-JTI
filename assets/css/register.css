@@ -1,100 +1,72 @@
-/* REGISTER SPECIFIC STYLES */
+/* ==========================================================================
+   REGISTER SPECIFIC STYLES - 100% CLEAN
+   ========================================================================== */
+
+/* Membuat grid 2 kolom yang presisi */
 .form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
-.alert-danger {
-  background-color: #fff5f5;
-  color: #e03131;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border-left: 4px solid #e03131;
-  margin-bottom: 20px;
-  font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  animation: fadeIn 0.3s ease-in;
-}
-/* Tambahan untuk halaman Lupa Password */
-.auth-page {
-  background: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  font-family: "Inter", sans-serif;
+/* Container penyeimbang posisi ikon mata & chevron */
+.input-relative-container {
+    position: relative;
+    width: 100%;
 }
 
-.auth-card {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f1f5f9;
+/* Memastikan input text & select di dalam grid berukuran seragam */
+.input-relative-container .form-input,
+.input-relative-container input,
+.input-relative-container select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding-left: 48px !important;  /* Ruang ikon kiri */
+    padding-right: 42px !important; /* Ruang ikon kanan */
 }
 
-.subtitle {
-  color: #64748b;
-  font-size: 0.95rem;
-  line-height: 1.5;
+/* Mengunci posisi ikon kiri agar tepat di tengah vertikal kotak */
+.input-relative-container > i:first-child {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    pointer-events: none;
+    z-index: 5;
 }
 
-.btn-primary {
-  background: #4f46e5;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+/* Mengunci posisi ikon kanan (Mata password & panah dropdown) */
+.input-relative-container .toggle-password,
+.input-relative-container .fa-chevron-down {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 0.95rem;
+    z-index: 5;
 }
 
-.btn-primary:hover {
-  background: #4338ca;
-  transform: translateY(-1px);
+.input-relative-container .toggle-password {
+    cursor: pointer;
+    transition: color 0.2s;
 }
 
-.password-wrapper {
-  position: relative;
-  width: 100%;
+.input-relative-container .toggle-password:hover {
+    color: #2563eb;
 }
 
-.password-wrapper input {
-  padding-right: 45px !important; /* Memberi ruang di kanan agar teks tidak tertutup ikon mata */
-}
-
-.toggle-password {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #94a3b8;
-  z-index: 10;
-  transition: color 0.2s;
-}
-
-.toggle-password:hover {
-  color: #4f46e5;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Menghilangkan panah default bawaan browser pada select */
+.input-relative-container select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 @media (max-width: 480px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 }
