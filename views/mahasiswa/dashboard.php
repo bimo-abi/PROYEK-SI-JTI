@@ -39,21 +39,24 @@ $stmtStats = $db->prepare($queryStats);
 $stmtStats->execute([$nim_mhs]);
 $stats = $stmtStats->fetch(PDO::FETCH_ASSOC);
 
-// 3. Fetch Notifications & Unread Surats
-$queryNotif = "SELECT pesan, created_at FROM notifikasi WHERE nim = ? AND is_read = 0 ORDER BY created_at DESC LIMIT 5";
+// 3. Fetch Notifications
+$queryNotif = "SELECT id_pengajuan, jenis_surat, status, tanggal_pengajuan as created_at 
+               FROM pengajuan_surat 
+               WHERE nim = ? AND status IN ('disetujui', 'ditolak') AND is_read = 0 
+               ORDER BY tanggal_pengajuan DESC LIMIT 5";
 $stmtNotif = $db->prepare($queryNotif);
 $stmtNotif->execute([$nim_mhs]);
 $notifs_db = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);
 
 $notifs = [];
-foreach ($notifs_db as $n) {
-    $n['status'] = 'info';
-    $notifs[] = $n;
+foreach ($notifs_db as $s) {
+    $is_disetujui = ($s['status'] == 'disetujui');
+    $notifs[] = [
+        'id_pengajuan' => $s['id_pengajuan'],
+        'pesan' => "Surat " . strtoupper($s['jenis_surat']) . " telah " . ($is_disetujui ? 'disetujui' : 'ditolak') . ".",
+        'created_at' => $s['created_at']
+    ];
 }
-usort($notifs, function($a, $b) {
-    return strtotime($b['created_at']) - strtotime($a['created_at']);
-});
-$notifs = array_slice($notifs, 0, 5);
 
 $current_page = 'dashboard';
 ?>
@@ -116,9 +119,11 @@ $current_page = 'dashboard';
                                                     <i class="fas fa-info-circle"></i>
                                                 </div>
                                                 <div style="flex: 1;">
-                                                    <p style="margin: 0; font-weight: 600; font-size: 0.9375rem;">
-                                                        <?= htmlspecialchars($notif['pesan']) ?>
-                                                    </p>
+                                                    <a href="detail_pengajuan.php?id=<?= $notif['id_pengajuan'] ?>" style="text-decoration: none; color: inherit;">
+                                                        <p style="margin: 0; font-weight: 600; font-size: 0.9375rem;">
+                                                            <?= htmlspecialchars($notif['pesan']) ?>
+                                                        </p>
+                                                    </a>
                                                     <small style="color: var(--text-muted);"><?= date('d M Y, H:i', strtotime($notif['created_at'])) ?></small>
                                                 </div>
                                             </div>

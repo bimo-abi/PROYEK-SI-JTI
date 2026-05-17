@@ -30,6 +30,12 @@ try {
     $stmt->execute([$id_pengajuan]);
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    if ($data) {
+        // Tandai notifikasi sudah dibaca oleh dosen
+        $updateRead = $db->prepare("UPDATE pengajuan_surat SET is_read_dosen = 1 WHERE id_pengajuan = ?");
+        $updateRead->execute([$id_pengajuan]);
+    }
+
     if (!$data) {
         die("Data pengajuan tidak ditemukan.");
     }

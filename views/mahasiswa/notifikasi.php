@@ -25,7 +25,7 @@ try {
         $notifs_db = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Ambil surat terverifikasi atau ditolak
-        $queryUnread = "SELECT id_pengajuan, jenis_surat, tanggal_pengajuan, status FROM pengajuan_surat WHERE nim = ? AND status IN ('disetujui', 'ditolak') ORDER BY tanggal_pengajuan DESC LIMIT 10";
+        $queryUnread = "SELECT id_pengajuan, jenis_surat, tanggal_pengajuan, status, is_read FROM pengajuan_surat WHERE nim = ? AND status IN ('disetujui', 'ditolak') ORDER BY tanggal_pengajuan DESC LIMIT 10";
         $stmtUnread = $db->prepare($queryUnread);
         $stmtUnread->execute([$nim]);
         $unread_surats = $stmtUnread->fetchAll(PDO::FETCH_ASSOC);
@@ -37,7 +37,7 @@ try {
                 'judul' => $is_disetujui ? 'Surat Disetujui' : 'Surat Ditolak',
                 'pesan' => "Surat pengajuan " . $s['jenis_surat'] . " Anda telah " . ($is_disetujui ? 'disetujui' : 'ditolak') . ". Klik untuk melihat detail.",
                 'created_at' => $s['tanggal_pengajuan'],
-                'is_read' => 0,
+                'is_read' => $s['is_read'],
                 'is_unread_surat' => true,
                 'id_pengajuan' => $s['id_pengajuan']
             ];
