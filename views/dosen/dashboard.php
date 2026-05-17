@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'dosen') {
 $current_page = 'dashboard';
 
 use Config\Database;
+
 $db = (new Database())->getConnection();
 $user_id = $_SESSION['user_id'];
 
@@ -39,20 +40,18 @@ foreach ($resStats as $s) {
     }
 }
 
-// 3. Query Notifikasi Baru (Belum dibaca oleh dosen)
-// Kita ambil surat yang sudah disetujui/terverifikasi sebagai notifikasi untuk Dosen
 $queryNotif = "SELECT p.id_pengajuan, p.jenis_surat, p.tanggal_pengajuan, u.nama as nama_mhs 
                FROM pengajuan_surat p
                JOIN detail_pengguna d ON p.nim = d.nomor_induk
                JOIN pengguna u ON d.id_pengguna = u.id
-               WHERE p.status IN ('disetujui', 'terverifikasi') AND p.is_read_dosen = 0
+               WHERE p.status = 'menunggu'
                ORDER BY p.tanggal_pengajuan DESC LIMIT 5";
 $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Dosen - SI-JTI</title>
@@ -60,6 +59,7 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../assets/css/mahasiswa_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <div class="wrapper">
         <?php include '../layouts/sidebar_dosen.php'; ?>
@@ -69,7 +69,7 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="content mahasiswa-dashboard-content">
                 <div class="section-title" style="margin-bottom: 24px;">Dashboard Dosen</div>
-                
+
                 <!-- Stats Section -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px;">
                     <div class="stat-card blue">
@@ -126,11 +126,11 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
                                 <?php endif; ?>
                             </div>
                             <?php if (!empty($notifs)): ?>
-                            <div style="margin-top: 24px; text-align: center;">
-                                <a href="data_mahasiswa.php" class="btn-primary" style="display: inline-flex; width: auto; padding: 12px 32px;">
-                                    Lihat Semua Data <i class="fas fa-arrow-right" style="margin-left: 8px; margin-right: 0;"></i>
-                                </a>
-                            </div>
+                                <div style="margin-top: 24px; text-align: center;">
+                                    <a href="data_mahasiswa.php" class="btn-primary" style="display: inline-flex; width: auto; padding: 12px 32px;">
+                                        Lihat Semua Data <i class="fas fa-arrow-right" style="margin-left: 8px; margin-right: 0;"></i>
+                                    </a>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -139,15 +139,15 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
                     <div class="right-column">
                         <div class="profile-card-premium">
                             <div class="avatar-wrapper" style="position: relative; display: inline-block;">
-                                <?php 
-                                    $foto = !empty($dosen['foto_profil']) ? "../../assets/img/profiles/" . $dosen['foto_profil'] : "../../assets/img/profiles/avatar.jpg";
+                                <?php
+                                $foto = !empty($dosen['foto_profil']) ? "../../assets/img/profiles/" . $dosen['foto_profil'] : "../../assets/img/profiles/avatar.jpg";
                                 ?>
                                 <img src="<?= $foto ?>?t=<?= time() ?>" alt="Dosen Avatar" class="avatar">
                                 <div style="position: absolute; bottom: 15px; right: 5px; width: 24px; height: 24px; background: var(--success); border: 4px solid var(--surface); border-radius: 50%;"></div>
                             </div>
                             <h3 style="margin-bottom: 4px;"><?= htmlspecialchars($dosen['nama']) ?></h3>
                             <p style="color: var(--primary); font-weight: 700; font-size: 0.875rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px;">Dosen Aktif</p>
-                            
+
                             <div style="text-align: left; background: var(--background); padding: 20px; border-radius: 20px;">
                                 <div style="margin-bottom: 12px;">
                                     <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.7rem;">NIP/NIDN</small>
@@ -158,7 +158,7 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
                                     <p style="margin: 0; font-weight: 600; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($dosen['email'] ?? '-') ?></p>
                                 </div>
                             </div>
-                            
+
                             <a href="profil.php" class="btn-secondary" style="margin-top: 24px; width: 100%;">
                                 <i class="fas fa-user-edit" style="margin-right: 8px;"></i> Edit Profil
                             </a>
@@ -169,4 +169,5 @@ $notifs = $db->query($queryNotif)->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </body>
+
 </html>

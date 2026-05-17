@@ -39,11 +39,11 @@ $stmtStats = $db->prepare($queryStats);
 $stmtStats->execute([$nim_mhs]);
 $stats = $stmtStats->fetch(PDO::FETCH_ASSOC);
 
-// 3. Fetch Notifications
-$queryNotif = "SELECT id_pengajuan, jenis_surat, status, tanggal_pengajuan as created_at 
-               FROM pengajuan_surat 
-               WHERE nim = ? AND status IN ('disetujui', 'ditolak') AND is_read = 0 
-               ORDER BY tanggal_pengajuan DESC LIMIT 5";
+$queryNotif = "SELECT pesan, created_at FROM notifikasi WHERE nim = ? AND is_read = 0 ORDER BY created_at DESC LIMIT 5";
+// $queryNotif = "SELECT id_pengajuan, jenis_surat, status, tanggal_pengajuan as created_at 
+//                FROM pengajuan_surat 
+//                WHERE nim = ? AND status IN ('disetujui', 'ditolak') AND is_read = 0 
+//                ORDER BY tanggal_pengajuan DESC LIMIT 5";
 $stmtNotif = $db->prepare($queryNotif);
 $stmtNotif->execute([$nim_mhs]);
 $notifs_db = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);

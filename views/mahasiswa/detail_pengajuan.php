@@ -23,11 +23,10 @@ $stmt = $db->prepare($query);
 $stmt->execute([$id_pengajuan]);
 $surat = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($surat) {
-    // Tandai sudah dibaca oleh mahasiswa
-    $updateRead = $db->prepare("UPDATE pengajuan_surat SET is_read = 1 WHERE id_pengajuan = ?");
-    $updateRead->execute([$id_pengajuan]);
-}
+// if ($surat) {
+//     $updateRead = $db->prepare("UPDATE pengajuan_surat SET is_read = 1 WHERE id_pengajuan = ?");
+//     $updateRead->execute([$id_pengajuan]);
+// }
 
 if (!$surat) {
     die("Data pengajuan tidak ditemukan.");
