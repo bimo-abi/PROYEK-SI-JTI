@@ -130,12 +130,14 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                     </div>
 
                     <div id="dosen-fields" style="display: none;">
-                        <div class="form-group">
-                            <label>Email Dosen</label>
-                            <div class="input-relative-container">
-                                <i class="fas fa-envelope"></i>
-                                <input type="email" name="email_dosen" placeholder="nama@polije.ac.id" id="input-email-dosen">
-                            </div>
+                        <div class="input-group" style="margin-bottom: 15px;">
+                            <label for="input-nip"><i class="fas fa-id-card"></i> NIP / NIDN</label>
+                            <input type="text" id="input-nip" name="nip" placeholder="Masukkan NIP atau NIDN Anda">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="input-email-dosen"><i class="fas fa-envelope"></i> Email Dosen</label>
+                            <input type="email" id="input-email-dosen" name="email_dosen" placeholder="contoh@polije.ac.id">
                         </div>
                     </div>
 
@@ -186,7 +188,6 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
             }
         }
 
-        // Logika Pilihan Input Role Dinamis
         document.getElementById('input-role').addEventListener('change', function() {
             const role = this.value;
             const mhsFields = document.getElementById('mhs-fields');
@@ -197,6 +198,7 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
             const prodiInput = document.getElementById('input-prodi');
             const golInput = document.getElementById('input-golongan');
             const emailDosen = document.getElementById('input-email-dosen');
+            const nipInput = document.getElementById('input-nip'); // Ambil elemen NIP baru
 
             if (role === 'mahasiswa') {
                 mhsFields.style.display = 'block';
@@ -207,6 +209,10 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                 if (prodiInput) prodiInput.required = true;
                 if (golInput) golInput.required = true;
                 if (emailDosen) emailDosen.required = false;
+                if (nipInput) {
+                    nipInput.required = false;
+                    nipInput.value = ""; // Bersihkan jika tidak sengaja terisi
+                }
             } else {
                 mhsFields.style.display = 'none';
                 dosenFields.style.display = 'block';
@@ -215,7 +221,9 @@ $dataGolongan = $db->query("SELECT * FROM golongan")->fetchAll();
                 if (emailMhs) emailMhs.required = false;
                 if (prodiInput) prodiInput.required = false;
                 if (golInput) golInput.required = false;
+
                 if (emailDosen) emailDosen.required = true;
+                if (nipInput) nipInput.required = true; // Dosen WAJIB isi NIP
             }
         });
 
