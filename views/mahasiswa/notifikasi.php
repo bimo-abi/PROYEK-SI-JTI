@@ -10,48 +10,59 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $db = (new Database())->getConnection();
-
-// Pastikan kita menggunakan variabel $notifs (sesuai yang dipanggil di HTML kamu)
 $notifs = [];
 
 try {
-    // Gunakan NIM dari session yang sudah kita set di proses login tadi
     $nim = $_SESSION['nim'] ?? null;
 
     if ($nim) {
-        $query = "SELECT * FROM notifikasi WHERE nim = ? ORDER BY created_at DESC";
-        $stmt = $db->prepare($query);
-        $stmt->execute([$nim]);
-        $notifs_db = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // 1. Ambil data pengajuan surat langsung dari tabel utama tanpa kolom is_read
+        $querySurat = "SELECT id_pengajuan, jenis_surat, tanggal_pengajuan, status 
+                       FROM pengajuan_surat 
+                       WHERE nim = ? 
+                       ORDER BY tanggal_pengajuan DESC LIMIT 15";
+        $stmtSurat = $db->prepare($querySurat);
+        $stmtSurat->execute([$nim]);
+        $daftar_surat = $stmtSurat->fetchAll(PDO::FETCH_ASSOC);
 
-        // Ambil surat terverifikasi atau ditolak
-        $queryUnread = "SELECT id_pengajuan, jenis_surat, tanggal_pengajuan, status, is_read FROM pengajuan_surat WHERE nim = ? AND status IN ('disetujui', 'ditolak') ORDER BY tanggal_pengajuan DESC LIMIT 10";
-        $stmtUnread = $db->prepare($queryUnread);
-        $stmtUnread->execute([$nim]);
-        $unread_surats = $stmtUnread->fetchAll(PDO::FETCH_ASSOC);
+        // 2. Olah data surat menjadi teks notifikasi secara dinamis
+        foreach ($daftar_surat as $s) {
+            $statusText = strtolower($s['status']);
+            $judul = "Pembaruan Pengajuan Surat";
 
-        $notifs = [];
-        foreach ($unread_surats as $s) {
-            $is_disetujui = $s['status'] == 'disetujui';
+            if ($statusText === 'menunggu') {
+                $pesan = "Surat pengajuan '" . htmlspecialchars($s['jenis_surat']) . "' Anda telah dikirim dan saat ini sedang menunggu verifikasi.";
+                $icon = "fa-clock";
+                $iconColor = "#eab308"; // Kuning
+            } else if ($statusText === 'terverifikasi' || $statusText === 'disetujui') {
+                $pesan = "Selamat! Surat pengajuan '" . htmlspecialchars($s['jenis_surat']) . "' Anda telah disetujui dan terverifikasi.";
+                $icon = "fa-check-circle";
+                $iconColor = "#16a34a"; // Hijau
+            } else if ($statusText === 'ditolak') {
+                $pesan = "Maaf, surat pengajuan '" . htmlspecialchars($s['jenis_surat']) . "' Anda ditolak oleh Admin/Dosen.";
+                $icon = "fa-times-circle";
+                $iconColor = "#dc2626"; // Merah
+            } else {
+                $pesan = "Surat pengajuan '" . htmlspecialchars($s['jenis_surat']) . "' Anda saat ini berstatus: " . htmlspecialchars($s['status']) . ".";
+                $icon = "fa-info-circle";
+                $iconColor = "#2563eb"; // Biru
+            }
+
+            // Simpan ke array $notifs agar dibaca oleh HTML struktur bawah
             $notifs[] = [
-                'judul' => $is_disetujui ? 'Surat Disetujui' : 'Surat Ditolak',
-                'pesan' => "Surat pengajuan " . $s['jenis_surat'] . " Anda telah " . ($is_disetujui ? 'disetujui' : 'ditolak') . ". Klik untuk melihat detail.",
-                'created_at' => $s['tanggal_pengajuan'],
-                'is_read' => $s['is_read'],
-                'is_unread_surat' => true,
-                'id_pengajuan' => $s['id_pengajuan']
+                'id_pengajuan' => $s['id_pengajuan'],
+                'judul'        => $judul,
+                'pesan'        => $pesan,
+                'created_at'   => $s['tanggal_pengajuan'],
+                'status'       => $s['status'],
+                'icon'         => $icon,
+                'icon_color'   => $iconColor
             ];
         }
-        foreach ($notifs_db as $n) {
-            $n['is_unread_surat'] = false;
-            $notifs[] = $n;
-        }
     }
-} catch (Exception $e) {
-    // Opsional: log error jika gagal
+} catch (PDOException $e) {
+    die("Gagal mengambil data notifikasi: " . $e->getMessage());
 }
-
-$current_page = 'notifikasi';
 ?>
 
 <!DOCTYPE html>
@@ -98,24 +109,18 @@ $current_page = 'notifikasi';
                 <div class="notif-main-container" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                     <?php if (count($notifs) > 0): ?>
                         <?php foreach ($notifs as $n): ?>
-                            <div class="notif-item <?= $n['is_read'] == 0 ? 'unread' : '' ?>"
-                                <?= (isset($n['is_unread_surat']) && $n['is_unread_surat']) ? 'onclick="window.location.href=\'detail_pengajuan.php?id='.$n['id_pengajuan'].'\'"' : '' ?>
+                            <div class="notif-item <?= strtolower($n['status']) === 'menunggu' ? 'unread' : '' ?>"
+                                onclick="window.location.href='detail_pengajuan.php?id=<?= $n['id_pengajuan'] ?>'"
                                 style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px;">
 
-                                <div class="notif-icon" style="background: <?= $n['is_read'] == 0 ? '#e3f2fd' : '#f5f5f5' ?>; color: <?= $n['is_read'] == 0 ? '#00a2ed' : '#9e9e9e' ?>; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem;">
-                                    <i class="fas <?= $n['is_read'] == 0 ? 'fa-envelope' : 'fa-envelope-open' ?>"></i>
+                                <div style="background: #f4f7fe; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: <?= $n['icon_color'] ?? '#2563eb' ?>; font-size: 1.2rem;">
+                                    <i class="fas <?= $n['icon'] ?? 'fa-bell' ?>"></i>
                                 </div>
 
                                 <div class="notif-body" style="flex: 1;">
                                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                        <h5 style="margin: 0; color: #333; font-weight: <?= $n['is_read'] == 0 ? 'bold' : 'normal' ?>;">
-                                            <?php if (isset($n['is_unread_surat']) && $n['is_unread_surat']): ?>
-                                                <a href="detail_pengajuan.php?id=<?= $n['id_pengajuan'] ?>" style="text-decoration: none; color: inherit;">
-                                                    <?= htmlspecialchars($n['judul']) ?>
-                                                </a>
-                                            <?php else: ?>
-                                                <?= htmlspecialchars($n['judul']) ?>
-                                            <?php endif; ?>
+                                        <h5 style="margin: 0; color: #333; font-weight: <?= strtolower($n['status']) === 'menunggu' ? 'bold' : 'normal' ?>;">
+                                            <?= htmlspecialchars($n['judul']) ?>
                                         </h5>
                                         <small style="color: #999; font-size: 0.75rem;">
                                             <i class="far fa-clock"></i> <?= date('d M, H:i', strtotime($n['created_at'])) ?>

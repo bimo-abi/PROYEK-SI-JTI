@@ -39,23 +39,51 @@ $stmtStats = $db->prepare($queryStats);
 $stmtStats->execute([$nim_mhs]);
 $stats = $stmtStats->fetch(PDO::FETCH_ASSOC);
 
-$queryNotif = "SELECT pesan, created_at FROM notifikasi WHERE nim = ? AND is_read = 0 ORDER BY created_at DESC LIMIT 5";
-// $queryNotif = "SELECT id_pengajuan, jenis_surat, status, tanggal_pengajuan as created_at 
-//                FROM pengajuan_surat 
-//                WHERE nim = ? AND status IN ('disetujui', 'ditolak') AND is_read = 0 
-//                ORDER BY tanggal_pengajuan DESC LIMIT 5";
-$stmtNotif = $db->prepare($queryNotif);
-$stmtNotif->execute([$nim_mhs]);
-$notifs_db = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);
+$notifications = [];
+if (!empty($nim_mhs)) {
+    try {
+        $queryNotifDirect = "SELECT id_pengajuan, jenis_surat, status, tanggal_pengajuan 
+                             FROM pengajuan_surat 
+                             WHERE nim = ? 
+                             ORDER BY tanggal_pengajuan DESC LIMIT 5";
+        $stmtNotifDirect = $db->prepare($queryNotifDirect);
+        $stmtNotifDirect->execute([$nim_mhs]);
+        $surat_notif = $stmtNotifDirect->fetchAll(PDO::FETCH_ASSOC);
 
-$notifs = [];
-foreach ($notifs_db as $s) {
-    $is_disetujui = ($s['status'] == 'disetujui');
-    $notifs[] = [
-        'id_pengajuan' => $s['id_pengajuan'],
-        'pesan' => "Surat " . strtoupper($s['jenis_surat']) . " telah " . ($is_disetujui ? 'disetujui' : 'ditolak') . ".",
-        'created_at' => $s['created_at']
-    ];
+        // Tukar data surat menjadi format teks notifikasi yang dinamik
+        foreach ($surat_notif as $s) {
+            $statusText = strtolower($s['status']);
+            $judul = "Pembaruan Status Surat";
+
+            if ($statusText === 'menunggu') {
+                $pesan = "Surat '" . htmlspecialchars($s['jenis_surat']) . "' telah dihantar & sedang menunggu verifikasi.";
+                $icon = "fa-clock";
+                $color = "#eab308"; // Kuning
+            } elseif ($statusText === 'terverifikasi' || $statusText === 'disetujui') {
+                $pesan = "done! Surat '" . htmlspecialchars($s['jenis_surat']) . "' anda telah DISETUJUI.";
+                $icon = "fa-check-circle";
+                $color = "#16a34a"; // Hijau
+            } elseif ($statusText === 'ditolak') {
+                $pesan = "Maaf, surat '" . htmlspecialchars($s['jenis_surat']) . "' anda telah DITOLAK.";
+                $icon = "fa-times-circle";
+                $color = "#dc2626"; // Merah
+            } else {
+                $pesan = "Surat '" . htmlspecialchars($s['jenis_surat']) . "' berstatus " . htmlspecialchars($s['status']) . ".";
+                $icon = "fa-info-circle";
+                $color = "#2563eb"; // Biru
+            }
+
+            $notifications[] = [
+                'judul'      => $judul,
+                'pesan'      => $pesan,
+                'created_at' => $s['tanggal_pengajuan'],
+                'icon'       => $icon,
+                'color'      => $color
+            ];
+        }
+    } catch (PDOException $e) {
+        // Log error jika ada masalah query
+    }
 }
 
 $current_page = 'dashboard';
@@ -63,6 +91,7 @@ $current_page = 'dashboard';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,6 +100,7 @@ $current_page = 'dashboard';
     <link rel="stylesheet" href="../../assets/css/mahasiswa_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
     <div class="wrapper">
         <?php include '../layouts/sidebar.php'; ?>
@@ -110,27 +140,27 @@ $current_page = 'dashboard';
                             <div class="section-title">
                                 <i class="fas fa-bell text-primary"></i> Notifikasi Terbaru
                             </div>
-                            <div class="notif-list">
-                                <?php if (!empty($notifs)): ?>
-                                    <?php foreach ($notifs as $notif): ?>
-                                        <div class="notif-item">
-                                            <div style="display: flex; gap: 16px; align-items: flex-start;">
-                                                <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--background); display: flex; align-items: center; justify-content: center; color: var(--primary);">
-                                                    <i class="fas fa-info-circle"></i>
-                                                </div>
-                                                <div style="flex: 1;">
-                                                    <a href="detail_pengajuan.php?id=<?= $notif['id_pengajuan'] ?>" style="text-decoration: none; color: inherit;">
-                                                        <p style="margin: 0; font-weight: 600; font-size: 0.9375rem;">
-                                                            <?= htmlspecialchars($notif['pesan']) ?>
-                                                        </p>
-                                                    </a>
-                                                    <small style="color: var(--text-muted);"><?= date('d M Y, H:i', strtotime($notif['created_at'])) ?></small>
-                                                </div>
+                            <div class="notification-container">
+                                <?php if (!empty($notifications)): ?>
+                                    <?php foreach ($notifications as $n): ?>
+                                        <div class="notification-item" style="display: flex; gap: 15px; padding: 12px; border-bottom: 1px solid #f1f5f9; align-items: center;">
+                                            <div class="notif-icon" style="color: <?= $n['color'] ?>; font-size: 1.2rem;">
+                                                <i class="fas <?= $n['icon'] ?>"></i>
+                                            </div>
+                                            <div class="notif-content" style="flex: 1;">
+                                                <h5 style="margin: 0; font-size: 0.9rem; font-weight: 600; color: #1e293b;"><?= htmlspecialchars($n['judul']) ?></h5>
+                                                <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;"><?= htmlspecialchars($n['pesan']) ?></p>
+                                            </div>
+                                            <div class="notif-time">
+                                                <small style="color: #94a3b8; font-size: 0.7rem;"><?= date('d M', strtotime($n['created_at'])) ?></small>
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <p style="text-align: center; color: var(--text-muted); padding: 20px;">Tidak ada notifikasi baru.</p>
+                                    <div style="text-align: center; padding: 20px; color: #94a3b8;">
+                                        <i class="fas fa-bell-slash" style="font-size: 1.5rem; margin-bottom: 8px;"></i>
+                                        <p style="margin: 0; font-size: 0.85rem;">Belum ada pembaruan notifikasi surat.</p>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                             <div style="margin-top: 24px; text-align: center;">
@@ -150,7 +180,7 @@ $current_page = 'dashboard';
                             </div>
                             <h3 style="margin-bottom: 4px;"><?= htmlspecialchars($mhs['nama']) ?></h3>
                             <p style="color: var(--primary); font-weight: 700; font-size: 0.875rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px;">Mahasiswa Aktif</p>
-                            
+
                             <div style="text-align: left; background: var(--background); padding: 20px; border-radius: 20px;">
                                 <div style="margin-bottom: 12px;">
                                     <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.7rem;">Program Studi</small>
@@ -176,4 +206,5 @@ $current_page = 'dashboard';
         </div>
     </div>
 </body>
+
 </html>
