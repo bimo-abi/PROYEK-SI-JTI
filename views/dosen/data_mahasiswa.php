@@ -31,6 +31,7 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Data Mahasiswa - Dosen SI-JTI</title>
@@ -46,22 +47,27 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
             padding: 15px;
             border-radius: 10px;
         }
+
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
+
         .filter-group label {
             font-size: 0.8rem;
             font-weight: bold;
             color: #666;
         }
-        .filter-group select, .filter-group input {
+
+        .filter-group select,
+        .filter-group input {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
             font-size: 0.9rem;
         }
+
         .btn-today {
             padding: 8px 15px;
             border: none;
@@ -73,10 +79,12 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
             align-self: flex-end;
             transition: 0.3s;
         }
+
         .btn-today.active {
             background: #007bb5;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
+
         .action-btn {
             padding: 6px 12px;
             border-radius: 6px;
@@ -85,26 +93,30 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
             font-weight: bold;
             transition: 0.3s;
         }
+
         .btn-detail {
             background: #e3f2fd;
             color: #00a2ed;
             border: 1px solid #00a2ed;
         }
+
         .btn-detail:hover {
             background: #00a2ed;
             color: white;
         }
+
         .hidden-row {
             display: none !important;
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <?php include '../layouts/sidebar_dosen.php'; ?>
         <div class="main-container">
             <?php include '../layouts/topbar_dosen.php'; ?>
-            
+
             <div class="content">
                 <div class="card-container" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -115,13 +127,14 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="filter-section">
                         <div class="filter-group" style="flex: 1; min-width: 200px;">
                             <label>Pencarian</label>
-                            <input type="text" id="searchInput" placeholder="Cari nama atau NIM...">
+                            <input type="text" id="searchInput" placeholder="Cari nama atau NIM..."
+                                value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
                         </div>
                         <div class="filter-group">
                             <label>Filter Golongan</label>
                             <select id="golonganFilter">
                                 <option value="">Semua Golongan</option>
-                                <?php foreach($golongan_list as $g): ?>
+                                <?php foreach ($golongan_list as $g): ?>
                                     <option value="<?= htmlspecialchars($g['nama_golongan']) ?>"><?= htmlspecialchars($g['nama_golongan']) ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -131,7 +144,7 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <input type="date" id="dateFilter" style="padding: 7px 12px;">
                         </div>
                     </div>
-                    
+
                     <table style="width: 100%; border-collapse: collapse;" id="studentTable">
                         <thead>
                             <tr style="background: #f8f9fa; text-align: left; border-bottom: 2px solid #eee;">
@@ -146,32 +159,33 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </thead>
                         <tbody>
                             <?php if (count($riwayat) > 0): ?>
-                                <?php $no = 1; foreach ($riwayat as $row): 
+                                <?php $no = 1;
+                                foreach ($riwayat as $row):
                                     $tgl_formatted = date('Y-m-d', strtotime($row['tgl_raw']));
                                 ?>
-                                <tr class="student-row" 
-                                    data-nama="<?= strtolower(htmlspecialchars($row['nama'])) ?>" 
-                                    data-nim="<?= htmlspecialchars($row['nim']) ?>" 
-                                    data-golongan="<?= htmlspecialchars($row['nama_golongan']) ?>"
-                                    data-tanggal="<?= $tgl_formatted ?>"
-                                    style="border-bottom: 1px solid #eee;">
-                                    <td style="padding: 12px;"><?= $no++ ?></td>
-                                    <td style="padding: 12px; font-weight: 500;"><?= htmlspecialchars($row['nama'] ?? '') ?></td>
-                                    <td style="padding: 12px;"><?= htmlspecialchars($row['nim'] ?? '') ?></td>
-                                    <td style="padding: 12px;"><?= htmlspecialchars($row['nama_golongan'] ?? '-') ?></td>
-                                    <td style="padding: 12px;"><?= htmlspecialchars($row['nama_prodi'] ?? '-') ?></td>
-                                    <td style="padding: 12px; text-align: center;"><?= date('d/m/Y', strtotime($row['tgl_raw'])) ?></td>
-                                    <td style="padding: 12px; text-align: center; display: flex; gap: 5px; justify-content: center;">
-                                        <a href="detail_mahasiswa.php?id=<?= $row['id_pengajuan'] ?>" class="action-btn btn-detail">
-                                            <i class="fas fa-eye"></i> Detail
-                                        </a>
-                                        <?php if (!empty($row['file_path'])): ?>
-                                            <a href="../../assets/uploads/pdf/<?= $row['file_path'] ?>" target="_blank" class="action-btn" style="background: #fff0f0; color: #ff4757; border: 1px solid #ff4757;">
-                                                <i class="fas fa-file-pdf"></i> PDF
+                                    <tr class="student-row"
+                                        data-nama="<?= strtolower(htmlspecialchars($row['nama'])) ?>"
+                                        data-nim="<?= htmlspecialchars($row['nim']) ?>"
+                                        data-golongan="<?= htmlspecialchars($row['nama_golongan']) ?>"
+                                        data-tanggal="<?= $tgl_formatted ?>"
+                                        style="border-bottom: 1px solid #eee;">
+                                        <td style="padding: 12px;"><?= $no++ ?></td>
+                                        <td style="padding: 12px; font-weight: 500;"><?= htmlspecialchars($row['nama'] ?? '') ?></td>
+                                        <td style="padding: 12px;"><?= htmlspecialchars($row['nim'] ?? '') ?></td>
+                                        <td style="padding: 12px;"><?= htmlspecialchars($row['nama_golongan'] ?? '-') ?></td>
+                                        <td style="padding: 12px;"><?= htmlspecialchars($row['nama_prodi'] ?? '-') ?></td>
+                                        <td style="padding: 12px; text-align: center;"><?= date('d/m/Y', strtotime($row['tgl_raw'])) ?></td>
+                                        <td style="padding: 12px; text-align: center; display: flex; gap: 5px; justify-content: center;">
+                                            <a href="detail_mahasiswa.php?id=<?= $row['id_pengajuan'] ?>" class="action-btn btn-detail">
+                                                <i class="fas fa-eye"></i> Detail
                                             </a>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
+                                            <?php if (!empty($row['file_path'])): ?>
+                                                <a href="../../assets/uploads/pdf/<?= $row['file_path'] ?>" target="_blank" class="action-btn" style="background: #fff0f0; color: #ff4757; border: 1px solid #ff4757;">
+                                                    <i class="fas fa-file-pdf"></i> PDF
+                                                </a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr class="no-data">
@@ -224,6 +238,10 @@ $riwayat = $stmt->fetchAll(PDO::FETCH_ASSOC);
         searchInput.addEventListener('input', applyFilters);
         golonganFilter.addEventListener('change', applyFilters);
         dateFilter.addEventListener('change', applyFilters);
+        if (searchInput.value !== "") {
+            applyFilters();
+        }
     </script>
 </body>
+
 </html>
